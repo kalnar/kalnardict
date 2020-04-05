@@ -1,0 +1,25 @@
+package eu.kalnarapps.kalnardict.domain.entities.dictionary
+
+import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+
+data class Dictionary(
+    val id: String,
+    val languageFrom: DictLanguage,
+    val LanguageTo: DictLanguage,
+    val description: String
+)
+
+data class DictLanguage(
+    val id: String,
+    val name: String,
+    val code: String
+)
+
+data class DictTranslation(
+    val id: String,
+    val languageFrom: DictLanguage,
+    val languageTo: DictLanguage,
+    val word: DictWord,
+    val translation: String
+)
+
