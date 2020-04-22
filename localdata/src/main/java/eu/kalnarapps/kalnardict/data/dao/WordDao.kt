@@ -10,6 +10,6 @@ interface WordDao {
     fun getAll(): List<Word>
 
     @Query("SELECT * FROM word WHERE base_form LIKE :queryString LIMIT 100")
-    fun getByQuery(queryString: String): List<Word>
+    suspend fun getByQuery(queryString: String): List<Word>
 
 }
