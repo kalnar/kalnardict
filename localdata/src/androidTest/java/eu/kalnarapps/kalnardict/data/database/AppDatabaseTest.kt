@@ -26,7 +26,10 @@ class SimpleEntityReadWriteTest {
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.databaseBuilder(context, AppDatabase::class.java, "test.db")
+        db = Room.databaseBuilder(
+            context, AppDatabase::class.java,
+            "test.db"
+        )
             // TODO: test should be in memory maybe but can't create assets that way
             // db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .createFromAsset("database/test.db")

@@ -1,1 +1,3 @@
-<manifest package="eu.kalnarapps.kotlin.localdata" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.kalnarapps.kotlin.localdata"
+    android:installLocation="auto" />
