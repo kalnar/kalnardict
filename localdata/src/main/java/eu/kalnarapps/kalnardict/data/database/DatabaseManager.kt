@@ -11,10 +11,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
 }
 
-fun Context.getSdcardFolderPath(): String? {
-//    return Environment.getDataDirectory().absolutePath
-    return getExternalFilesDir(null)?.absolutePath
+fun Context.getDatabasePath(): String {
+    return (getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath) + "/kalnardict.db"
 }
 // getExternalFilesDir(null)?.absolutePath
-// - /storage/emulated/0/Android/data/eu.kalnarapps.kotlin.localdata.test/files
+// - /storage/emulated/0/Android/data/eu.kalnarapps.kalnardict.localdata.test/files
 

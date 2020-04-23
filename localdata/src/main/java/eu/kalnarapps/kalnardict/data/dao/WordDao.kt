@@ -12,4 +12,7 @@ interface WordDao {
     @Query("SELECT * FROM word WHERE base_form LIKE :queryString LIMIT 100")
     suspend fun getByQuery(queryString: String): List<Word>
 
+    @Query("INSERT into word values(1,'asztal', 'table')")
+    fun insertData()
+
 }
