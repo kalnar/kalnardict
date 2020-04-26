@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.domain.entities.dictionary
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
 data class Dictionary(
-    val id: String,
+    val id: Int,
     val languageFrom: DictLanguage,
     val LanguageTo: DictLanguage,
     val description: String
@@ -16,9 +16,8 @@ data class DictLanguage(
 )
 
 data class DictTranslation(
-    val id: String,
-    val languageFrom: DictLanguage,
-    val languageTo: DictLanguage,
+    val id: Int,
+    val dictionary: Dictionary,
     val word: DictWord,
     val translation: String
 )
