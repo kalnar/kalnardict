@@ -17,7 +17,7 @@ interface WordDao {
     @Query("SELECT * FROM word WHERE base_form LIKE :queryString LIMIT 100")
     suspend fun getByQuery(queryString: String): List<Word>
 
-    @Query("INSERT into word values(1,'asztal', 'table')")
+    @Query("INSERT into word values(1,'asztal','asztal', 'table',1)")
     fun insertData()
 
     @Insert
@@ -25,7 +25,12 @@ interface WordDao {
 
     @Transaction
     @Query(
-        "SELECT * FROM Word WHERE base_form LIKE :queryString and dictionary_id = :dictId LIMIT 100"
+        "SELECT " +
+                "dictionary_log.id, dictionary_name, language_from, " +
+                "language_to, description, version, " +
+                "word.id, base_form, base_form_alt, translation, dictionary_id" +
+                " FROM Word join dictionary_log ON dictionary_log.id = dictionary_id " +
+                "WHERE base_form LIKE :queryString and dictionary_id = :dictId LIMIT 100;"
     )
     fun getWordsByQueryInDictionary(queryString: String, dictId: Int): List<DictionaryLogWithWords>
 
