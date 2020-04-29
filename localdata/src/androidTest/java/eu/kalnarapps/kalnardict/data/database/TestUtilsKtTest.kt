@@ -26,12 +26,19 @@ internal class TestUtilsKtTest {
     @Test
     fun createTestTempDir() {
         val dirPath = ApplicationProvider.getApplicationContext<Context>().createTestTempDir()
-//        val path = "/storage/emulated/0/kalnardict/"
-//        val dir = File(path)
-//        dir.mkdirs()
         assertThat(
             File(dirPath),
             FileMatchers.anExistingDirectory()
+        )
+    }
+
+    @Test
+    fun copy_external_test_db_to_test_temp_dir() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        context.copyTestDbFromAssetsToTempTestDir()
+        assertThat(
+            File("${context.createTestTempDir()}/$EXTERNAL_TEST_DB_NAME"),
+            FileMatchers.anExistingFile()
         )
     }
 }
