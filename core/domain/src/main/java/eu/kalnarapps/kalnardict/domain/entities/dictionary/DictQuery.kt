@@ -4,7 +4,7 @@ package eu.kalnarapps.kalnardict.domain.entities.dictionary
 data class DictQuery(
     val queryString: String,
     val language: DictLanguage,
-    val accentMode: AccentMode
+    val accentMode: AccentMode = AccentMode.ACCENT_SENSITIVE
 )
 
 enum class AccentMode {

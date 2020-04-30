@@ -1,5 +1,7 @@
 package eu.kalnarapps.kalnardict.data.database
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -11,7 +13,8 @@ class RegisterDatabaseTest {
     @Test
     fun import_table_from_external_database() {
         // given
-        copyDbFromAssetsToStorageTempDir()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        context.copyTestDbFromAssetsToTempTestDir()
         // given a valid external db with table meta_info and fr_dictionary with record konyha - cuisine
 
         // when

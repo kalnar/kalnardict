@@ -44,6 +44,14 @@ class Dao(
             dictEntry.toWord()
         )
     }
+
+    override suspend fun insertDictEntries(dictEntries: List<DictEntry>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun getDictEntryByQuery(query: String): List<DictEntry> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 private fun DictEntry.toWord(): Word {
