@@ -28,7 +28,7 @@ data class DictionaryLogEntry(
 )
 
 data class DictionaryLogWithWords(
-    @Embedded val user: DictionaryLogEntry,
+    @Embedded val dictionaryLogEntry: DictionaryLogEntry,
     @Relation(
         parentColumn = "id",
         entityColumn = "dictionary_id"

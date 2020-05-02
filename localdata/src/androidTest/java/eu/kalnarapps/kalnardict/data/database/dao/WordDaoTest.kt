@@ -5,9 +5,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.database.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.newWordToInsert
+import eu.kalnarapps.kalnardict.data.database.sampleDictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.database.sampleTableInHungarian
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
@@ -27,19 +29,13 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class WordDaoTest {
     private lateinit var wordDao: WordDao
+    private lateinit var dictionaryLogDao: DictionaryLogDao
     private var db: AppDatabase
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
-//    private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher)
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
-//        db = Room.databaseBuilder(
-//            context, AppDatabase::class.java,
-//            "test.db"
-//        )
-        // TODO: test should be in memory maybe but can't create assets that way
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-//            .createFromAsset("database/test.db")
             .setTransactionExecutor(testCoroutineDispatcher.asExecutor())
             .setQueryExecutor(testCoroutineDispatcher.asExecutor())
             .fallbackToDestructiveMigration()
@@ -54,6 +50,7 @@ class WordDaoTest {
     @Before
     fun createDb() {
         wordDao = db.wordDao()
+        dictionaryLogDao = db.dictionaryLogDao()
         db.clearAllTables()
         db.close()
     }
@@ -86,7 +83,6 @@ class WordDaoTest {
     @Test
     fun insert_entry_into_table() {
         testCoroutineDispatcher.runBlockingTest {
-            //            testCoroutineScope.launch() {
             val searchResultForEye = wordDao.getByQuery("szem")
             assertThat(searchResultForEye, IsEmptyCollection())
             wordDao.insertWord(
@@ -98,8 +94,27 @@ class WordDaoTest {
                 equalTo("eye")
             )
         }
-//        }
     }
+
+    @Test
+    fun read_a_word_with_its_dictionary_joint() {
+        testCoroutineDispatcher.runBlockingTest {
+            insertTableInHungarian()
+            dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
+
+            val dictionaryLogWithWords = wordDao.getWordsByQueryInDictionary("asztal", 1).firstOrNull()
+            assertThat(
+                dictionaryLogWithWords?.words?.firstOrNull()?.translation,
+                equalTo("table")
+            )
+            assertThat(
+                dictionaryLogWithWords?.dictionaryLogEntry?.languageFrom,
+                equalTo("hu")
+            )
+
+        }
+    }
+
 
     @After
     fun tearDown() {
