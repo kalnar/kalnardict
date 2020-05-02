@@ -32,8 +32,8 @@ class Repository(
     private fun getDictionaryById(dictionaryId: Int): Dictionary {
         return Dictionary(
             1,
-            DictLanguage("1", "name", "code"),
-            DictLanguage("2", "name", "code"),
+            DictLanguage(1, "name", "code"),
+            DictLanguage(2, "name", "code"),
             description = "descriptio"
         )
     }
@@ -68,7 +68,7 @@ private fun DictEntry.toDictTranslation(dictionary: Dictionary): DictTranslation
         dictionary = dictionary,
         word = DictWord(
             getId(),
-            DictLanguage("1", "name", "code"),
+            DictLanguage(1, "name", "code"),
             baseForm = getBaseForm(),
             alternativeForm = getAlternativeBaseForm()
         ),

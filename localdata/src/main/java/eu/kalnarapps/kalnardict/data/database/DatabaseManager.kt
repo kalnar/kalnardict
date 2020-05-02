@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.data.database
 import android.content.Context
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Word
@@ -12,10 +13,11 @@ import eu.kalnarapps.kalnardict.data.entities.Word
         Word::class,
         DictionaryLogEntry::class
     ],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
+    abstract fun dictionaryLogDao(): DictionaryLogDao
 }
 
 fun Context.getDatabasePath(): String {

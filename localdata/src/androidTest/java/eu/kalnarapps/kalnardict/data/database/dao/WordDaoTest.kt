@@ -1,0 +1,109 @@
+package eu.kalnarapps.kalnardict.data.database.dao
+
+import android.content.Context
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import eu.kalnarapps.kalnardict.data.dao.WordDao
+import eu.kalnarapps.kalnardict.data.database.AppDatabase
+import eu.kalnarapps.kalnardict.data.database.newWordToInsert
+import eu.kalnarapps.kalnardict.data.database.sampleTableInHungarian
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.collection.IsEmptyCollection
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.IOException
+
+
+@RunWith(AndroidJUnit4::class)
+class WordDaoTest {
+    private lateinit var wordDao: WordDao
+    private var db: AppDatabase
+    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+//    private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher)
+
+    init {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+//        db = Room.databaseBuilder(
+//            context, AppDatabase::class.java,
+//            "test.db"
+//        )
+        // TODO: test should be in memory maybe but can't create assets that way
+        db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
+//            .createFromAsset("database/test.db")
+            .setTransactionExecutor(testCoroutineDispatcher.asExecutor())
+            .setQueryExecutor(testCoroutineDispatcher.asExecutor())
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(testCoroutineDispatcher)
+    }
+
+    @Before
+    fun createDb() {
+        wordDao = db.wordDao()
+        db.clearAllTables()
+        db.close()
+    }
+
+    @After
+    @Throws(IOException::class)
+    fun closeDb() {
+        db.close()
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun readEntryFromDatabase() {
+        testCoroutineDispatcher.runBlockingTest {
+            // given there is an entry of table from hungarian to english
+            insertTableInHungarian()
+
+            val tableInHungarian = wordDao.getByQuery("asztal").firstOrNull()
+            assertThat(tableInHungarian?.translation, equalTo("table"))
+
+            val resultList = wordDao.getByQuery("asztalok")
+            assertThat(resultList, IsEmptyCollection())
+        }
+    }
+
+    private fun insertTableInHungarian() {
+        wordDao.insertWord(sampleTableInHungarian)
+    }
+
+    @Test
+    fun insert_entry_into_table() {
+        testCoroutineDispatcher.runBlockingTest {
+            //            testCoroutineScope.launch() {
+            val searchResultForEye = wordDao.getByQuery("szem")
+            assertThat(searchResultForEye, IsEmptyCollection())
+            wordDao.insertWord(
+                newWordToInsert
+            )
+            val newSearchResultForEye = wordDao.getByQuery("szem").firstOrNull()
+            assertThat(
+                newSearchResultForEye?.translation,
+                equalTo("eye")
+            )
+        }
+//        }
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        testCoroutineDispatcher.cleanupTestCoroutines()
+    }
+}

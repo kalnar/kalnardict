@@ -9,6 +9,7 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
+import org.junit.After
 import org.junit.Test
 import java.net.URI
 
@@ -77,6 +78,11 @@ class RepositoryTest {
             )
 
         }
+    }
+
+    @After
+    fun tearDown() {
+        testCoroutineScope.cleanupTestCoroutines()
     }
 
 }
