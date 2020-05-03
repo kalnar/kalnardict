@@ -16,6 +16,9 @@ interface WordDao {
     @Insert
     fun insertWord(word: Word)
 
+    @Insert
+    fun insertWords(wordsToInsert: List<Word>)
+
     @Transaction
     @Query(
         "SELECT " +

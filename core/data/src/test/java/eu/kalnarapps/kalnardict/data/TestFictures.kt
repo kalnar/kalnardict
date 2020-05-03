@@ -8,13 +8,13 @@ import java.net.URI
 
 val sampleQueryNewWord = DictQuery(
     "new",
-    language = DictLanguage("1", "english", "en")
+    language = DictLanguage(1, "english", "en")
 )
 
 val sampleExternalDbTable = ExternalDatabaseTable(
     name = "en_dictionary",
-    languageFrom = DictLanguage("1", "english", "en"),
-    languageTo = DictLanguage("2", "french", "fr")
+    languageFrom = DictLanguage(1, "english", "en"),
+    languageTo = DictLanguage(2, "french", "fr")
 )
 
 val newWords = listOf<DictEntry>(

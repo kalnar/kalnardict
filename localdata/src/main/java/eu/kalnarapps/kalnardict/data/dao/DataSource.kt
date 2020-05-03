@@ -14,11 +14,21 @@ class DataSource(
     }
 
     override suspend fun insertDictEntries(dictEntries: List<DictEntry>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        wordDao.insertWords(dictEntries.map { it.toWord() })
     }
 
     override suspend fun getDictEntryByQuery(query: String): List<DictEntry> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return wordDao.getByQuery(query).map { it.toDictEntry() }
+    }
+}
+
+private fun Word.toDictEntry(): DictEntry {
+    return object : DictEntry {
+        override fun getId(): Int = id
+        override fun getBaseForm(): String = baseForm
+        override fun getAlternativeBaseForm(): String = alternativeBaseForm
+        override fun getTranslation(): String = translation
+        override fun getDictionaryId(): Int = dictionaryId
     }
 }
 
