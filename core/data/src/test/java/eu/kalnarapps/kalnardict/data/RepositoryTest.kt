@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.data
 
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
-import eu.kalnarapps.kalnardict.domain.entities.operations.OperationResult
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.instanceOf

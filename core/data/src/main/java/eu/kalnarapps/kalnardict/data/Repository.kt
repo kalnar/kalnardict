@@ -1,14 +1,16 @@
 package eu.kalnarapps.kalnardict.data
 
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
-import eu.kalnarapps.kalnardict.domain.entities.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.domain.entities.operations.OperationResult
-import eu.kalnarapps.kalnardict.domain.entities.operations.OperationResult.Success
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+import java.net.URI
 
 class Repository(
     private val dictDao: DictDao,
@@ -45,10 +47,10 @@ class Repository(
 //    }
 
     override suspend fun importTablesFromDb(importJob: ImportJob): OperationResult {
-        val readResult = externalDbHandler.readTableFrom(importJob)
+        val readResult = externalDbHandler.readTableFrom(importJob.toImportEntry())
         return if (readResult is DataOperationResult.Success) {
             dictDao.insertDictEntries(readResult.data)
-            Success
+            OperationResult.Success
         } else {
             check(readResult is DataOperationResult.Failure) {
                 "this is a bug, readResult should be a failure at this point"
@@ -60,6 +62,30 @@ class Repository(
         }
     }
 
+}
+
+private fun ImportJob.toImportEntry(): ImportEntry {
+    return object : ImportEntry {
+        override fun externalDictionaryResource(): ExternalDictionaryResource =
+            resource.toExternalDictionaryResource()
+
+        override fun tableInfos(): List<ImportEntry.TableInfo> = tables.map { it.toTableInfo() }
+
+    }
+}
+
+private fun ExternalDatabaseTable.toTableInfo(): ImportEntry.TableInfo {
+    return object : ImportEntry.TableInfo {
+        override fun name(): String = name
+        override fun languageFrom(): String = languageFrom.code
+        override fun languageTo(): String = languageTo.code
+    }
+}
+
+private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryResource {
+    return object : ExternalDictionaryResource {
+        override fun uri(): URI = uri
+    }
 }
 
 private fun DictEntry.toDictTranslation(dictionary: Dictionary): DictTranslation {

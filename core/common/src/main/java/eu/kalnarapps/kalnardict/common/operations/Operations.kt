@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.domain.entities.operations
+package eu.kalnarapps.kalnardict.common.operations
 
 
 sealed class OperationResult {

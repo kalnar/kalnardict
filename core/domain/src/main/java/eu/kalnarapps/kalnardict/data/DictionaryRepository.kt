@@ -1,9 +1,9 @@
 package eu.kalnarapps.kalnardict.data
 
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
-import eu.kalnarapps.kalnardict.domain.entities.operations.OperationResult
 
 interface DictionaryRepository {
 

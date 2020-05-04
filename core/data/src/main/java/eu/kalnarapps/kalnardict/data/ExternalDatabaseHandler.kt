@@ -1,17 +1,31 @@
 package eu.kalnarapps.kalnardict.data
 
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
-import eu.kalnarapps.kalnardict.domain.entities.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import java.net.URI
 
 interface ExternalDatabaseHandler {
 
-    fun checkDatabaseStructure(resource: ExternalDatabase): DatabaseValidity
-    fun readTableFrom(importJob: ImportJob): DataOperationResult<List<DictEntry>>
+    fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity
+    fun readTableFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>>
 
 }
 
 enum class DatabaseValidity {
     VALID,
     INVALID;
+}
+
+interface ExternalDictionaryResource {
+    fun uri(): URI
+}
+
+interface ImportEntry {
+    fun externalDictionaryResource(): ExternalDictionaryResource
+    fun tableInfos(): List<TableInfo>
+
+    interface TableInfo {
+        fun name(): String
+        fun languageFrom(): String
+        fun languageTo(): String
+    }
 }

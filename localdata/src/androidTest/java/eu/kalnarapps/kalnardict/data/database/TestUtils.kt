@@ -16,10 +16,24 @@ fun Context.createTestTempDir(): String {
 }
 
 const val EXTERNAL_TEST_DB_NAME = "test_external.db"
+const val INVALID_EXTERNAL_TEST_DB_NAME = "test_invalid_external.db"
 
 fun Context.copyTestDbFromAssetsToTempTestDir() {
 
     val initialStream: InputStream = assets.open("database/$EXTERNAL_TEST_DB_NAME")
+    val buffer = ByteArray(initialStream.available())
+    initialStream.read(buffer)
+
+    val targetFile = File("${createTestTempDir()}/$EXTERNAL_TEST_DB_NAME")
+    val outStream: OutputStream = FileOutputStream(targetFile)
+    outStream.write(buffer)
+    outStream.close()
+    initialStream.close()
+}
+
+fun Context.copyInvalidTestDbFromAssetsToTempTestDir() {
+
+    val initialStream: InputStream = assets.open("database/$INVALID_EXTERNAL_TEST_DB_NAME")
     val buffer = ByteArray(initialStream.available())
     initialStream.read(buffer)
 

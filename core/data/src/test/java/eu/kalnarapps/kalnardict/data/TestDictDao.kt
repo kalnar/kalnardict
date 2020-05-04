@@ -1,8 +1,6 @@
 package eu.kalnarapps.kalnardict.data
 
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
-import eu.kalnarapps.kalnardict.domain.entities.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 
 class TestDictDao : DictDao {
     private val mockDb = ArrayList<DictEntry>()
@@ -21,13 +19,13 @@ class TestDictDao : DictDao {
 
 class TestExternalDatabaseHandler :
     ExternalDatabaseHandler {
-    override fun checkDatabaseStructure(resource: ExternalDatabase): DatabaseValidity {
+    override fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity {
         return DatabaseValidity.INVALID
     }
 
-    override fun readTableFrom(importJob: ImportJob): DataOperationResult<List<DictEntry>> {
-        val resource = importJob.resource
-        return if (resource == validExternalResource) {
+    override fun readTableFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>> {
+        val resource = importJob.externalDictionaryResource().uri()
+        return if (resource == validExternalResource.uri) {
             DataOperationResult.Success(data = newWords)
         } else {
             DataOperationResult.Failure(
