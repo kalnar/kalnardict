@@ -47,7 +47,7 @@ class Repository(
 //    }
 
     override suspend fun importTablesFromDb(importJob: ImportJob): OperationResult {
-        val readResult = externalDbHandler.readTableFrom(importJob.toImportEntry())
+        val readResult = externalDbHandler.readTableEntriesFrom(importJob.toImportEntry())
         return if (readResult is DataOperationResult.Success) {
             dictDao.insertDictEntries(readResult.data)
             OperationResult.Success

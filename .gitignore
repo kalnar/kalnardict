@@ -12,3 +12,4 @@
 /captures
 .externalNativeBuild
 .cxx
+/temp/test_invalid_external.db

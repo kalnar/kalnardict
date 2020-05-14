@@ -7,8 +7,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.collection.IsEmptyCollection
 import org.junit.After
 import org.junit.Before

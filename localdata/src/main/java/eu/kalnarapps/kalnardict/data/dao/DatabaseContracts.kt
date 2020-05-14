@@ -5,16 +5,16 @@ import android.provider.BaseColumns
 object DatabaseReaderContract {
     // Table contents are grouped together in an anonymous object.
     object DictionaryLog : BaseColumns {
-        const val TABLE_NAME = "meta_info"
-        const val COLUMN_NAME_NAME = "dictionary_name"
-        const val COLUMN_NAME_LANGUAGE_FROM = "language_from"
-        const val COLUMN_NAME_LANGUAGE_TO = "language_to"
-        const val COLUMN_NAME_VERSION = "version"
+        const val TABLE_NAME: ColumnName = "meta_info"
+        const val COLUMN_NAME_NAME: ColumnName = "dictionary_name"
+        const val COLUMN_NAME_LANGUAGE_FROM: ColumnName = "language_from"
+        const val COLUMN_NAME_LANGUAGE_TO: ColumnName = "language_to"
+        const val COLUMN_NAME_VERSION: ColumnName = "version"
     }
     object DictionaryEntry : BaseColumns {
-        const val COLUMN_NAME_BASE = "base_form"
-        const val COLUMN_NAME_BASE_FORM_ALT = "base_form_alt"
-        const val COLUMN_NAME_TRANSLATION = "translation"
+        const val COLUMN_NAME_BASE: ColumnName = "base_form"
+        const val COLUMN_NAME_BASE_FORM_ALT: ColumnName = "base_form_alt"
+        const val COLUMN_NAME_TRANSLATION: ColumnName = "translation"
     }
 }
 
@@ -29,3 +29,6 @@ private const val SQL_CREATE_META_INFO =
 
 const val SQL_DELETE_ENTRIES =
     "DROP TABLE IF EXISTS ${DatabaseReaderContract.DictionaryLog.TABLE_NAME}"
+
+typealias ColumnName = String
+

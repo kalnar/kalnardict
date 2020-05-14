@@ -6,7 +6,8 @@ import java.net.URI
 interface ExternalDatabaseHandler {
 
     fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity
-    fun readTableFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>>
+    fun readTableInfosFrom(resource: ExternalDictionaryResource): DataOperationResult<List<ImportEntry.TableInfo>>
+    fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>>
 
 }
 

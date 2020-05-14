@@ -1,3 +1,4 @@
 /build
 /src/main/assets/database/test.db
 /src/main/assets/database/test_external.db
+/src/test/resources/test_external.db
