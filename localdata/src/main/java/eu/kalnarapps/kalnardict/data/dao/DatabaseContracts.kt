@@ -11,6 +11,11 @@ object DatabaseReaderContract {
         const val COLUMN_NAME_LANGUAGE_TO = "language_to"
         const val COLUMN_NAME_VERSION = "version"
     }
+    object DictionaryEntry : BaseColumns {
+        const val COLUMN_NAME_BASE = "base_form"
+        const val COLUMN_NAME_BASE_FORM_ALT = "base_form_alt"
+        const val COLUMN_NAME_TRANSLATION = "translation"
+    }
 }
 
 private const val SQL_CREATE_META_INFO =

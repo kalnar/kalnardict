@@ -47,12 +47,13 @@ class ExternalDbImporterTest {
             CoreMatchers.containsString(".kalnardict/test/db/test_external.db")
         )
 
-        val c = dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
-        val count = c.columnCount
-        c.moveToFirst()
+        val cursorOnMetaInfo =
+            dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
+        val count = cursorOnMetaInfo.columnCount
+        cursorOnMetaInfo.moveToFirst()
         val dictionaryName =
-            c.getString(c.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME))
-        c.close()
+            cursorOnMetaInfo.getString(cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME))
+        cursorOnMetaInfo.close()
         dbHelper.close()
 
         assertThat(
@@ -63,6 +64,35 @@ class ExternalDbImporterTest {
             dictionaryName,
             equalTo("test_fr_dictionary")
         )
+
+        val cursorOnDictionary =
+            dbHelper.readableDatabase.rawQuery("select * from $dictionaryName", emptyArray())
+        val dictionaryNumOfColumns = cursorOnDictionary.columnCount
+        cursorOnDictionary.moveToFirst()
+        val dictionaryWordColumn = cursorOnDictionary.getString(
+            cursorOnDictionary.getColumnIndex(
+                DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
+            )
+        )
+        val dictionaryTranslationColumn = cursorOnDictionary.getString(
+            cursorOnDictionary.getColumnIndex(
+                DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_TRANSLATION
+            )
+        )
+        assertThat(
+            dictionaryNumOfColumns,
+            equalTo(4)
+        )
+        assertThat(
+            dictionaryWordColumn,
+            equalTo("konyha")
+        )
+        assertThat(
+            dictionaryTranslationColumn,
+            equalTo("cuisine")
+        )
+        cursorOnDictionary.close()
+        dbHelper.close()
 
 
     }
