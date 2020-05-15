@@ -7,13 +7,12 @@ import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.database.*
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
-import org.hamcrest.CoreMatchers.not
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.core.IsInstanceOf
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.io.File
