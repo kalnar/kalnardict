@@ -7,3 +7,10 @@ interface DictEntry {
     fun getTranslation(): String
     fun getDictionaryId(): Int
 }
+
+interface DictionaryLogEntryData {
+    val id: Int
+    val name: String
+    val languageFrom: String
+    val languageTo: String
+}

@@ -8,17 +8,17 @@ import java.net.URI
 
 val sampleQueryNewWord = DictQuery(
     "new",
-    language = DictLanguage(1, "english", "en")
+    language = DictLanguage("english", "en")
 )
 
 val sampleExternalDbTable = ExternalDatabaseTable(
     name = "en_dictionary",
-    languageFrom = DictLanguage(1, "english", "en"),
-    languageTo = DictLanguage(2, "french", "fr")
+    languageFrom = DictLanguage("english", "en"),
+    languageTo = DictLanguage("french", "fr")
 )
 
 val newWords = listOf<DictEntry>(
-    object :DictEntry {
+    object : DictEntry {
         override fun getId(): Int = 1
         override fun getBaseForm(): String = "new"
         override fun getAlternativeBaseForm(): String = "new"

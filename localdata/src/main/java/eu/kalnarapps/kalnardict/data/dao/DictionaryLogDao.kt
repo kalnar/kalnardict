@@ -13,6 +13,6 @@ interface DictionaryLogDao {
     @Query("SELECT * FROM dictionary_log WHERE id = :id LIMIT 1")
     fun getDictionaryById(id: Int): DictionaryLogEntry?
 
-    @Insert
-    fun insertDictionaryLogEntry(newSampleDictionaryLogEntry: DictionaryLogEntry)
+    @Query("SELECT * FROM dictionary_log")
+    fun getDictionaries(): List<DictionaryLogEntry>
 }

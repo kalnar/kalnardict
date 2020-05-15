@@ -5,12 +5,11 @@ import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 data class Dictionary(
     val id: Int,
     val languageFrom: DictLanguage,
-    val LanguageTo: DictLanguage,
+    val languageTo: DictLanguage,
     val description: String
 )
 
 data class DictLanguage(
-    val id: Int,
     val name: String,
     val code: String
 )

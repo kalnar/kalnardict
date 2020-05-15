@@ -11,6 +11,7 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import java.net.URI
+import java.util.*
 
 class Repository(
     private val dictDao: DictDao,
@@ -34,8 +35,8 @@ class Repository(
     private fun getDictionaryById(dictionaryId: Int): Dictionary {
         return Dictionary(
             1,
-            DictLanguage(1, "name", "code"),
-            DictLanguage(2, "name", "code"),
+            DictLanguage("name", "code"),
+            DictLanguage("name", "code"),
             description = "descriptio"
         )
     }
@@ -62,6 +63,27 @@ class Repository(
         }
     }
 
+    override suspend fun readRegisteredDictionaries(): List<Dictionary> {
+        return dictDao.getDictionaries().map {
+            it.toDictionary()
+        }
+    }
+
+}
+
+private fun DictionaryLogEntryData.toDictionary(): Dictionary {
+    return Dictionary(
+        id = id,
+        languageFrom = DictLanguage(
+            name = Locale(languageFrom).getDisplayLanguage(Locale(languageFrom)),
+            code = languageFrom
+        ),
+        languageTo = DictLanguage(
+            name = Locale(languageTo).getDisplayLanguage(Locale(languageTo)),
+            code = languageTo
+        ),
+        description = name
+    )
 }
 
 private fun ImportJob.toImportEntry(): ImportEntry {
@@ -94,7 +116,7 @@ private fun DictEntry.toDictTranslation(dictionary: Dictionary): DictTranslation
         dictionary = dictionary,
         word = DictWord(
             getId(),
-            DictLanguage(1, "name", "code"),
+            DictLanguage("name", "code"),
             baseForm = getBaseForm(),
             alternativeForm = getAlternativeBaseForm()
         ),

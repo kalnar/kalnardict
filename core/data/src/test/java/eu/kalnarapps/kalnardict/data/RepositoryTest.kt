@@ -5,10 +5,10 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.text.IsEqualIgnoringCase
 import org.junit.After
 import org.junit.Test
 import java.net.URI
@@ -77,6 +77,43 @@ class RepositoryTest {
                 IsEmptyCollection()
             )
 
+        }
+    }
+
+    @Test
+    fun read_registered_dictionaries_and_find_none() {
+
+        val repository = Repository(TestEmptyDictDao(), TestExternalDatabaseHandler())
+
+        testCoroutineScope.runBlockingTest {
+            assertThat(
+                repository.readRegisteredDictionaries(),
+                IsEmptyCollection()
+            )
+        }
+    }
+
+    @Test
+    fun read_registered_dictionaries_and_return_found_ones() {
+
+        testCoroutineScope.runBlockingTest {
+            val dictionaries = repository.readRegisteredDictionaries()
+            assertThat(
+                dictionaries,
+                not(IsEmptyCollection())
+            )
+            assertThat(
+                dictionaries[0].id,
+                equalTo(1)
+            )
+            assertThat(
+                dictionaries[0].languageFrom.code,
+                equalTo("hu")
+            )
+            assertThat(
+                dictionaries[0].languageFrom.name,
+                IsEqualIgnoringCase("magyar")
+            )
         }
     }
 
