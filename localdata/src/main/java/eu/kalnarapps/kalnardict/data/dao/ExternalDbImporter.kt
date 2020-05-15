@@ -43,15 +43,26 @@ class ExternalDbImporter(
         if (cursorOnMetaInfo.count == 0) {
             return DataOperationResult.Success(emptyList())
         }
-        val dictionaryName =
-            cursorOnMetaInfo.getString(cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME))
+        val dictionaryName = cursorOnMetaInfo.getString(
+            cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
+        )
+        val languageFrom = cursorOnMetaInfo.getString(
+            cursorOnMetaInfo.getColumnIndex(
+                DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_FROM
+            )
+        )
+        val languageTo = cursorOnMetaInfo.getString(
+            cursorOnMetaInfo.getColumnIndex(
+                DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_TO
+            )
+        )
         cursorOnMetaInfo.close()
         dbHelper.close()
         return DataOperationResult.Success(listOf(
             object : ImportEntry.TableInfo {
                 override fun name(): String = dictionaryName
-                override fun languageFrom(): String = ""
-                override fun languageTo(): String = ""
+                override fun languageFrom(): String = languageFrom
+                override fun languageTo(): String = languageTo
             }
         ))
     }
@@ -68,36 +79,33 @@ class ExternalDbImporter(
             cursorOnDictTable.close()
             return DataOperationResult.Success(emptyList())
         }
-        cursorOnDictTable.moveToFirst()
         val entriesBeingImported = ArrayList<DictEntry>()
-//        while (!cursorOnDictTable.isAfterLast) {
+        while (cursorOnDictTable.moveToNext()) {
+            val baseForm = cursorOnDictTable.getString(
+                cursorOnDictTable.getColumnIndex(
+                    DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
+                )
+            )
+            val translation = cursorOnDictTable.getString(
+                cursorOnDictTable.getColumnIndex(
+                    DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_TRANSLATION
+                )
+            )
             entriesBeingImported.add(
                 object : DictEntry {
                     override fun getId(): Int = 1
-
-                    override fun getBaseForm(): String = cursorOnDictTable.getString(
-                        cursorOnDictTable.getColumnIndex(
-                            DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
-                        )
-                    )
-
+                    override fun getBaseForm(): String = baseForm
                     override fun getAlternativeBaseForm(): String = cursorOnDictTable.getString(
                         cursorOnDictTable.getColumnIndex(
                             DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE_FORM_ALT
                         )
                     )
 
-                    override fun getTranslation(): String = cursorOnDictTable.getString(
-                        cursorOnDictTable.getColumnIndex(
-                            DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_TRANSLATION
-                        )
-                    )
-
+                    override fun getTranslation(): String = translation
                     override fun getDictionaryId(): Int = 1
                 }
             )
-//            cursorOnDictTable.moveToNext()
-//        }
+        }
         cursorOnDictTable.close()
         dbHelper.close()
         return DataOperationResult.Success(

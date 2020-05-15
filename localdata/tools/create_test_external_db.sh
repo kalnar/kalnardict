@@ -6,8 +6,6 @@ UNIT_TEST_RESOURCE_FOLDER="${here}"/../src/test/resources/
 mkdir -p $DATABASE_ASSETS_FOLDER
 mkdir -p $UNIT_TEST_RESOURCE_FOLDER
 db_path=${DATABASE_ASSETS_FOLDER}/test_external.db
-db_path_unit_test_resource=${UNIT_TEST_RESOURCE_FOLDER}/test_external.db
 
 rm -f "${db_path}"
 sqlite3 "${db_path}" <"${here}"/test_external_db.sql
-sqlite3 "${db_path_unit_test_resource}" <"${here}"/test_external_db.sql

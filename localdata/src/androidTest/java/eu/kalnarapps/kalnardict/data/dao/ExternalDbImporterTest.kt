@@ -89,63 +89,40 @@ class ExternalDbImporterTest {
     }
 
     @Test
-    fun readTableFrom() {
+    fun check_validity_of_invalid_dictionary_table_with_missing_column() {
+
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val dbPath = "${context.createTestTempDir()}/$EXTERNAL_TEST_DB_NAME"
-        val dbHelper = SQLiteDbReaderHelper(context, dbPath)
-        assertThat(
-            dbHelper.readableDatabase.path,
-            CoreMatchers.containsString(".kalnardict/test/db/test_external.db")
-        )
+        val invalidExternalResource = object : ExternalDictionaryResource {
+            override fun uri(): URI =
+                URI("${context.createTestTempDir()}/$INVALID_EXTERNAL_TEST_DB_NAME")
+        }
+        File(invalidExternalResource.uri().path).apply {
+            delete()
+            assertFalse(exists())
+        }
+        File("${invalidExternalResource.uri().path}-journal").apply {
+            delete()
+            assertFalse(exists())
+        }
 
-        val cursorOnMetaInfo =
-            dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
-        val count = cursorOnMetaInfo.columnCount
-        cursorOnMetaInfo.moveToFirst()
-        val dictionaryName =
-            cursorOnMetaInfo.getString(cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME))
-        cursorOnMetaInfo.close()
-        dbHelper.close()
-
-        assertThat(
-            count,
-            equalTo(5)
-        )
-        assertThat(
-            dictionaryName,
-            equalTo("test_fr_dictionary")
-        )
-
-        val cursorOnDictionary =
-            dbHelper.readableDatabase.rawQuery("select * from $dictionaryName", emptyArray())
-        val dictionaryNumOfColumns = cursorOnDictionary.columnCount
-        cursorOnDictionary.moveToFirst()
-        val dictionaryWordColumn = cursorOnDictionary.getString(
-            cursorOnDictionary.getColumnIndex(
+        SQLiteDbMockHelper(
+            context,
+            invalidExternalResource.uri().path,
+            missingColumnsDictionary = listOf(
                 DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
             )
-        )
-        val dictionaryTranslationColumn = cursorOnDictionary.getString(
-            cursorOnDictionary.getColumnIndex(
-                DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_TRANSLATION
-            )
-        )
-        assertThat(
-            dictionaryNumOfColumns,
-            equalTo(4)
-        )
-        assertThat(
-            dictionaryWordColumn,
-            equalTo("konyha")
-        )
-        assertThat(
-            dictionaryTranslationColumn,
-            equalTo("cuisine")
-        )
-        cursorOnDictionary.close()
-        dbHelper.close()
+        ).apply {
+            // on create is called only if db is accessed
+            readableDatabase
+            close()
+        }
+        val dbValidity =
+            externalResourceImporter.checkDatabaseStructure(invalidExternalResource)
 
-
+        assertThat(
+            dbValidity,
+            equalTo(DatabaseValidity.INVALID)
+        )
     }
 
     @Test
@@ -176,16 +153,16 @@ class ExternalDbImporterTest {
         )
         assertThat(
             tableList.data[0].languageFrom(),
-            equalTo("hungarian")
+            equalTo("Hungarian")
         )
         assertThat(
             tableList.data[0].languageTo(),
-            equalTo("french")
+            equalTo("French")
         )
     }
 
     @Test
-    fun import_dictionary_entries_from_valid_table() {
+    fun import_one_dictionary_entry_from_valid_table() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
             override fun uri(): URI =

@@ -4,8 +4,9 @@ import android.provider.BaseColumns
 
 object DatabaseReaderContract {
     // Table contents are grouped together in an anonymous object.
-    object DictionaryLog : BaseColumns {
+    object DictionaryLog {
         const val TABLE_NAME: ColumnName = "meta_info"
+        const val COLUMN_NAME_ID: ColumnName = "id"
         const val COLUMN_NAME_NAME: ColumnName = "dictionary_name"
         const val COLUMN_NAME_LANGUAGE_FROM: ColumnName = "language_from"
         const val COLUMN_NAME_LANGUAGE_TO: ColumnName = "language_to"

@@ -21,4 +21,4 @@ values
 insert into
     meta_info (id,dictionary_name,language_from,language_to,version)
 values
-    (1,"test_fr_dictionary","hungarian","french","0.01");
+    (1,"test_fr_dictionary","Hungarian","French","0.01");

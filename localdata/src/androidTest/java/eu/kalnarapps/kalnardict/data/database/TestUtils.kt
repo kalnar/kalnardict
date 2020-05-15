@@ -17,6 +17,7 @@ fun Context.createTestTempDir(): String {
 
 const val EXTERNAL_TEST_DB_NAME = "test_external.db"
 const val INVALID_EXTERNAL_TEST_DB_NAME = "test_invalid_external.db"
+const val TEST_DICT_TABLE_NAME = "test_fr_dictionary"
 
 fun Context.copyTestDbFromAssetsToTempTestDir() {
 
