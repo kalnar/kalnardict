@@ -76,4 +76,8 @@ dependencies {
     implementation "androidx.room:room-guava:$room_version"
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2'
+
+
+    implementation 'org.koin:koin-androidx-viewmodel:2.0.0-beta-4'
+
 }

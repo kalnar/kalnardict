@@ -18,6 +18,8 @@
             <option value="$PROJECT_DIR$/core/domain" />
             <option value="$PROJECT_DIR$/core/interactors" />
             <option value="$PROJECT_DIR$/localdata" />
+            <option value="$PROJECT_DIR$/presentation" />
+            <option value="$PROJECT_DIR$/presentation/androidui" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
