@@ -1,16 +1,17 @@
-package eu.kalnarapps.kalnardict.androidui
+package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 
-import android.view.View
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionaryManagerKoinModule
-import org.hamcrest.CoreMatchers
-import org.hamcrest.Matcher
+import eu.kalnarapps.kalnardict.androidui.BaseInstrumentalTest
+import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.navigationscreen.dictionaryManagerKoinMockModule
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 
 
 class DictionaryManagerScreenTest : BaseInstrumentalTest() {
@@ -19,12 +20,17 @@ class DictionaryManagerScreenTest : BaseInstrumentalTest() {
     fun setUp() {
         startKoin {
             modules(
-                dictionaryManagerKoinTestModule
+                dictionaryManagerKoinMockModule
             )
         }
         activityRule.activity
             .findNavController(R.id.test_nav_host_fragment)
             .navigate(R.id.dictionaryManager)
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test
@@ -41,9 +47,4 @@ class DictionaryManagerScreenTest : BaseInstrumentalTest() {
         )
     }
 
-    @Test
-    fun text_fits_in_big_button() {
-
-
-    }
 }

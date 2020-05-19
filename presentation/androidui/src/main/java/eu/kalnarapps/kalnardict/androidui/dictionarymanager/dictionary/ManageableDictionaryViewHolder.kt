@@ -8,7 +8,8 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.ManageableDictionaryView
 
 class ManageableDictionaryViewHolder(
-    inflater: LayoutInflater, parent: ViewGroup
+    inflater: LayoutInflater, parent: ViewGroup,
+    private val onDictionaryClickListener: OnDictionaryClickListener
 ) : RecyclerView.ViewHolder(
     inflater.inflate(
         R.layout.dictionary_manager_manageable_dictionary_item_view,
@@ -20,9 +21,13 @@ class ManageableDictionaryViewHolder(
     private val languageFromView: TextView = itemView.findViewById(R.id.language_form)
     private val languageToView: TextView = itemView.findViewById(R.id.language_to)
 
+
     fun bind(manageableDictionaryView: ManageableDictionaryView) {
         titleView.text = manageableDictionaryView.dictionaryName
         languageFromView.text = manageableDictionaryView.sourceLanguage
         languageToView.text = manageableDictionaryView.destinationLanguage
+        titleView.setOnClickListener {
+            onDictionaryClickListener.onClick(manageableDictionaryView)
+        }
     }
 }

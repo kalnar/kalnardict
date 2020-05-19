@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import org.koin.core.context.stopKoin
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,5 +27,10 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
 //        }
+    }
+
+    override fun onStop() {
+        stopKoin()
+        super.onStop()
     }
 }
