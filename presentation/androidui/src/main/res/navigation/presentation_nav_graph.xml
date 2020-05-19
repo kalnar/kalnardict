@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/navigation_screen">
+
+    <!--    <include-dynamic-->
+    <!--        android:id="@+id/sample_feature_graph"-->
+    <!--        app:moduleName="sample_ui"-->
+    <!--        app:graphResName="sample_feature_nav_graph"-->
+    <!--        app:graphPackage="com.sanogueralorenzo.sample" />-->
+    <fragment
+        android:id="@+id/navigation_screen"
+        android:name="eu.kalnarapps.kalnardict.androidui.navigationscreen.NavigationScreen" />
+
+    <fragment
+        android:id="@+id/dictionaryManager"
+        android:label="Dictionary Manager"
+        android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.DictionaryManagerFragment" />
+    <!--    <fragment-->
+    <!--        android:id="@+id/blankFragment"-->
+    <!--        android:name="com.example.cashdog.cashdog.BlankFragment"-->
+    <!--        android:label="Blank"-->
+    <!--        tools:layout="@layout/fragment_blank" />-->
+
+</navigation>

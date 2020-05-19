@@ -1,13 +1,7 @@
 package eu.kalnarapps.kalnardict
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import eu.kalnarapps.kalnardict.data.database.getStorageRootPath
-import eu.kalnarapps.kalnardict.permissions.PermissionHandler.Companion.requestPermissionsIfNeeded
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main_old.*
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
