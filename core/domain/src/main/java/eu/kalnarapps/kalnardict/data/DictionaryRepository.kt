@@ -5,11 +5,12 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
 interface DictionaryRepository {
 
     suspend fun insertDictEntry(dictTranslation: DictTranslation)
-    suspend fun getEntriesByQuery(query: DictQuery): List<DictTranslation>
+    suspend fun getEntriesByQuery(query: DictQuery): List<DictWord>
     suspend fun importTablesFromDb(importJob: ImportJob): OperationResult
     suspend fun readRegisteredDictionaries(): List<Dictionary>
 

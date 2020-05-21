@@ -24,11 +24,17 @@ class Repository(
         )
     }
 
-    override suspend fun getEntriesByQuery(query: DictQuery): List<DictTranslation> {
+    override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         return dictDao.getDictEntryByQuery(query.queryString).map {
-            it.toDictTranslation(
-                dictionary = getDictionaryById(it.getDictionaryId())
+            DictWord(
+                it.getId(),
+                DictLanguage("name", "code"),
+                baseForm = it.getBaseForm(),
+                alternativeForm = it.getAlternativeBaseForm()
             )
+//            it.toDictTranslation(
+//                dictionary = getDictionaryById(it.getDictionaryId())
+//            )
         }
     }
 
@@ -110,19 +116,14 @@ private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryR
     }
 }
 
-private fun DictEntry.toDictTranslation(dictionary: Dictionary): DictTranslation {
-    return DictTranslation(
-        id = getId(),
-        dictionary = dictionary,
-        word = DictWord(
-            getId(),
-            DictLanguage("name", "code"),
-            baseForm = getBaseForm(),
-            alternativeForm = getAlternativeBaseForm()
-        ),
-        translation = getTranslation()
-    )
-}
+//private fun DictEntry.toDictTranslation(dictionary: Dictionary): DictTranslation {
+//    return DictTranslation(
+//        id = getId(),
+//        dictionary = dictionary,
+//        word =,
+//        translation = getTranslation()
+//    )
+//}
 
 private fun DictTranslation.toDictEntry(): DictEntry {
     return object : DictEntry {

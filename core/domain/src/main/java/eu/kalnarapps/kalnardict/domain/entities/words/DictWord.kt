@@ -6,7 +6,7 @@ open class DictWord(
     open val id: Int,
     open val language: DictLanguage,
     open val baseForm: String,
-    open val alternativeForm: String
+    open val alternativeForm: String = baseForm
 )
 
 data class DictVerb(

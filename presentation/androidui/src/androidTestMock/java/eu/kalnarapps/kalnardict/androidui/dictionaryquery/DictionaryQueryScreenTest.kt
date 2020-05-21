@@ -6,7 +6,10 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import eu.kalnarapps.kalnardict.androidui.BaseInstrumentalTest
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.navigationscreen.dictionaryManagerKoinMockModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerKoinMockModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerMockKoinModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryMockKoinModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryRepositoryModule
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -19,17 +22,27 @@ class DictionaryQueryScreenTest : BaseInstrumentalTest() {
     @Before
     fun setUp() {
         startKoin {
-//            modules(
-//            )
+            modules(
+                listOf(
+                    dictionaryRepositoryModule,
+                    dictionaryManagerKoinMockModule,
+                    dictionaryQueryMockKoinModule
+                )
+            )
         }
         activityRule.activity
             .findNavController(R.id.test_nav_host_fragment)
-            .navigate(R.id.dictionaryQuery)
+            .navigate(R.id.dictionaryQueryScreen)
     }
 
     @After
     fun tearDown() {
         stopKoin()
+    }
+
+    @Test
+    fun fragment_is_shown_without_crash() {
+
     }
 
     @Test
@@ -47,9 +60,9 @@ class DictionaryQueryScreenTest : BaseInstrumentalTest() {
     }
 
     @Test
-    fun clear_input_button_displayed() {
+    fun clear_input_button_is_displayed() {
         Espresso.onView(
-            ViewMatchers.withId(R.id.clear_input_button)
+            ViewMatchers.withId(R.id.query_clear_input_button)
         ).check(
             ViewAssertions.matches(ViewMatchers.isDisplayed())
         )
@@ -63,14 +76,14 @@ class DictionaryQueryScreenTest : BaseInstrumentalTest() {
             ViewAssertions.matches(ViewMatchers.isDisplayed())
         )
     }
-
-    @Test
-    fun search_input_is_displayed() {
-        Espresso.onView(
-            ViewMatchers.withHint("search")
-        ).check(
-            ViewAssertions.matches(ViewMatchers.isDisplayed())
-        )
-    }
+//
+//    @Test
+//    fun search_input_is_displayed() {
+//        Espresso.onView(
+//            ViewMatchers.withHint("search")
+//        ).check(
+//            ViewAssertions.matches(ViewMatchers.isDisplayed())
+//        )
+//    }
 
 }
