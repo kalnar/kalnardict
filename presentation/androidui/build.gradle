@@ -27,7 +27,24 @@ android {
         mock
         full
     }
+    sourceSets {
+        main {
+            res.srcDirs = getLayoutDirectories()
+            res.srcDirs += [
+                    'src/main/res/layouts',
+                    'src/main/res'
+            ]
+        }
+    }
 
+}
+
+def getLayoutDirectories() {
+    def layouts = []
+    new File("${project.projectDir}/src/main/res/layouts/").eachDir() { dir ->
+        layouts << "src/main/res/layouts/${dir.name}"
+    }
+    return layouts
 }
 
 dependencies {

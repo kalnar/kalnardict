@@ -7,7 +7,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import eu.kalnarapps.kalnardict.androidui.BaseInstrumentalTest
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerKoinMockModule
-import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerMockKoinModule
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryMockKoinModule
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryRepositoryModule
 import org.junit.After

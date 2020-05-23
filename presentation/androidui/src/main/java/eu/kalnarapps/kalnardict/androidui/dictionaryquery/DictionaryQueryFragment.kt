@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice.DictionarySelectorSpinner
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview.QueryResultListAdapter
 import kotlinx.android.synthetic.main.dictionary_query_fragment.*
 import org.koin.androidx.viewmodel.ext.android.getKoin
@@ -34,13 +34,11 @@ class DictionaryQueryFragment : Fragment() {
             )
         }
         query_screen_spinner.apply {
-//            adapter = DictionaryDropDownAdapter()
-            adapter = ArrayAdapter<DictionarySelectorItem>(
+            adapter = DictionarySelectorSpinner(
                 context,
-                android.R.layout.simple_spinner_item,
                 queryViewModel.getRegisteredDictionaries()
             )
-
+//            setSelection(0)
         }
     }
 }

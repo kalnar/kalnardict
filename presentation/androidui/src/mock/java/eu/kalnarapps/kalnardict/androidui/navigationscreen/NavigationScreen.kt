@@ -25,12 +25,14 @@ class NavigationScreen : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val listOfScreens = ArrayList<NavigationItemView>()
         findNavController().graph.iterator().forEach {
-            listOfScreens.add(
-                NavigationItemView(
-                    name = it.label.toString(),
-                    id = it.id
+            if (it.label != null) {
+                listOfScreens.add(
+                    NavigationItemView(
+                        name = it.label.toString(),
+                        id = it.id
+                    )
                 )
-            )
+            }
         }
         val adapter = NavigationScreensListAdapter(
             listOfScreens,

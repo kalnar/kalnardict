@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,21 +14,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
-            android:id="@+id/query_screen_spinner"
-            android:layout_width="@dimen/normal_button_width"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/query_screen_input"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:hint="@string/query_input_hint"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/query_screen_spinner"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/query_screen_right_button"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,6 +45,17 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Spinner
+        android:id="@+id/query_screen_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        tools:listitem="@layout/query_language_selector_item"
+        />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/query_result_list_view"
         android:layout_width="0dp"
@@ -61,7 +65,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/query_screen_spinner"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/dictionary_query_word_item_view">
 
