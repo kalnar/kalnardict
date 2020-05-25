@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerKoinMockModule
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryMockKoinModule
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryRepositoryModule
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -70,7 +71,7 @@ class DictionaryQueryScreenTest : BaseInstrumentalTest() {
     @Test
     fun language_bar_is_displayed() {
         Espresso.onView(
-            ViewMatchers.withText("hu -> fr")
+            ViewMatchers.withText(containsString("hu -> fr"))
         ).check(
             ViewAssertions.matches(ViewMatchers.isDisplayed())
         )

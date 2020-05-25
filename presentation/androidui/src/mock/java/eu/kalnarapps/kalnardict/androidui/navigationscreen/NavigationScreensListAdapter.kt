@@ -1,10 +1,8 @@
 package eu.kalnarapps.kalnardict.androidui.navigationscreen
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.ManageableDictionaryView
 
 class NavigationScreensListAdapter(
     private val list: List<NavigationItemView>,

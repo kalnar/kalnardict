@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
-import kotlinx.android.synthetic.mock.navigation_screen_fragment.list
+import kotlinx.android.synthetic.mock.navigation_screen_fragment.*
 
 class NavigationScreen : Fragment() {
 

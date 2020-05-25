@@ -22,7 +22,8 @@ class DictionaryQueryViewModel(
                 listRegisteredDictionariesUseCase.invoke().map {
                     DictionarySelectorItem(
                         it.id,
-                        "${it.languageFrom.code} -> ${it.languageTo.code}"
+                        "${it.languageFrom.code} -> ${it.languageTo.code}",
+                        it.description
                     )
                 }
             )
@@ -50,5 +51,6 @@ data class WordView(
 
 data class DictionarySelectorItem(
     val id: Int,
-    val displayString: String
+    val displayString: String,
+    val description: String
 )
