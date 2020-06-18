@@ -84,7 +84,7 @@ class DictionaryQueryScreenTest : BaseInstrumentalTest() {
         Espresso.onView(
             ViewMatchers.withId(R.id.query_screen_input)
         ).perform(
-            ViewActions.typeText("mock test dict #2")
+            ViewActions.typeText("mock test dict entry #2")
         )
 
         Espresso.onView(

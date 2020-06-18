@@ -1,25 +1,26 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
 import kotlinx.coroutines.launch
 
 class DictionaryQueryViewModel(
-    private val state: MutableLiveData<DictionaryQueryState> = MutableLiveData(),
     private val listQueryResultsUseCase: ListDictionaryQueryResults,
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionaries
 ) : ViewModel() {
+    private val _state: MutableLiveData<DictionaryQueryState> = MutableLiveData()
+    private val state: LiveData<DictionaryQueryState>
+        get() = _state
 
     init {
         viewModelScope.launch {
-            state.value = DictionaryQueryState(
-                listQueryResultsUseCase.invokeWith("").map {
+            _state.value = DictionaryQueryState(
+                typedQueryString = "",
+                queryResults = listQueryResultsUseCase.invokeWith("").map {
                     WordView(baseForm = it.baseForm)
                 },
-                listRegisteredDictionariesUseCase.invoke().map {
+                dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke().map {
                     DictionarySelectorItem(
                         it.id,
                         "${it.languageFrom.code} -> ${it.languageTo.code}",
@@ -30,17 +31,33 @@ class DictionaryQueryViewModel(
         }
     }
 
-    fun getQueryResult(): List<WordView> {
-        return state.value?.queryResults ?: emptyList()
+    fun getQueryResult(): LiveData<List<WordView>> {
+        return Transformations.map(state) {
+            it.queryResults
+        }
     }
 
     fun getRegisteredDictionaries(): List<DictionarySelectorItem> {
         return state.value?.dictionarySelectorItems ?: emptyList()
     }
 
+    fun onQueryChanged(newQuery: String) {
+        viewModelScope.launch {
+            _state.postValue(
+                state.value?.copy(
+                    typedQueryString = newQuery,
+                    queryResults = listQueryResultsUseCase.invokeWith(newQuery).map {
+                        WordView(baseForm = it.baseForm)
+                    }
+                )
+            )
+        }
+    }
+
 }
 
 data class DictionaryQueryState(
+    val typedQueryString: String,
     val queryResults: List<WordView>,
     val dictionarySelectorItems: List<DictionarySelectorItem>
 )

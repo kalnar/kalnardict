@@ -28,6 +28,8 @@ val dictionaryRepositoryModule = module {
                         ),
                         baseForm = "mock test dict entry #$it"
                     )
+                }.filter {
+                    it.baseForm.contains(query.queryString)
                 }
             }
 

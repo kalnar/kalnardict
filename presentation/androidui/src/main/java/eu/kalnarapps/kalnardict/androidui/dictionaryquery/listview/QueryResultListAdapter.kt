@@ -5,9 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.WordView
 
-class QueryResultListAdapter(
-    private val list: List<WordView>
-) : RecyclerView.Adapter<QueryResultItemViewHolder>() {
+class QueryResultListAdapter : RecyclerView.Adapter<QueryResultItemViewHolder>() {
+    private var list: List<WordView> = emptyList()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -25,6 +24,10 @@ class QueryResultListAdapter(
     }
 
     override fun getItemCount(): Int = list.size
+    fun updateWords(it: List<WordView>) {
+        list = it
+        notifyDataSetChanged()
+    }
 
 }
 

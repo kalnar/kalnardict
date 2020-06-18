@@ -1,17 +1,20 @@
 package eu.kalnarapps.kalnardict.androidui.dependencies
 
+import eu.kalnarapps.kalnardict.android.utils.KalnarLogger
+import eu.kalnarapps.kalnardict.android.utils.Logger
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryViewModel
 import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 
 val dictionaryQueryMockKoinModule: Module = module {
-    factory {
+    viewModel {
         DictionaryQueryViewModel(
             listQueryResultsUseCase = ListDictionaryQueryResults(
                 get(),
@@ -67,4 +70,5 @@ val dictionaryQueryMockKoinModule: Module = module {
             listRegisteredDictionariesUseCase = ListRegisteredDictionaries(get())
         )
     }
+    single { KalnarLogger() as Logger }
 }
