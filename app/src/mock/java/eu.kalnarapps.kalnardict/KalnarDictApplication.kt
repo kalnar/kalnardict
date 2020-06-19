@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict
 import android.app.Application
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerKoinMockModule
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryMockKoinModule
-import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryRepositoryModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.repositoryModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -16,7 +16,7 @@ class KalnarDictMockApplication : Application() {
             modules(dataModules)
             modules(
                 listOf(
-                    dictionaryRepositoryModule,
+                    repositoryModule,
                     dictionaryManagerKoinMockModule,
                     dictionaryQueryMockKoinModule
                 )

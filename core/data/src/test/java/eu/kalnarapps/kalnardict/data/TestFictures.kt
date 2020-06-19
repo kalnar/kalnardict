@@ -8,7 +8,7 @@ import java.net.URI
 
 val sampleQueryNewWord = DictQuery(
     "new",
-    language = DictLanguage("english", "en")
+    dictionary = DictLanguage("english", "en")
 )
 
 val sampleExternalDbTable = ExternalDatabaseTable(

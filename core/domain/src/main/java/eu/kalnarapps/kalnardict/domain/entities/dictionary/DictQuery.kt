@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.domain.entities.dictionary
 
 data class DictQuery(
     val queryString: String,
-    val language: DictLanguage,
+    val dictionary: Dictionary,
     val accentMode: AccentMode = AccentMode.ACCENT_SENSITIVE
 )
 

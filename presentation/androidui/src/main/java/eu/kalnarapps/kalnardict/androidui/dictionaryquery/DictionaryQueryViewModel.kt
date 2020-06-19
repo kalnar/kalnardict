@@ -1,13 +1,18 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
 import androidx.lifecycle.*
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
+import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import kotlinx.coroutines.launch
 
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: ListDictionaryQueryResults,
-    private val listRegisteredDictionariesUseCase: ListRegisteredDictionaries
+    private val listRegisteredDictionariesUseCase: ListRegisteredDictionaries,
+    private val updateCurrentLanguageUseCase: UpdateCurrentLanguage,
+    private val getCurrentLanguageUseCase: GetLanguageUseCase
 ) : ViewModel() {
     private val _state: MutableLiveData<DictionaryQueryState> = MutableLiveData()
     private val state: LiveData<DictionaryQueryState>
@@ -21,12 +26,9 @@ class DictionaryQueryViewModel(
                     WordView(baseForm = it.baseForm)
                 },
                 dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke().map {
-                    DictionarySelectorItem(
-                        it.id,
-                        "${it.languageFrom.code} -> ${it.languageTo.code}",
-                        it.description
-                    )
-                }
+                    it.toDictionarySelectorItem()
+                },
+                currentDictionaryItemView = getCurrentLanguageUseCase().toDictionarySelectorItem()
             )
         }
     }
@@ -34,6 +36,12 @@ class DictionaryQueryViewModel(
     fun getQueryResult(): LiveData<List<WordView>> {
         return Transformations.map(state) {
             it.queryResults
+        }
+    }
+
+    fun getDictionary(): LiveData<DictionarySelectorItem> {
+        return Transformations.map(state) {
+            it.currentDictionaryItemView
         }
     }
 
@@ -54,11 +62,45 @@ class DictionaryQueryViewModel(
         }
     }
 
+    fun onDictionaryChanged(dictionaryItem: DictionarySelectorItem) {
+        viewModelScope.launch {
+            _state.postValue(
+                state.value?.copy(
+                    currentDictionaryItemView = dictionaryItem
+                )
+            )
+            updateCurrentLanguageUseCase(dictionaryItem.id)
+        }
+    }
+
+    fun refreshQueryResults() {
+        viewModelScope.launch {
+            _state.postValue(
+                state.value?.copy(
+                    queryResults = listQueryResultsUseCase.invokeWith(
+                        state.value?.typedQueryString.orEmpty()
+                    ).map {
+                        WordView(baseForm = it.baseForm)
+                    }
+                )
+            )
+        }
+    }
+
+}
+
+private fun Dictionary.toDictionarySelectorItem(): DictionarySelectorItem {
+    return DictionarySelectorItem(
+        this.id,
+        "${this.languageFrom.code} -> ${this.languageTo.code}",
+        this.description
+    )
 }
 
 data class DictionaryQueryState(
     val typedQueryString: String,
     val queryResults: List<WordView>,
+    val currentDictionaryItemView: DictionarySelectorItem,
     val dictionarySelectorItems: List<DictionarySelectorItem>
 )
 

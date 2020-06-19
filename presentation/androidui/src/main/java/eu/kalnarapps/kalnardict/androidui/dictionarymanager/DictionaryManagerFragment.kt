@@ -12,13 +12,12 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionary.Manageabl
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionary.OnDictionaryClickListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionary.OnNewButtonAction
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.*
-import org.koin.androidx.viewmodel.ext.android.getKoin
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class DictionaryManagerFragment : Fragment() {
 
-    //    private val dictionaryManagerViewModel: DictionaryManagerViewModel by viewModel()
-    private val dictionaryManagerViewModel: DictionaryManagerViewModel = getKoin().get()
+    private val dictionaryManagerViewModel: DictionaryManagerViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

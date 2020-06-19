@@ -64,4 +64,8 @@ class DictionarySelectorSpinnerAdapter(
     override fun getCount(): Int {
         return dictionarySelectorItems.size
     }
+
+    fun setOnDictionarySelected(onSelectedAction: (DictionarySelectorItem) -> Unit) {
+
+    }
 }

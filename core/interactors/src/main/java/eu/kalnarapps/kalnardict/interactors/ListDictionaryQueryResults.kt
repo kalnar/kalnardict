@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.data.ConfigurationRepository
+import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
@@ -11,12 +12,18 @@ class ListDictionaryQueryResults(
     private val configurationRepository: ConfigurationRepository
 ) : SearchQueryUseCase {
     override suspend fun invokeWith(query: String): List<DictWord> {
-        return dictionaryRepository.getEntriesByQuery(
-            DictQuery(
-                queryString = query,
-                language = configurationRepository.getCurrentLanguage(),
-                accentMode = configurationRepository.getCurrentAccentMode()
-            )
-        )
+        return configurationRepository.getCurrentDictionary().let {
+            when (it) {
+                is CurrentDictionary.SetDictionary ->
+                    dictionaryRepository.getEntriesByQuery(
+                        DictQuery(
+                            queryString = query,
+                            dictionary = it.dictionary,
+                            accentMode = configurationRepository.getCurrentAccentMode()
+                        )
+                    )
+                CurrentDictionary.DictionaryNotSet -> emptyList()
+            }
+        }
     }
 }

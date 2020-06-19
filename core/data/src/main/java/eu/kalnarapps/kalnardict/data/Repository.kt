@@ -18,10 +18,12 @@ class Repository(
     private val externalDbHandler: ExternalDatabaseHandler
 ) : DictionaryRepository {
 
-    override suspend fun insertDictEntry(dictTranslation: DictTranslation) {
+    override suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult {
+        // TODO return failure if dictionary id is not correct in translation
         dictDao.insertDictEntry(
             dictTranslation.toDictEntry()
         )
+        return OperationResult.Success
     }
 
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
@@ -38,12 +40,14 @@ class Repository(
         }
     }
 
-    private fun getDictionaryById(dictionaryId: Int): Dictionary {
-        return Dictionary(
-            1,
-            DictLanguage("name", "code"),
-            DictLanguage("name", "code"),
-            description = "descriptio"
+    override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
+        return DataOperationResult.Success(
+            Dictionary(
+                1,
+                DictLanguage("name", "code"),
+                DictLanguage("name", "code"),
+                description = "descriptio"
+            )
         )
     }
 //    externalDbHandler.checkDatabaseStructure(localDbFile).run {

@@ -11,7 +11,9 @@ val dictionaryManagerKoinModule: Module = module {
     viewModel {
         DictionaryQueryViewModel(
             listQueryResultsUseCase = get(),
-            listRegisteredDictionariesUseCase = get()
+            listRegisteredDictionariesUseCase = get(),
+            updateCurrentLanguageUseCase = get(),
+            getCurrentLanguageUseCase = get()
         )
     }
     single { KalnarLogger() as Logger }
