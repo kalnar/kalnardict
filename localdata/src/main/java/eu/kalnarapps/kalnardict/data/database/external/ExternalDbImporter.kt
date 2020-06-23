@@ -1,15 +1,24 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.database.external
 
 import android.content.Context
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.data.*
+import eu.kalnarapps.kalnardict.data.DatabaseValidity
+import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
+import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
+import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.DictEntryToData
 
 
 class ExternalDbImporter(
     val context: Context
 ) : ExternalDatabaseHandler {
     override fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity {
-        val dbHelper = SQLiteDbReaderHelper(context, resource.uri().path)
+        val dbHelper =
+            SQLiteDbReaderHelper(
+                context,
+                resource.uri().path
+            )
         val missingColumnsInMetaInfo = dbHelper.getMissingColumnsInMetaInfo()
         if (missingColumnsInMetaInfo.isEmpty()) {
             val readingResultOfMetaInfo = readTableInfosFrom(resource)
@@ -36,7 +45,11 @@ class ExternalDbImporter(
     override fun readTableInfosFrom(
         resource: ExternalDictionaryResource
     ): DataOperationResult<List<ImportEntry.TableInfo>> {
-        val dbHelper = SQLiteDbReaderHelper(context, resource.uri().path)
+        val dbHelper =
+            SQLiteDbReaderHelper(
+                context,
+                resource.uri().path
+            )
         val cursorOnMetaInfo =
             dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
         cursorOnMetaInfo.moveToFirst()
@@ -71,8 +84,11 @@ class ExternalDbImporter(
         importJob: ImportEntry
     ): DataOperationResult<List<DictEntry>> {
         val dbHelper =
-            SQLiteDbReaderHelper(context, importJob.externalDictionaryResource().uri().path)
-        val tableName = importJob.tableInfos()[0].name()
+            SQLiteDbReaderHelper(
+                context,
+                importJob.externalDictionaryResource().uri().path
+            )
+        val tableName = importJob.tableInfo().name()
         val cursorOnDictTable =
             dbHelper.readableDatabase.rawQuery("select * from $tableName", emptyArray())
         if (cursorOnDictTable.count == 0) {
@@ -92,18 +108,16 @@ class ExternalDbImporter(
                 )
             )
             entriesBeingImported.add(
-                object : DictEntry {
-                    override fun getId(): Int = 1
-                    override fun getBaseForm(): String = baseForm
-                    override fun getAlternativeBaseForm(): String = cursorOnDictTable.getString(
+                DictEntryToData(
+                    id = 1,
+                    baseForm = baseForm,
+                    alternativeBaseForm = cursorOnDictTable.getString(
                         cursorOnDictTable.getColumnIndex(
                             DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE_FORM_ALT
                         )
-                    )
-
-                    override fun getTranslation(): String = translation
-                    override fun getDictionaryId(): Int = 1
-                }
+                    ),
+                    translation = translation
+                )
             )
         }
         cursorOnDictTable.close()

@@ -4,6 +4,7 @@ import eu.kalnarapps.kalnardict.androidui.stub.Stubs.Domain.Languages.english
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs.Domain.Languages.french
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs.Domain.Words.englishWords
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs.Domain.Words.englishWordsInEnglishFrenchDictionary
+import eu.kalnarapps.kalnardict.androidui.stub.Stubs.Domain.Words.frenchWordsInFrenchEnglishDictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
@@ -35,6 +36,12 @@ object Stubs {
                 languageTo = french,
                 description = "english french dictionary"
             )
+            val frenchEnglishDict = Dictionary(
+                id = 3,
+                languageFrom = french,
+                languageTo = english,
+                description = "french english dictionary"
+            )
             val ALL = listOf(englishDict, englishFrenchDict)
 
             object Translations {
@@ -54,6 +61,14 @@ object Stubs {
                         translation = "c'est la traduction du mot: $it"
                     )
                 }
+                val frenchEnglishTranslations = frenchWordsInFrenchEnglishDictionary.map {
+                    DictTranslation(
+                        id = it.id,
+                        dictionary = frenchEnglishDict,
+                        word = it,
+                        translation = "translation of the word: $it"
+                    )
+                }
             }
         }
 
@@ -70,6 +85,14 @@ object Stubs {
                     id = it,
                     language = english,
                     baseForm = "mock word (en->fr) #$it"
+                )
+
+            }
+            val frenchWordsInFrenchEnglishDictionary = (1..200).map {
+                DictWord(
+                    id = it,
+                    language = french,
+                    baseForm = "mot mocké (fr->en) #$it"
                 )
 
             }

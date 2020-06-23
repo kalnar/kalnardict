@@ -4,9 +4,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
-import eu.kalnarapps.kalnardict.data.dao.ColumnName
-import eu.kalnarapps.kalnardict.data.dao.DatabaseReaderContract
-import eu.kalnarapps.kalnardict.data.dao.SQL_DELETE_ENTRIES
+import eu.kalnarapps.kalnardict.data.database.external.ColumnName
+import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
+import eu.kalnarapps.kalnardict.data.database.external.SQL_DELETE_ENTRIES
 
 class SQLiteDbMockHelper(
     context: Context,

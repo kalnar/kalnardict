@@ -1,14 +1,25 @@
 package eu.kalnarapps.kalnardict.data.entities
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 
 @Entity
 data class Word(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "base_form") val baseForm: String,
     @ColumnInfo(name = "base_form_alt") val alternativeBaseForm: String,
     @ColumnInfo(name = "translation") val translation: String,
-    @ColumnInfo(name = "dictionary_id") val dictionaryId: Int
+    @ColumnInfo(name = "dictionary_id") val dictionaryId: Int = 0
+)
+
+@Entity
+data class Language(
+    @PrimaryKey() val id: String,
+    @ColumnInfo(name = "description") val description: String
 )
 
 @Entity(
@@ -19,12 +30,12 @@ data class Word(
 )
 data class DictionaryLogEntry(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "dictionary_name") val dictionaryName: String,
     @ColumnInfo(name = "language_from") val languageFrom: String,
     @ColumnInfo(name = "language_to") val languageTo: String,
-    @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "version") val version: String
+    @ColumnInfo(name = "description") val description: String = "$languageFrom to $languageTo dictionary",
+    @ColumnInfo(name = "version") val version: String = "0.01"
 )
 
 data class DictionaryLogWithWords(

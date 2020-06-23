@@ -2,6 +2,10 @@ package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
@@ -29,10 +33,10 @@ class Repository(
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         return dictDao.getDictEntryByQuery(query.queryString).map {
             DictWord(
-                it.getId(),
+                it.id,
                 DictLanguage("name", "code"),
-                baseForm = it.getBaseForm(),
-                alternativeForm = it.getAlternativeBaseForm()
+                baseForm = it.baseForm,
+                alternativeForm = it.alternativeBaseForm
             )
 //            it.toDictTranslation(
 //                dictionary = getDictionaryById(it.getDictionaryId())
@@ -46,7 +50,7 @@ class Repository(
                 1,
                 DictLanguage("name", "code"),
                 DictLanguage("name", "code"),
-                description = "descriptio"
+                description = "description"
             )
         )
     }
@@ -57,19 +61,29 @@ class Repository(
 //
 //    }
 
-    override suspend fun importTablesFromDb(importJob: ImportJob): OperationResult {
-        val readResult = externalDbHandler.readTableEntriesFrom(importJob.toImportEntry())
-        return if (readResult is DataOperationResult.Success) {
-            dictDao.insertDictEntries(readResult.data)
-            OperationResult.Success
-        } else {
-            check(readResult is DataOperationResult.Failure) {
-                "this is a bug, readResult should be a failure at this point"
+    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+        return when (
+            val readResult = externalDbHandler.readTableEntriesFrom(importJob.toImportEntry())
+            ) {
+            is DataOperationResult.Success -> {
+                if (readResult.data.isNotEmpty()) {
+                    dictDao.insertDictionary(
+                        NewDictionary(
+                            name = importJob.table.name,
+                            languageFrom = importJob.table.languageFrom.name,
+                            languageTo = importJob.table.languageTo.name
+                        )
+                    )
+                    dictDao.insertDictEntries(readResult.data)
+                }
+                OperationResult.Success
             }
-            OperationResult.Failure(
-                errorMessage = "an error has occurred while reading table in importJob: $importJob",
-                cause = readResult
-            )
+            is DataOperationResult.Failure -> {
+                OperationResult.Failure(
+                    errorMessage = "an error has occurred while reading table in importJob: $importJob",
+                    cause = readResult
+                )
+            }
         }
     }
 
@@ -101,7 +115,7 @@ private fun ImportJob.toImportEntry(): ImportEntry {
         override fun externalDictionaryResource(): ExternalDictionaryResource =
             resource.toExternalDictionaryResource()
 
-        override fun tableInfos(): List<ImportEntry.TableInfo> = tables.map { it.toTableInfo() }
+        override fun tableInfo(): ImportEntry.TableInfo = table.toTableInfo()
 
     }
 }
@@ -130,12 +144,24 @@ private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryR
 //}
 
 private fun DictTranslation.toDictEntry(): DictEntry {
-    return object : DictEntry {
-        override fun getId(): Int = id
-        override fun getBaseForm(): String = word.baseForm
-        override fun getAlternativeBaseForm(): String = word.alternativeForm
-        override fun getTranslation(): String = translation
-        override fun getDictionaryId(): Int = dictionary.id
-    }
+    return NewDictEntry(
+        id = id,
+        baseForm = word.baseForm,
+        alternativeBaseForm = word.alternativeForm,
+        translation = translation
+    )
 }
 
+data class NewDictEntry(
+    override val id: Int,
+    override val baseForm: String,
+    override val alternativeBaseForm: String,
+    override val translation: String
+) : DictEntry
+
+
+data class NewDictionary(
+    override val name: String,
+    override val languageFrom: String,
+    override val languageTo: String
+) : NewDictionaryLogEntryData

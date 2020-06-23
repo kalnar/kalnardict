@@ -12,7 +12,7 @@ interface DictionaryRepository {
 
     suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult
     suspend fun getEntriesByQuery(query: DictQuery): List<DictWord>
-    suspend fun importTablesFromDb(importJob: ImportJob): OperationResult
+    suspend fun importTableFromDb(importJob: ImportJob): OperationResult
     suspend fun readRegisteredDictionaries(): List<Dictionary>
     suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary>
 

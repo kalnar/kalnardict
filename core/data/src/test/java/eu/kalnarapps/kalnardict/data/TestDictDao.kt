@@ -1,12 +1,17 @@
 package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 
 open class TestDictDao : DictDao {
     private val mockDb = ArrayList<DictEntry>()
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
         add(
-            object : DictionaryLogEntryData {
+            object :
+                DictionaryLogEntryData {
                 override val id: Int
                     get() = 1
                 override val name: String
@@ -28,13 +33,35 @@ open class TestDictDao : DictDao {
     }
 
     override suspend fun getDictEntryByQuery(query: String): List<DictEntry> {
-        return mockDb.filter { it.getBaseForm().contains(query) }
+        return mockDb.filter { it.baseForm.contains(query) }
+    }
+
+    override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData) {
+        mockDictionaries.add(
+            newDictionary.toDictionaryLogEntryData(id = mockDictionaries.size + 1)
+        )
     }
 
     override suspend fun getDictionaries(): List<DictionaryLogEntryData> {
         return mockDictionaries
     }
 }
+
+private fun NewDictionaryLogEntryData.toDictionaryLogEntryData(id: Int): DictionaryLogEntryData {
+    return NewLogEntry(
+        id = id,
+        name = this.name,
+        languageFrom = this.languageFrom,
+        languageTo = this.languageTo
+    )
+}
+
+data class NewLogEntry(
+    override val id: Int,
+    override val name: String,
+    override val languageFrom: String,
+    override val languageTo: String
+) : DictionaryLogEntryData
 
 class TestEmptyDictDao : TestDictDao() {
     init {
@@ -55,7 +82,7 @@ class TestExternalDatabaseHandler :
     override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>> {
         val resource = importJob.externalDictionaryResource().uri()
         return if (resource == validExternalResource.uri) {
-            DataOperationResult.Success(data = newWords)
+            DataOperationResult.Success(data = newWordsInFrench)
         } else {
             DataOperationResult.Failure(
                 errorMessage = "uri path does not correspond to a sqlite database"

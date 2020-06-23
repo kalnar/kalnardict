@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.database.external
 
 import android.provider.BaseColumns
 

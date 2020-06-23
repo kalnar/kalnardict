@@ -11,8 +11,9 @@ data class ExternalDatabaseTable(
 )
 
 data class ImportJob(
-    val tables: List<ExternalDatabaseTable>,
-    val resource: ExternalDatabase
+    val table: ExternalDatabaseTable,
+    val resource: ExternalDatabase,
+    val displayName: String = table.name
 )
 
 sealed class ExternalDatabase(open val uri: URI) {

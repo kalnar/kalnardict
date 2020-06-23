@@ -7,7 +7,9 @@ import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.beans.HasPropertyWithValue
 import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.core.IsIterableContaining
 import org.hamcrest.text.IsEqualIgnoringCase
 import org.junit.After
 import org.junit.Test
@@ -20,30 +22,62 @@ class RepositoryTest {
     private val testCoroutineScope = TestCoroutineScope()
 
     @Test
-    fun import_all_tables_from_valid_external_db() {
+    fun import_one_tables_from_valid_external_db() {
         // given a correct path of a valid external db
         testCoroutineScope.runBlockingTest {
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
             )
+            assertThat(
+                repository.readRegisteredDictionaries(),
+                not(
+                    IsIterableContaining(
+                        HasPropertyWithValue<Int>(
+                            "id",
+                            equalTo(2)
+                        )
+                    )
+                )
+            )
 
             // when
-            val importResult = repository.importTablesFromDb(
+            val importResult = repository.importTableFromDb(
                 ImportJob(
-                    listOf(sampleExternalDbTable),
-                    validExternalResource
+                    sampleExternalDbTable,
+                    validExternalResource,
+                    "sampleExternalDbTable"
                 )
             )
             assertThat(
                 importResult,
                 instanceOf(OperationResult.Success::class.java)
             )
+            assertThat(
+                repository.readRegisteredDictionaries(),
+                IsIterableContaining(
+                    HasPropertyWithValue<Int>(
+                        "id",
+                        equalTo(2)
+                    )
+                )
+            )
 
             // then
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 not(IsEmptyCollection())
+            )
+            assertThat(
+                repository.readRegisteredDictionaries(),
+                IsIterableContaining(
+                    HasPropertyWithValue<String>(
+                        "description",
+                        containsString(
+                            "en_dictionary"
+                        )
+                    )
+                )
             )
 
         }
@@ -60,9 +94,9 @@ class RepositoryTest {
             )
 
             // when
-            val importResult = repository.importTablesFromDb(
+            val importResult = repository.importTableFromDb(
                 ImportJob(
-                    listOf(sampleExternalDbTable),
+                    sampleExternalDbTable,
                     ExternalDatabase.LocalFile(uri = URI(externalDbPath))
                 )
             )

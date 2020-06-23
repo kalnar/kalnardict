@@ -4,19 +4,23 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
+import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
 
 @Database(
     entities = [
         Word::class,
-        DictionaryLogEntry::class
+        DictionaryLogEntry::class,
+        Language::class
     ],
-    version = 2
+    version = 3
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
+    abstract fun languageDao(): LanguageDao
     abstract fun dictionaryLogDao(): DictionaryLogDao
 }
 

@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.database.AppDatabase
 import kotlinx.coroutines.Dispatchers
@@ -62,30 +63,44 @@ class DictionaryLogDaoTest {
             // given there is an entry of a dictionary in dictionary_log
             insertDictionaryLogEntry()
 
-            val englishToHungarianDictionaryLog = dictionaryLogDao.getDictionaryById(DICTIONARY_ID_FIRST)
-            assertThat(englishToHungarianDictionaryLog, equalTo(sampleDictionaryLogEntry))
+            val englishToHungarianDictionaryLog =
+                dictionaryLogDao.getDictionaryById(TestFixtures.DICTIONARY_ID_FIRST)
+            assertThat(
+                englishToHungarianDictionaryLog, equalTo(
+                    TestFixtures.sampleDictionaryLogEntry
+                )
+            )
 
-            val nonExistingDictionary = dictionaryLogDao.getDictionaryById(DICTIONARY_ID_SECOND)
+            val nonExistingDictionary =
+                dictionaryLogDao.getDictionaryById(TestFixtures.DICTIONARY_ID_SECOND)
             assertThat(nonExistingDictionary, nullValue())
         }
     }
 
     private fun insertDictionaryLogEntry() {
-        dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
+        dictionaryLogDao.insertDictionary(
+            TestFixtures.sampleDictionaryLogEntry
+        )
     }
 
     @Test
     fun insert_entry_into_table() {
         testCoroutineDispatcher.runBlockingTest {
-            val dictionaryYetToBeInserted = dictionaryLogDao.getDictionaryById(DICTIONARY_ID_SECOND)
-            assertThat(dictionaryYetToBeInserted, nullValue())
-            dictionaryLogDao.insertDictionaryLogEntry(
-                newSampleDictionaryLogEntry
+            val dictionaryYetToBeInserted = dictionaryLogDao.getDictionaryById(
+                TestFixtures.DICTIONARY_ID_SECOND
             )
-            val insertedDictionary = dictionaryLogDao.getDictionaryById(DICTIONARY_ID_SECOND)
+            assertThat(dictionaryYetToBeInserted, nullValue())
+            dictionaryLogDao.insertDictionary(
+                TestFixtures.newSampleDictionaryLogEntry
+            )
+            val insertedDictionary = dictionaryLogDao.getDictionaryById(
+                TestFixtures.DICTIONARY_ID_SECOND
+            )
             assertThat(
                 insertedDictionary,
-                equalTo(newSampleDictionaryLogEntry)
+                equalTo(
+                    TestFixtures.newSampleDictionaryLogEntry
+                )
             )
         }
     }

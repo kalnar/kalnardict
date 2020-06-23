@@ -6,7 +6,10 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.database.*
+import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
+import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
@@ -20,9 +23,10 @@ import java.net.URI
 
 class ExternalDbImporterTest {
 
-    private val externalResourceImporter = ExternalDbImporter(
-        ApplicationProvider.getApplicationContext<Context>()
-    )
+    private val externalResourceImporter =
+        ExternalDbImporter(
+            ApplicationProvider.getApplicationContext<Context>()
+        )
 
     @Before
     fun setUp() {
@@ -125,7 +129,7 @@ class ExternalDbImporterTest {
     }
 
     @Test
-    fun import_table_info_from_valid_import_job_with_one_table() {
+    fun read_table_info_from_valid_import_job_with_one_table() {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
@@ -152,11 +156,11 @@ class ExternalDbImporterTest {
         )
         assertThat(
             tableList.data[0].languageFrom(),
-            equalTo("Hungarian")
+            equalTo(TestFixtures.testDictionaryLanguageFrom)
         )
         assertThat(
             tableList.data[0].languageTo(),
-            equalTo("French")
+            equalTo(TestFixtures.testDictionaryLanguageTo)
         )
     }
 
@@ -173,13 +177,12 @@ class ExternalDbImporterTest {
                 override fun externalDictionaryResource(): ExternalDictionaryResource =
                     validExternalResource
 
-                override fun tableInfos(): List<ImportEntry.TableInfo> = listOf(
-                    object : ImportEntry.TableInfo {
-                        override fun name(): String = "test_fr_dictionary"
-                        override fun languageFrom(): String = ""
-                        override fun languageTo(): String = ""
-                    }
-                )
+                override fun tableInfo(): ImportEntry.TableInfo = object : ImportEntry.TableInfo {
+                    override fun name(): String = "test_fr_dictionary"
+                    override fun languageFrom(): String = ""
+                    override fun languageTo(): String = ""
+                }
+
 
             }
         )
@@ -194,12 +197,12 @@ class ExternalDbImporterTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            readingDictionaryEntriesResult.data[0].getBaseForm(),
-            equalTo("konyha")
+            readingDictionaryEntriesResult.data[0].baseForm,
+            equalTo("le")
         )
         assertThat(
-            readingDictionaryEntriesResult.data[0].getTranslation(),
-            equalTo("cuisine")
+            readingDictionaryEntriesResult.data[0].translation,
+            containsString("the")
         )
 
     }

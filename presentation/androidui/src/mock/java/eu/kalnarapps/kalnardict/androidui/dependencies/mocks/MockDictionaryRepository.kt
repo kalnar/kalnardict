@@ -36,12 +36,14 @@ class MockDictionaryRepository : DictionaryRepository {
             }
     }
 
-    override suspend fun importTablesFromDb(importJob: ImportJob): OperationResult {
+    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+        dictDao[Stubs.Domain.Dictionaries.frenchEnglishDict] =
+            Stubs.Domain.Dictionaries.Translations.frenchEnglishTranslations
         return OperationResult.Success
     }
 
     override suspend fun readRegisteredDictionaries(): List<Dictionary> {
-        return Stubs.Domain.Dictionaries.ALL
+        return dictDao.keys.toList()
     }
 
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {

@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import java.net.URI
 
 interface ExternalDatabaseHandler {
@@ -22,7 +23,7 @@ interface ExternalDictionaryResource {
 
 interface ImportEntry {
     fun externalDictionaryResource(): ExternalDictionaryResource
-    fun tableInfos(): List<TableInfo>
+    fun tableInfo(): TableInfo
 
     interface TableInfo {
         fun name(): String

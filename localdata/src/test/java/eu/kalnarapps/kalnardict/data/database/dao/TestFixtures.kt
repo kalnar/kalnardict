@@ -1,7 +1,8 @@
 package eu.kalnarapps.kalnardict.data.database.dao
 
-import eu.kalnarapps.kalnardict.data.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
 
 
@@ -50,19 +51,37 @@ val newSampleDictionaryLogEntry = DictionaryLogEntry(
 )
 
 object SampleEyeDictEntry : DictEntry {
-    override fun getId(): Int = 2
-    override fun getBaseForm(): String = "szem"
-    override fun getAlternativeBaseForm(): String = "szem"
-    override fun getTranslation(): String = "eye"
-    override fun getDictionaryId(): Int = 1
+    override val id: Int = 2
+    override val baseForm: String = "szem"
+    override val alternativeBaseForm: String = "szem"
+    override val translation: String = "eye"
 }
 
+//object SampleEyeDictEntry : DictEntry {
+//    override fun getId(): Int = 2
+//    override fun getBaseForm(): String = "szem"
+//    override fun getAlternativeBaseForm(): String = "szem"
+//    override fun getTranslation(): String = "eye"
+//    override fun getDictionaryId(): Int = 1
+//}
 object SampleBoxDictEntry : DictEntry {
-    override fun getId(): Int = 3
-    override fun getBaseForm(): String = "doboz"
-    override fun getAlternativeBaseForm(): String = "doboz"
-    override fun getTranslation(): String = "box"
-    override fun getDictionaryId(): Int = 1
+    override val id: Int = 3
+    override val baseForm: String = "doboz"
+    override val alternativeBaseForm: String = "doboz"
+    override val translation: String = "box"
 }
+
+//object SampleBoxDictEntry : DictEntry {
+//    override fun getId(): Int = 3
+//    override fun getBaseForm(): String = "doboz"
+//    override fun getAlternativeBaseForm(): String = "doboz"
+//    override fun getTranslation(): String = "box"
+//    override fun getDictionaryId(): Int = 1
+//}
 
 val sampleDictEntries = listOf(SampleEyeDictEntry, SampleBoxDictEntry)
+
+object Languages {
+    val english = Language("en", "English")
+    val french = Language("fr","French")
+}

@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.data.database.dao
 
-import eu.kalnarapps.kalnardict.data.dao.DataSource
+import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -15,11 +15,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class DataSourceTest {
+class DictionaryDataSourceTest {
 
     private val dictLogDaoMock = DictionaryLogDaoMock()
     private val wordDaoMock = WordDaoMock()
-    private val dataSource = DataSource(wordDaoMock, dictLogDaoMock)
+    private val dataSource = DictionaryDataSource(wordDaoMock, dictLogDaoMock)
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     @Before
@@ -43,7 +43,7 @@ class DataSourceTest {
         )
 
         assertThat(
-            queryResult.firstOrNull()?.getTranslation(),
+            queryResult.firstOrNull()?.translation,
             equalTo("table")
         )
 
@@ -68,7 +68,7 @@ class DataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.getDictEntryByQuery("szem").firstOrNull()?.getTranslation(),
+            dataSource.getDictEntryByQuery("szem").firstOrNull()?.translation,
             equalTo("eye")
         )
 
@@ -92,7 +92,7 @@ class DataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.getDictEntryByQuery("szem").firstOrNull()?.getTranslation(),
+            dataSource.getDictEntryByQuery("szem").firstOrNull()?.translation,
             equalTo("eye")
         )
         assertThat(
@@ -100,7 +100,7 @@ class DataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.getDictEntryByQuery("doboz").firstOrNull()?.getTranslation(),
+            dataSource.getDictEntryByQuery("doboz").firstOrNull()?.translation,
             equalTo("box")
         )
     }
