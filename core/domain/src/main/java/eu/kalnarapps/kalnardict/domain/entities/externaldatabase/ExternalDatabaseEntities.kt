@@ -1,13 +1,12 @@
 package eu.kalnarapps.kalnardict.domain.entities.externaldatabase
 
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import java.net.URI
 
 
 data class ExternalDatabaseTable(
     val name: String,
-    val languageFrom: DictLanguage,
-    val languageTo: DictLanguage
+    val languageFrom: String,
+    val languageTo: String
 )
 
 data class ImportJob(

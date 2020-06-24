@@ -1,16 +1,42 @@
 package eu.kalnarapps.kalnardict.androidui
 
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import java.net.URI
 
 object UiStubs {
-    object DictionaryManager {
+
+    object Uris {
+        val validUri = URI("valid")
+        val invalidUri = URI("invalid")
+    }
+
+    object TableUiInfo {
         const val newDictionaryName = "newDictionary"
-        val externalTable = ExternalTableUiInfo(
+        val externalTable1 = ExternalTableUiInfo(
             dictionaryName = newDictionaryName,
+            originalLanguageFrom = "ru",
+            originalLanguageTo = "en",
+            originalTableName = "ru_en_dictionary"
+        )
+        val externalTable2 = ExternalTableUiInfo(
+            dictionaryName = "russian dict",
+            originalLanguageFrom = "ru",
+            originalLanguageTo = "ru",
+            originalTableName = "ru_ru_dictionary"
+        )
+    }
+
+    object TableDbInfo {
+        val externalTableInfo1 = ExternalDatabaseTable(
+            name = "ru_en_dictionary",
             languageFrom = "ru",
-            languageTo = "en",
-            dbPath = "mock",
-            tableName = "ru_en_dictionary"
+            languageTo = "en"
+        )
+        val externalTableInfo2 = ExternalDatabaseTable(
+            name = "ru_ru_dictionary",
+            languageFrom = "ru",
+            languageTo = "ru"
         )
     }
 }

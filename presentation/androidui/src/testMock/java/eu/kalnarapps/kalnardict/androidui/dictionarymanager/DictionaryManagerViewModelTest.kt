@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import eu.kalnarapps.kalnardict.androidui.UiStubs
 import eu.kalnarapps.kalnardict.androidui.dependencies.repositoryModule
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import org.hamcrest.CoreMatchers.containsString
@@ -22,8 +23,6 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
 class DictionaryManagerViewModelTest : KoinComponent {
-
-//    private val testCoroutineScope = TestCoroutineScope()
 
     @get:Rule
     val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -48,9 +47,6 @@ class DictionaryManagerViewModelTest : KoinComponent {
                             DictionaryManagerViewModel(
                                 listRegisteredDictionariesUseCase = ListDictionariesMock(
                                     get()
-                                ),
-                                registeredDictionaryUseCase = RegisterNewDictionaryMock(
-                                    get()
                                 )
                             )
                         }
@@ -63,7 +59,6 @@ class DictionaryManagerViewModelTest : KoinComponent {
     @After
     fun tearDown() {
         stopKoin()
-//        testCoroutineScope.cleanupTestCoroutines()
     }
 
     @Test
@@ -95,27 +90,27 @@ class DictionaryManagerViewModelTest : KoinComponent {
         }
     }
 
-    @Test
-    fun add_external_dictionary_table() {
-        testCoroutineRule.runBlockingTest {
-
-            val viewModel: DictionaryManagerViewModel = getKoin().get()
-
-            // when
-            viewModel.registerNewDictionary(UiStubs.DictionaryManager.externalTable)
-
-            // then
-            val dicts = viewModel.getRegisteredDictionaries()
-            assertThat(
-                dicts,
-                IsIterableContaining(
-                    HasPropertyWithValue<String>(
-                        "dictionaryName",
-                        containsString(UiStubs.DictionaryManager.newDictionaryName)
-                    )
-                )
-            )
-        }
-
-    }
+//    @Test
+//    fun add_external_dictionary_table() {
+//        testCoroutineRule.runBlockingTest {
+//
+//            val viewModel: DictionaryManagerViewModel = getKoin().get()
+//
+//            // when
+//            viewModel.registerNewDictionary(UiStubs.DictionaryManager.externalTable)
+//
+//            // then
+//            val dicts = viewModel.getRegisteredDictionaries()
+//            assertThat(
+//                dicts,
+//                IsIterableContaining(
+//                    HasPropertyWithValue<String>(
+//                        "dictionaryName",
+//                        containsString(UiStubs.DictionaryManager.newDictionaryName)
+//                    )
+//                )
+//            )
+//        }
+//
+//    }
 }

@@ -13,6 +13,7 @@ object DatabaseReaderContract {
         const val COLUMN_NAME_VERSION: ColumnName = "version"
     }
     object DictionaryEntry : BaseColumns {
+        const val COLUMN_NAME_ID: ColumnName = "id"
         const val COLUMN_NAME_BASE: ColumnName = "base_form"
         const val COLUMN_NAME_BASE_FORM_ALT: ColumnName = "base_form_alt"
         const val COLUMN_NAME_TRANSLATION: ColumnName = "translation"

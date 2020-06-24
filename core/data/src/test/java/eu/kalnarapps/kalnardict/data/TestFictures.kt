@@ -20,8 +20,8 @@ val sampleQueryNewWord = DictQuery(
 
 val sampleExternalDbTable = ExternalDatabaseTable(
     name = "en_dictionary",
-    languageFrom = DictLanguage("english", "en"),
-    languageTo = DictLanguage("french", "fr")
+    languageFrom = DictLanguage("english", "en").code,
+    languageTo = DictLanguage("french", "fr").code
 )
 
 val newWordsInFrench = listOf<DictEntry>(

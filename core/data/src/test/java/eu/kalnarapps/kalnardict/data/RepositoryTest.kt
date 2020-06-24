@@ -1,14 +1,18 @@
 package eu.kalnarapps.kalnardict.data
 
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
 import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.collection.IsIterableContainingInAnyOrder
+import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsIterableContaining
 import org.hamcrest.text.IsEqualIgnoringCase
 import org.junit.After
@@ -16,6 +20,7 @@ import org.junit.Test
 import java.net.URI
 
 
+@ExperimentalCoroutinesApi
 class RepositoryTest {
 
     private val repository = Repository(TestDictDao(), TestExternalDatabaseHandler())
@@ -147,6 +152,44 @@ class RepositoryTest {
             assertThat(
                 dictionaries[0].languageFrom.name,
                 IsEqualIgnoringCase("magyar")
+            )
+        }
+    }
+
+    @Test
+    fun read_meta_info_of_external_db() {
+        testCoroutineScope.runBlockingTest {
+            val metaInfoFetch = repository.readMetaInfoFromExternalDb(
+                Stubs.Db.validExternalDatabase
+            )
+
+            assertThat(
+                metaInfoFetch,
+                IsInstanceOf(DataOperationResult.Success::class.java)
+            )
+            check(metaInfoFetch is DataOperationResult.Success)
+            assertThat(
+                metaInfoFetch.data,
+                IsIterableContainingInAnyOrder(
+                    listOf(
+                        equalTo(Stubs.MetaInfoOnDb.table1),
+                        equalTo(Stubs.MetaInfoOnDb.table2)
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    fun attempt_read_meta_info_of_invalid_external_db() {
+        testCoroutineScope.runBlockingTest {
+            val metaInfoFetch = repository.readMetaInfoFromExternalDb(
+                Stubs.Db.invalidExternalDatabase
+            )
+
+            assertThat(
+                metaInfoFetch,
+                IsInstanceOf(DataOperationResult.Failure::class.java)
             )
         }
     }

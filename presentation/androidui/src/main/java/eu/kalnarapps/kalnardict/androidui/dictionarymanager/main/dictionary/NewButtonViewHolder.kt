@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionary
+package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

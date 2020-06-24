@@ -1,11 +1,11 @@
-package eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionary
+package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.ManageableDictionaryView
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.ManageableDictionaryView
 
 class ManageableDictionaryViewHolder(
     inflater: LayoutInflater, parent: ViewGroup,

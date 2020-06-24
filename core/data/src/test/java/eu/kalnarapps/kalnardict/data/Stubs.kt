@@ -4,6 +4,9 @@ import eu.kalnarapps.kalnardict.data.Stubs.Languages.english
 import eu.kalnarapps.kalnardict.data.Stubs.Languages.french
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import java.net.URI
 
 object Stubs {
     object Languages {
@@ -30,5 +33,23 @@ object Stubs {
             languageTo = english,
             description = "French to English dictionary"
         )
+    }
+
+    object MetaInfoOnDb {
+        val table1 = ExternalDatabaseTable(
+            "fr_en_dicitonary",
+            french.code,
+            english.code
+        )
+        val table2 = ExternalDatabaseTable(
+            "en_en_dicitonary",
+            Languages.english.code,
+            Languages.english.code
+        )
+    }
+
+    object Db {
+        val validExternalDatabase = ExternalDatabase.LocalFile(URI("valid"))
+        val invalidExternalDatabase = ExternalDatabase.LocalFile(URI("invalid"))
     }
 }

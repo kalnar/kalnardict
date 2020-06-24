@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.toTableInfo
 
 open class TestDictDao : DictDao {
     private val mockDb = ArrayList<DictEntry>()
@@ -76,7 +77,17 @@ class TestExternalDatabaseHandler :
     }
 
     override fun readTableInfosFrom(resource: ExternalDictionaryResource): DataOperationResult<List<ImportEntry.TableInfo>> {
-        TODO("Not yet implemented")
+        return when (resource.uri()) {
+            Stubs.Db.validExternalDatabase.uri -> DataOperationResult.Success(
+                listOf(
+                    Stubs.MetaInfoOnDb.table1.toTableInfo(),
+                    Stubs.MetaInfoOnDb.table2.toTableInfo()
+                )
+            )
+            else -> DataOperationResult.Failure(
+                errorMessage = "error while reading ${resource.uri()}"
+            )
+        }
     }
 
     override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>> {

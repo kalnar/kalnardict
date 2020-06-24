@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.beans.HasPropertyWithValue
 import org.hamcrest.collection.IsEmptyCollection
@@ -9,6 +10,7 @@ import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class RegisterNewDictionaryTest {
 
     @get:Rule

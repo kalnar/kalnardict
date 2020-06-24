@@ -7,6 +7,8 @@ import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
@@ -40,6 +42,10 @@ class MockDictionaryRepository : DictionaryRepository {
         dictDao[Stubs.Domain.Dictionaries.frenchEnglishDict] =
             Stubs.Domain.Dictionaries.Translations.frenchEnglishTranslations
         return OperationResult.Success
+    }
+
+    override suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase): DataOperationResult<List<ExternalDatabaseTable>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun readRegisteredDictionaries(): List<Dictionary> {

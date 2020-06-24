@@ -1,9 +1,9 @@
-package eu.kalnarapps.kalnardict.androidui.dictionarymanager.dictionary
+package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.ManageableDictionaryView
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.ManageableDictionaryView
 
 class ManageableDictionaryListAdapter(
     private val list: List<ManageableDictionaryView>,

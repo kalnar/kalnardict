@@ -97,6 +97,11 @@ class ExternalDbImporter(
         }
         val entriesBeingImported = ArrayList<DictEntry>()
         while (cursorOnDictTable.moveToNext()) {
+            val id = cursorOnDictTable.getInt(
+                cursorOnDictTable.getColumnIndex(
+                    DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_ID
+                )
+            )
             val baseForm = cursorOnDictTable.getString(
                 cursorOnDictTable.getColumnIndex(
                     DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
@@ -109,7 +114,7 @@ class ExternalDbImporter(
             )
             entriesBeingImported.add(
                 DictEntryToData(
-                    id = 1,
+                    id = id,
                     baseForm = baseForm,
                     alternativeBaseForm = cursorOnDictTable.getString(
                         cursorOnDictTable.getColumnIndex(

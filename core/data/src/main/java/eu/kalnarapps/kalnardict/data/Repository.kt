@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.toExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
@@ -15,7 +16,7 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import java.net.URI
-import java.util.*
+import java.util.Locale
 
 class Repository(
     private val dictDao: DictDao,
@@ -70,8 +71,8 @@ class Repository(
                     dictDao.insertDictionary(
                         NewDictionary(
                             name = importJob.table.name,
-                            languageFrom = importJob.table.languageFrom.name,
-                            languageTo = importJob.table.languageTo.name
+                            languageFrom = importJob.table.languageFrom,
+                            languageTo = importJob.table.languageTo
                         )
                     )
                     dictDao.insertDictEntries(readResult.data)
@@ -82,6 +83,28 @@ class Repository(
                 OperationResult.Failure(
                     errorMessage = "an error has occurred while reading table in importJob: $importJob",
                     cause = readResult
+                )
+            }
+        }
+    }
+
+    override suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase): DataOperationResult<List<ExternalDatabaseTable>> {
+        return when (
+            val tableInfoFetch = externalDbHandler.readTableInfosFrom(
+                externalDatabase.toExternalDictionaryResource()
+            )
+            ) {
+            is DataOperationResult.Success -> {
+                DataOperationResult.Success(
+                    tableInfoFetch.data.map {
+                        it.toExternalDatabaseTable()
+                    }
+                )
+            }
+            is DataOperationResult.Failure -> {
+                DataOperationResult.Failure(
+                    errorMessage = "an error has occurred while reading ${externalDatabase.uri}",
+                    cause = tableInfoFetch
                 )
             }
         }
@@ -123,8 +146,8 @@ private fun ImportJob.toImportEntry(): ImportEntry {
 private fun ExternalDatabaseTable.toTableInfo(): ImportEntry.TableInfo {
     return object : ImportEntry.TableInfo {
         override fun name(): String = name
-        override fun languageFrom(): String = languageFrom.code
-        override fun languageTo(): String = languageTo.code
+        override fun languageFrom(): String = languageFrom
+        override fun languageTo(): String = languageTo
     }
 }
 

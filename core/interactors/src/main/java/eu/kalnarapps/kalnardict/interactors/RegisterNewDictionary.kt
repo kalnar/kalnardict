@@ -30,8 +30,8 @@ class RegisterNewDictionary(
                 ImportJob(
                     table = ExternalDatabaseTable(
                         name = originalName,
-                        languageFrom = sourceLanguageFetch.data,
-                        languageTo = destinationLanguageFetch.data
+                        languageFrom = sourceLanguageFetch.data.code,
+                        languageTo = destinationLanguageFetch.data.code
                     ),
                     resource = ExternalDatabase.LocalFile(URI(dbUri)),
                     displayName = savingName

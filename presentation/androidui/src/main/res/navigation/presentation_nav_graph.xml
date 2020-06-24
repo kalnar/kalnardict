@@ -15,13 +15,29 @@
 
     <fragment
         android:id="@+id/dictionaryManager"
-        android:label="Dictionary Manager"
-        android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.DictionaryManagerFragment" />
+        android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerFragment"
+        android:label="Dictionary Manager">
+        <action
+            android:id="@+id/navigateToDictionaryRegistry"
+            app:destination="@+id/dictionaryRegistry">
+            <argument
+                android:name="dbPath"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
+        android:id="@+id/dictionaryRegistry"
+        android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryFragment"
+        android:label="Dictionary Registry">
+        <argument
+            android:name="dbPath"
+            app:argType="string" />
+    </fragment>
+    <fragment
         android:id="@+id/dictionaryQueryScreen"
-        android:label="Dictionary Query"
-        android:name="eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryFragment" />
+        android:name="eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryFragment"
+        android:label="Dictionary Query" />
     <!--    <fragment-->
     <!--        android:id="@+id/blankFragment"-->
     <!--        android:name="com.example.cashdog.cashdog.BlankFragment"-->
