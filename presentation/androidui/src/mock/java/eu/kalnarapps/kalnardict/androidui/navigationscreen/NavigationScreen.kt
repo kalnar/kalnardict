@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
-import kotlinx.android.synthetic.mock.navigation_screen_fragment.*
+import kotlinx.android.synthetic.mock.navigation_screen_fragment.list
 
 class NavigationScreen : Fragment() {
 
@@ -54,3 +54,7 @@ data class NavigationItemView(
     val id: Int
 )
 
+data class NavigationItemWithArgumentView(
+    val navigationItemView: NavigationItemView,
+    val argument: String
+)

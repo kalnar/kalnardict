@@ -1,7 +1,8 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import eu.kalnarapps.kalnardict.androidui.UiStubs
+import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
+import eu.kalnarapps.kalnardict.androidui.dependencies.mocks.ReadExternalDbUseCaseMock
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import org.hamcrest.CoreMatchers.containsString

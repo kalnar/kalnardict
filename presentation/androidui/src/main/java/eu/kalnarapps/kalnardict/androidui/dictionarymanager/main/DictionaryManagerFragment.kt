@@ -66,4 +66,5 @@ open class DictionaryManagerFragment : Fragment() {
         navigator.navigateToDictionaryRegistry(URI(uri?.path.orEmpty()))
     }
 
+
 }

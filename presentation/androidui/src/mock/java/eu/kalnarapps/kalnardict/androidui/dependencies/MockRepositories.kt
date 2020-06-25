@@ -9,7 +9,7 @@ import eu.kalnarapps.kalnardict.data.LanguageRepository
 import org.koin.dsl.module
 
 
-val repositoryModule = module {
+val mockRepositoryModule = module {
     single { MockDictionaryRepository() as DictionaryRepository }
     single { MockLanguageRepository() as LanguageRepository }
     single { MockConfigurationRepository() as ConfigurationRepository }

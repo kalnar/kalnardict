@@ -1,9 +1,9 @@
 package eu.kalnarapps.kalnardict
 
 import android.app.Application
-import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerKoinMockModule
-import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryMockKoinModule
-import eu.kalnarapps.kalnardict.androidui.dependencies.repositoryModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.androidUiKoinMockModules
+import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
+import eu.kalnarapps.kalnardict.koin.useCaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -14,13 +14,9 @@ class KalnarDictMockApplication : Application() {
         startKoin {
             androidContext(this@KalnarDictMockApplication)
             modules(dataModules)
-            modules(
-                listOf(
-                    repositoryModule,
-                    dictionaryManagerKoinMockModule,
-                    dictionaryQueryMockKoinModule
-                )
-            )
+            modules(mockRepositoryModule)
+            modules(useCaseModule)
+            modules(androidUiKoinMockModules)
         }
     }
 

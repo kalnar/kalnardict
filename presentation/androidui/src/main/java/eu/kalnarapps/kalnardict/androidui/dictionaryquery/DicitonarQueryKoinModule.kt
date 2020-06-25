@@ -7,7 +7,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 
-val dictionaryManagerKoinModule: Module = module {
+val dictionaryQueryKoinModule: Module = module {
     viewModel {
         DictionaryQueryViewModel(
             listQueryResultsUseCase = get(),

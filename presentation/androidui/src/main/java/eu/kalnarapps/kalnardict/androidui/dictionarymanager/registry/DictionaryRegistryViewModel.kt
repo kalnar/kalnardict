@@ -25,6 +25,12 @@ class DictionaryRegistryViewModel(
         }
     }
 
+    fun getImportableTablesForUi(): LiveData<List<ExternalTableUiInfo>> {
+        return Transformations.map(state) {
+            it.tableInfoUiModels
+        }
+    }
+
     private val _state: MutableLiveData<DictionaryRegistryState> = MutableLiveData()
     private val state: LiveData<DictionaryRegistryState>
         get() = _state

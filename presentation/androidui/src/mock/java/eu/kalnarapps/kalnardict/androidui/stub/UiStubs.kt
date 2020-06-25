@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.androidui
+package eu.kalnarapps.kalnardict.androidui.stub
 
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable

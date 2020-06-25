@@ -12,7 +12,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 
-val dictionaryQueryMockKoinModule: Module = module {
+val dictionaryQueryKoinMockModule: Module = module {
     viewModel {
         DictionaryQueryViewModel(
             listQueryResultsUseCase = ListDictionaryQueryResults(

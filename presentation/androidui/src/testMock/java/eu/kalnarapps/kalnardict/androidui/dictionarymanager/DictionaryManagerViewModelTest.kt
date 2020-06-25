@@ -1,8 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import eu.kalnarapps.kalnardict.androidui.UiStubs
-import eu.kalnarapps.kalnardict.androidui.dependencies.repositoryModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
@@ -36,7 +35,7 @@ class DictionaryManagerViewModelTest : KoinComponent {
         startKoin {
             modules(
                 listOf(
-                    repositoryModule,
+                    mockRepositoryModule,
                     module {
                         single {
                             DictionaryListMock().apply {

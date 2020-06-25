@@ -9,8 +9,8 @@ import eu.kalnarapps.kalnardict.androidui.BaseInstrumentalTest
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.assertions.RecyclerViewItemCountAssertion
 import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryManagerKoinMockModule
-import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryMockKoinModule
-import eu.kalnarapps.kalnardict.androidui.dependencies.repositoryModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.dictionaryQueryKoinMockModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
@@ -26,9 +26,9 @@ class DictionaryQueryScreenTest : BaseInstrumentalTest() {
         startKoin {
             modules(
                 listOf(
-                    repositoryModule,
+                    mockRepositoryModule,
                     dictionaryManagerKoinMockModule,
-                    dictionaryQueryMockKoinModule
+                    dictionaryQueryKoinMockModule
                 )
             )
         }
