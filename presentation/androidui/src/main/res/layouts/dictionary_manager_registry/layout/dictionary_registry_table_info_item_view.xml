@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
@@ -29,42 +29,107 @@
                 android:paddingLeft="16dp"
                 android:text="test"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="english hungarian dictionary" />
 
             <TextView
-                android:id="@+id/language_form"
-                android:layout_width="0dp"
+                android:id="@+id/dictionary_name_tag"
+                style="@style/FormKey"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:paddingLeft="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/dictionary_name"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="english" />
+                android:layout_marginLeft="20dp"
+                android:text="@string/table_registering_name"
+                app:layout_constraintBottom_toBottomOf="@id/dictionary_name_key_edit"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/dictionary_name_key_edit" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:src="@drawable/ic_arrow_forward"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/language_form"
-                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dictionary_name_key_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toRightOf="@id/table_info_tag_end_barrier"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dictionary_name" />
+
 
             <TextView
-                android:id="@+id/language_to"
+                android:id="@+id/language_from_tag"
+                style="@style/FormKey"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="20dp"
+                android:text="@string/language_from_key"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/table_name_bottom_barrier" />
+
+            <TextView
+                android:id="@+id/language_from_key"
+                style="@style/FormKey"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="10dp"
+                app:layout_constraintLeft_toRightOf="@id/table_info_tag_end_barrier"
+                app:layout_constraintTop_toTopOf="@id/language_from_tag"
+                tools:text="fr" />
+
+
+            <TextView
+                android:id="@+id/language_to_tag"
+                style="@style/FormKey"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="20dp"
+                android:text="@string/language_to_key"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toRightOf="@id/arrow"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="hungarian" />
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/language_from_tag" />
+
+            <TextView
+                android:id="@+id/language_to_key"
+                style="@style/FormKey"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="10dp"
+                app:layout_constraintLeft_toRightOf="@id/table_info_tag_end_barrier"
+                app:layout_constraintTop_toTopOf="@id/language_to_tag"
+                tools:text="en" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/table_info_tag_end_barrier"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="language_from_tag,language_to_tag" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/table_info_language_keys_end_barrier"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="language_from_key,language_to_key" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/table_name_bottom_barrier"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="dictionary_name_tag,dictionary_name_key_edit" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/table_name_top_barrier"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="dictionary_name_tag,dictionary_name_key_edit"
+                app:layout_constraintTop_toBottomOf="@id/dictionary_name" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

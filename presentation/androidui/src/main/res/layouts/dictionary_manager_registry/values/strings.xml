@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="table_registering_name">name to register:</string>
+    <string name="language_from_key">source language:</string>
+    <string name="language_to_key">destination language:</string>
+</resources>
