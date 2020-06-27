@@ -13,7 +13,9 @@ import eu.kalnarapps.kalnardict.android.utils.Logger
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview.QueryResultListAdapter
-import kotlinx.android.synthetic.main.dictionary_query_fragment.*
+import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
+import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_input
+import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

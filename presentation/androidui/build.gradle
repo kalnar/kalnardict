@@ -111,4 +111,7 @@ dependencies {
     testImplementation('junit:junit:4.12') {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
+
+    // ui
+    implementation 'com.google.android.material:material:1.1.0'
 }

@@ -34,6 +34,7 @@ class DictionaryRegistryFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = TableInfoListAdapter(
                 registryViewModel.getTables(),
+                registryViewModel.getKnownLanguages(),
                 object : OnTableInfoClickListener {
                     override fun onClick(dictionaryView: ExternalTableUiInfo) {
                         Toast.makeText(

@@ -1,31 +1,29 @@
-package eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice
+package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageListItemViewHolder
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageSelectorDropDownViewHolder
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionarySelectorItem
 
 
-class DictionarySelectorSpinnerAdapter(
+class LanguageSelectorSpinnerAdapter(
     private val context: Context,
-    private val dictionarySelectorItems: List<DictionarySelectorItem> = emptyList()
+    private val dictionarySelectorItems: List<RegisteredLanguageItemUiModel> = emptyList()
 ) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         return if (convertView != null) {
             val viewHolder = convertView.tag
-            if (viewHolder is DictionarySelectionViewHolder) {
+            if (viewHolder is LanguageListItemViewHolder) {
                 viewHolder.bind(dictionarySelectorItems[position])
             }
             convertView
         } else {
             val inflater: LayoutInflater = LayoutInflater.from(context)
 
-            val viewHolder = DictionarySelectionViewHolder(inflater, null)
+            val viewHolder = LanguageListItemViewHolder(inflater, null)
             val convertedView = viewHolder.itemView
 
             convertedView.tag = viewHolder
@@ -38,14 +36,14 @@ class DictionarySelectorSpinnerAdapter(
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
         return if (convertView != null) {
             val viewHolder = convertView.tag
-            if (viewHolder is DictionarySelectorDropDownViewHolder) {
+            if (viewHolder is LanguageSelectorDropDownViewHolder) {
                 viewHolder.bind(dictionarySelectorItems[position])
             }
             convertView
         } else {
             val inflater: LayoutInflater = LayoutInflater.from(context)
 
-            val viewHolder = DictionarySelectorDropDownViewHolder(inflater, null)
+            val viewHolder = LanguageSelectorDropDownViewHolder(inflater, null)
             val convertedView = viewHolder.itemView
 
             convertedView.tag = viewHolder
@@ -55,7 +53,7 @@ class DictionarySelectorSpinnerAdapter(
         }
     }
 
-    override fun getItem(position: Int): DictionarySelectorItem {
+    override fun getItem(position: Int): RegisteredLanguageItemUiModel {
         return dictionarySelectorItems[position]
     }
 

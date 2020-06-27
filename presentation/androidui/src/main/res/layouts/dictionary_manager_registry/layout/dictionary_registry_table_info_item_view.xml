@@ -22,16 +22,27 @@
             android:layout_margin="5dp">
 
             <TextView
+                style="@style/FormTitle"
                 android:id="@+id/dictionary_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:paddingLeft="16dp"
                 android:text="test"
-                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="english hungarian dictionary" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/table_registering_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/dictionary_name"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/dictionary_name"
+                app:layout_constraintBottom_toBottomOf="@id/dictionary_name"
+                android:checked="false"
+                />
 
             <TextView
                 android:id="@+id/dictionary_name_tag"
@@ -50,6 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
                 app:layout_constraintLeft_toRightOf="@id/table_info_tag_end_barrier"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dictionary_name" />
@@ -64,7 +76,9 @@
                 android:layout_marginLeft="20dp"
                 android:text="@string/language_from_key"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/table_name_bottom_barrier" />
+                app:layout_constraintTop_toTopOf="@id/language_from_key"
+                app:layout_constraintBottom_toBottomOf="@id/language_from_key"
+                />
 
             <TextView
                 android:id="@+id/language_from_key"
@@ -74,8 +88,21 @@
                 android:layout_gravity="left"
                 android:layout_marginLeft="10dp"
                 app:layout_constraintLeft_toRightOf="@id/table_info_tag_end_barrier"
-                app:layout_constraintTop_toTopOf="@id/language_from_tag"
+                app:layout_constraintTop_toTopOf="@id/language_from_selector"
+                app:layout_constraintBottom_toBottomOf="@id/language_from_selector"
                 tools:text="fr" />
+
+            <Spinner
+                android:id="@+id/language_from_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toRightOf="@id/table_info_language_keys_end_barrier"
+                app:layout_constraintTop_toBottomOf="@id/table_name_bottom_barrier"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:listitem="@layout/dictionary_registry_table_info_language_item_view"
+                />
 
 
             <TextView
@@ -88,7 +115,9 @@
                 android:text="@string/language_to_key"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/language_from_tag" />
+                app:layout_constraintTop_toTopOf="@id/language_to_key"
+                app:layout_constraintBottom_toBottomOf="@id/language_to_key"
+                />
 
             <TextView
                 android:id="@+id/language_to_key"
@@ -98,8 +127,22 @@
                 android:layout_gravity="left"
                 android:layout_marginLeft="10dp"
                 app:layout_constraintLeft_toRightOf="@id/table_info_tag_end_barrier"
-                app:layout_constraintTop_toTopOf="@id/language_to_tag"
+                app:layout_constraintTop_toTopOf="@id/language_to_selector"
+                app:layout_constraintBottom_toBottomOf="@id/language_to_selector"
                 tools:text="en" />
+
+            <Spinner
+                android:id="@+id/language_to_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toRightOf="@id/table_info_language_keys_end_barrier"
+                app:layout_constraintTop_toBottomOf="@id/language_from_selector"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:listitem="@layout/dictionary_registry_table_info_language_item_view"
+                />
+
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/table_info_tag_end_barrier"

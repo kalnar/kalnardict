@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.RegisteredLanguageItemUiModel
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
@@ -29,6 +30,19 @@ class DictionaryRegistryViewModel(
         return Transformations.map(state) {
             it.tableInfoUiModels
         }
+    }
+
+    fun getKnownLanguages(): List<RegisteredLanguageItemUiModel> {
+        return listOf(
+            RegisteredLanguageItemUiModel(
+                languageCode = "fr",
+                displayText = "French"
+            ),
+            RegisteredLanguageItemUiModel(
+                languageCode = "en",
+                displayText = "English"
+            )
+        )
     }
 
     private val _state: MutableLiveData<DictionaryRegistryState> = MutableLiveData()
