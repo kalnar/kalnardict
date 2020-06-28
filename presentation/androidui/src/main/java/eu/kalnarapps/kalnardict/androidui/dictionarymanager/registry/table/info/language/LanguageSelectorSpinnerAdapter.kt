@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionarySelectorItem
 
 
 class LanguageSelectorSpinnerAdapter(
     private val context: Context,
-    private val dictionarySelectorItems: List<RegisteredLanguageItemUiModel> = emptyList()
+    private val dictionarySelectorItems: List<SelectableLanguage.LanguageUi> = emptyList()
 ) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -53,7 +54,7 @@ class LanguageSelectorSpinnerAdapter(
         }
     }
 
-    override fun getItem(position: Int): RegisteredLanguageItemUiModel {
+    override fun getItem(position: Int): SelectableLanguage.LanguageUi {
         return dictionarySelectorItems[position]
     }
 
@@ -65,7 +66,4 @@ class LanguageSelectorSpinnerAdapter(
         return dictionarySelectorItems.size
     }
 
-    fun setOnDictionarySelected(onSelectedAction: (DictionarySelectorItem) -> Unit) {
-
-    }
 }

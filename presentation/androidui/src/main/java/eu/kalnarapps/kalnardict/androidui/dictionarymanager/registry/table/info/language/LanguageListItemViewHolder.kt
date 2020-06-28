@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 
 class LanguageListItemViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?
@@ -17,8 +18,8 @@ class LanguageListItemViewHolder(
 ) {
     private val displayTitle: TextView = itemView.findViewById(R.id.table_info_language_item)
 
-    fun bind(languageItemUiModel: RegisteredLanguageItemUiModel) {
+    fun bind(languageItemUiModel: SelectableLanguage.LanguageUi) {
         displayTitle.text =
-            "${languageItemUiModel.displayText} (${languageItemUiModel.languageCode})"
+            "${languageItemUiModel.name} (${languageItemUiModel.code})"
     }
 }

@@ -3,13 +3,13 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.ExternalTableUiInfo
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.RegisteredLanguageItemUiModel
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 
 class TableInfoListAdapter(
     private val list: List<ExternalTableUiInfo>,
-    private val languageList: List<RegisteredLanguageItemUiModel>,
-    private val onTableInfoClickListener: OnTableInfoClickListener
+    private val languageList: List<SelectableLanguage.LanguageUi>,
+    private val onRegisterTablesListener: OnRegisterTablesListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -19,7 +19,7 @@ class TableInfoListAdapter(
         return TableInfoViewHolder(
             LayoutInflater.from(parent.context),
             parent,
-            onTableInfoClickListener
+            onRegisterTablesListener
         )
     }
 
@@ -32,10 +32,7 @@ class TableInfoListAdapter(
 
 }
 
-interface OnTableInfoClickListener {
-    fun onClick(dictionaryView: ExternalTableUiInfo)
+interface OnRegisterTablesListener {
+    fun onChanged(newTableInfoUiModel: ExternalTableUiInfo)
 }
 
-interface OnNewButtonAction {
-    fun invoke()
-}

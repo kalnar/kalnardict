@@ -5,45 +5,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.RegisteredLanguageItemUiModel
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import kotlinx.coroutines.launch
 import java.net.URI
 
+const val UNKNOWN_LANGUAGE: String = "unk"
+
 class DictionaryRegistryViewModel(
     dbPath: String,
-    loadDbMetaInfoOnDb: ReadExternalDbUseCase
+    loadDbMetaInfoOnDb: ReadExternalDbUseCase,
+    private val registerNewDictionary: RegisterNewDictionaryUseCase
 ) : ViewModel() {
-    fun getTables(): List<ExternalTableUiInfo> {
-        return state.value?.tableInfoUiModels.orEmpty()
-    }
-
-    fun getErrors(): LiveData<String> {
-        return Transformations.map(state) {
-            it.errorMessage
-        }
-    }
-
-    fun getImportableTablesForUi(): LiveData<List<ExternalTableUiInfo>> {
-        return Transformations.map(state) {
-            it.tableInfoUiModels
-        }
-    }
-
-    fun getKnownLanguages(): List<RegisteredLanguageItemUiModel> {
-        return listOf(
-            RegisteredLanguageItemUiModel(
-                languageCode = "fr",
-                displayText = "French"
-            ),
-            RegisteredLanguageItemUiModel(
-                languageCode = "en",
-                displayText = "English"
-            )
-        )
-    }
 
     private val _state: MutableLiveData<DictionaryRegistryState> = MutableLiveData()
     private val state: LiveData<DictionaryRegistryState>
@@ -61,14 +40,99 @@ class DictionaryRegistryViewModel(
                         }
                         is DataOperationResult.Failure -> emptyList()
                     },
-                    errorMessage = when (metaInfoFetch) {
-                        is DataOperationResult.Success -> String()
-                        is DataOperationResult.Failure -> metaInfoFetch.errorMessage
+                    errorMessages = when (metaInfoFetch) {
+                        is DataOperationResult.Success -> emptyList<String>()
+                        is DataOperationResult.Failure -> listOf(metaInfoFetch.errorMessage)
                     }
                 )
         }
     }
 
+    fun getTables(): List<ExternalTableUiInfo> {
+        return state.value?.tableInfoUiModels.orEmpty()
+    }
+
+    fun getErrors(): LiveData<List<String>> {
+        return Transformations.map(state) {
+            it.errorMessages
+        }
+    }
+
+    fun getKnownLanguages(): List<SelectableLanguage.LanguageUi> {
+        return listOf(
+            SelectableLanguage.LanguageUi(
+                code = "fr",
+                name = "French"
+            ),
+            SelectableLanguage.LanguageUi(
+                code = "en",
+                name = "English"
+            )
+        )
+    }
+
+    fun getUiState(): LiveData<DictionaryRegistryState> {
+        return state
+    }
+
+    fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {
+        viewModelScope.launch {
+            val currentState = state.value
+            _state.postValue(
+                currentState?.copy(
+                    tableInfoUiModels = currentState.tableInfoUiModels.map {
+                        if (it.originalTableName == newTableInfoUiModel.originalTableName) {
+                            newTableInfoUiModel
+                        } else {
+                            it
+                        }
+                    }
+                )
+            )
+        }
+    }
+
+
+    fun registerDictionaries() {
+        viewModelScope.launch {
+            val tableInfoUiModels = state.value?.tableInfoUiModels.orEmpty()
+            val iterator = tableInfoUiModels.listIterator()
+            while (iterator.hasNext()) {
+                val externalTable = iterator.next()
+                if (iterator.hasNext()) {
+                    registerDictionary(externalTable)
+                } else {
+                    val lastStatus = registerDictionary(externalTable)
+                    showLastStatusFeedback(lastStatus)
+                }
+            }
+        }
+    }
+
+    private fun showLastStatusFeedback(lastStatus: OperationResult) {
+    }
+
+    private suspend fun registerDictionary(externalTableUiInfo: ExternalTableUiInfo): OperationResult {
+        return registerNewDictionary(
+            dbUri = state.value?.dbPath.orEmpty(),
+            originalName = externalTableUiInfo.originalTableName,
+            savingName = externalTableUiInfo.dictionaryName,
+            languageFrom = externalTableUiInfo.languageFromUi.toDataString(),
+            languageTo = externalTableUiInfo.languageToUi.toDataString()
+        ).also {
+            showRegisteringStatus(it)
+        }
+    }
+
+    private fun showRegisteringStatus(it: OperationResult) {
+    }
+}
+
+private fun SelectableLanguage.toDataString(): String {
+    return when (this) {
+        is SelectableLanguage.LanguageUi -> code
+        SelectableLanguage.NotSet -> UNKNOWN_LANGUAGE
+    }
 }
 
 private fun ExternalDatabaseTable.toExternalTableUiInfo(): ExternalTableUiInfo {
@@ -79,27 +143,3 @@ private fun ExternalDatabaseTable.toExternalTableUiInfo(): ExternalTableUiInfo {
     )
 }
 
-data class DictionaryRegistryState(
-    val dbPath: String,
-    val tableInfoUiModels: List<ExternalTableUiInfo>,
-    val errorMessage: String
-)
-
-data class ExternalTableUiInfo(
-    val originalTableName: String,
-    val dictionaryName: String = originalTableName,
-    val originalLanguageFrom: String,
-    val languageFromUi: SelectableLanguage = SelectableLanguage.NotSet,
-    val originalLanguageTo: String,
-    val languageToUi: SelectableLanguage = SelectableLanguage.NotSet,
-    val isSelected: Boolean = false
-)
-
-sealed class SelectableLanguage {
-    data class LanguageUi(
-        val name: String,
-        val code: String
-    ) : SelectableLanguage()
-
-    object NotSet : SelectableLanguage()
-}

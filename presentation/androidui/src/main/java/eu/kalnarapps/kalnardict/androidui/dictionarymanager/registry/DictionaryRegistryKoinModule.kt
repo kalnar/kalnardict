@@ -8,6 +8,7 @@ val dictionaryRegistryKoinModule = module {
     viewModel { (dbPath: String) ->
         DictionaryRegistryViewModel(
             dbPath,
+            get(),
             get()
         )
     }

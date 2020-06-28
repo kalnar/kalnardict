@@ -1,19 +1,22 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageSelectorSpinnerAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.RegisteredLanguageItemUiModel
 
 class TableInfoViewHolder(
     inflater: LayoutInflater, parent: ViewGroup,
-    private val onTableInfoClickListener: OnTableInfoClickListener
+    private val onTableInfoChangeListener: OnRegisterTablesListener
 ) : RecyclerView.ViewHolder(
     inflater.inflate(
         R.layout.dictionary_registry_table_info_item_view,
@@ -32,26 +35,71 @@ class TableInfoViewHolder(
 
     fun bind(
         tableInfoUi: ExternalTableUiInfo,
-        languageItemUiModels: List<RegisteredLanguageItemUiModel>
+        languageItemUiModels: List<SelectableLanguage.LanguageUi>
     ) {
         titleView.text = tableInfoUi.dictionaryName
-        dictionaryNameEditText.hint = tableInfoUi.dictionaryName
+        dictionaryNameEditText.apply {
+            hint = tableInfoUi.dictionaryName
+            addTextChangedListener {
+                onTableInfoChangeListener.onChanged(
+                    tableInfoUi.copy(dictionaryName = it.toString())
+                )
+            }
+        }
         languageFromView.text = tableInfoUi.originalLanguageFrom
         languageToView.text = tableInfoUi.originalLanguageTo
         titleView.setOnClickListener {
-            onTableInfoClickListener.onClick(tableInfoUi)
+            onTableInfoChangeListener.onChanged(tableInfoUi)
         }
         languageFromSelector.apply {
             adapter = LanguageSelectorSpinnerAdapter(
                 context = languageFromView.context,
                 dictionarySelectorItems = languageItemUiModels
-            )
+            ).apply {
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        onTableInfoChangeListener.onChanged(
+                            tableInfoUi.copy(languageFromUi = SelectableLanguage.NotSet)
+                        )
+                    }
+
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        onTableInfoChangeListener.onChanged(
+                            tableInfoUi.copy(languageFromUi = getItem(position))
+                        )
+                    }
+                }
+            }
         }
         languageToSelector.apply {
             adapter = LanguageSelectorSpinnerAdapter(
                 context = languageToView.context,
                 dictionarySelectorItems = languageItemUiModels
-            )
+            ).apply {
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        onTableInfoChangeListener.onChanged(
+                            tableInfoUi.copy(languageToUi = SelectableLanguage.NotSet)
+                        )
+                    }
+
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        onTableInfoChangeListener.onChanged(
+                            tableInfoUi.copy(languageToUi = getItem(position))
+                        )
+                    }
+                }
+            }
         }
 
 

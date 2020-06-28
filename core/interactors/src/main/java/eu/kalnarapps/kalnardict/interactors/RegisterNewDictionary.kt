@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
@@ -20,10 +21,10 @@ class RegisterNewDictionary(
         savingName: String,
         languageFrom: String,
         languageTo: String
-    ) {
+    ): OperationResult {
         val sourceLanguageFetch = languageRepository.getLanguageById(languageFrom)
         val destinationLanguageFetch = languageRepository.getLanguageById(languageTo)
-        if (sourceLanguageFetch is DataOperationResult.Success &&
+        return if (sourceLanguageFetch is DataOperationResult.Success &&
             destinationLanguageFetch is DataOperationResult.Success
         ) {
             dictionaryRepository.importTableFromDb(
@@ -36,6 +37,15 @@ class RegisterNewDictionary(
                     resource = ExternalDatabase.LocalFile(URI(dbUri)),
                     displayName = savingName
                 )
+            )
+        } else {
+            OperationResult.Failure(
+                errorMessage = "Invalid languages were used to attempt retrieving languages",
+                cause = if (sourceLanguageFetch is DataOperationResult.Failure) {
+                    sourceLanguageFetch
+                } else {
+                    destinationLanguageFetch as DataOperationResult.Failure
+                }
             )
         }
     }
