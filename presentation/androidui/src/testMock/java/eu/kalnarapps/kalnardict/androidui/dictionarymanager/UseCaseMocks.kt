@@ -59,7 +59,7 @@ class RegisterNewDictionarySuccessfullyMock : RegisterNewDictionaryUseCase {
 class RegisterNewDictionaryMockWithFailures(
     private val listOfFailureOccasions: List<Int>
 ) : RegisterNewDictionaryUseCase {
-    var counter = 1
+    private var counter = 0
     override suspend fun invoke(
         dbUri: String,
         originalName: String,
@@ -67,6 +67,7 @@ class RegisterNewDictionaryMockWithFailures(
         languageFrom: String,
         languageTo: String
     ): OperationResult {
+        counter++
         return if (listOfFailureOccasions.contains(counter)) {
             OperationResult.Failure(
                 errorMessage = "incorrect use of new dictionary registration"

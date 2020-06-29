@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
@@ -24,6 +26,9 @@ class DictionaryRegistryViewModel(
     private val registerNewDictionary: RegisterNewDictionaryUseCase
 ) : ViewModel() {
 
+    private val _navigationCommand: MutableLiveData<NavigationCommand> = MutableLiveData()
+    val navigationCommand: LiveData<NavigationCommand>
+        get() = _navigationCommand
     private val _state: MutableLiveData<DictionaryRegistryState> = MutableLiveData()
     private val state: LiveData<DictionaryRegistryState>
         get() = _state
@@ -103,13 +108,22 @@ class DictionaryRegistryViewModel(
                     registerDictionary(externalTable)
                 } else {
                     val lastStatus = registerDictionary(externalTable)
-                    showLastStatusFeedback(lastStatus)
+                    showLastStatusFeedback(externalTable, lastStatus)
                 }
             }
         }
     }
 
-    private fun showLastStatusFeedback(lastStatus: OperationResult) {
+    private fun showLastStatusFeedback(
+        externalTableUiInfo: ExternalTableUiInfo,
+        lastStatus: OperationResult
+    ) {
+        showRegisteringStatus(externalTableUiInfo, lastStatus)
+        if (lastStatus is OperationResult.Success) {
+            _navigationCommand.postValue(
+                NavigationCommand.NavigateToDictionaryQuery
+            )
+        }
     }
 
     private suspend fun registerDictionary(externalTableUiInfo: ExternalTableUiInfo): OperationResult {
@@ -120,11 +134,37 @@ class DictionaryRegistryViewModel(
             languageFrom = externalTableUiInfo.languageFromUi.toDataString(),
             languageTo = externalTableUiInfo.languageToUi.toDataString()
         ).also {
-            showRegisteringStatus(it)
+            showRegisteringStatus(externalTableUiInfo, it)
         }
     }
 
-    private fun showRegisteringStatus(it: OperationResult) {
+    private fun showRegisteringStatus(
+        tableUiInfo: ExternalTableUiInfo,
+        it: OperationResult
+    ) {
+        when (it) {
+            OperationResult.Success -> {
+                _navigationCommand.postValue(
+                    NavigationCommand.ShowDialog.SuccessTableRegistration(
+                        table = tableUiInfo.originalTableName,
+                        dictionaryName = tableUiInfo.dictionaryName
+                    )
+                )
+            }
+            is OperationResult.Failure -> {
+                _navigationCommand.postValue(
+                    NavigationCommand.ShowDialog.FailureTableRegistration(
+                        table = tableUiInfo.originalTableName,
+                        errorMessage = it.errorMessage
+                    )
+                )
+                _state.postValue(
+                    state.value?.copy(
+                        errorMessages = state.value?.errorMessages.orEmpty().plus("failure")
+                    )
+                )
+            }
+        }.exhaustive
     }
 }
 

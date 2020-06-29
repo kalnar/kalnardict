@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -14,7 +13,10 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.OnRegisterTablesListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
+import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
+import kotlinx.android.synthetic.main.dictionary_registry_fragment.table_info_list_submit_button
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -22,6 +24,7 @@ class DictionaryRegistryFragment : Fragment() {
 
     private val args: DictionaryRegistryFragmentArgs by navArgs()
     private val registryViewModel: DictionaryRegistryViewModel by viewModel { parametersOf(args.dbPath) }
+    private val navigator: ScreenNavigator by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +36,7 @@ class DictionaryRegistryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listenToNavigationCommands()
         registryViewModel.getUiState().observe(viewLifecycleOwner, Observer {
             Log.d("ui.state", it.toString())
         })
@@ -44,14 +48,21 @@ class DictionaryRegistryFragment : Fragment() {
                 object : OnRegisterTablesListener {
                     override fun onChanged(newTableInfoUiModel: ExternalTableUiInfo) {
                         registryViewModel.onTableRegisteringUpdate(newTableInfoUiModel)
-                        Toast.makeText(
-                            context,
-                            "${newTableInfoUiModel.dictionaryName} clicked",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
             )
         }
+        table_info_list_submit_button.apply {
+            setOnClickListener {
+                registryViewModel.registerDictionaries()
+            }
+        }
+
+    }
+
+    private fun listenToNavigationCommands() {
+        registryViewModel.navigationCommand.observe(viewLifecycleOwner, Observer { navCommand ->
+            navigator.execute(navCommand)
+        })
     }
 }

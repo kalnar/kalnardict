@@ -11,7 +11,15 @@
     <!--        app:graphPackage="com.sanogueralorenzo.sample" />-->
     <fragment
         android:id="@+id/navigation_screen"
-        android:name="eu.kalnarapps.kalnardict.androidui.navigationscreen.NavigationScreen" />
+        android:name="eu.kalnarapps.kalnardict.androidui.navigationscreen.NavigationScreen">
+        <action
+            android:id="@+id/navigateToDictionaryManager"
+            app:destination="@+id/dictionaryManager" />
+        <action
+            android:id="@+id/navigateToDictionaryQuery"
+            app:destination="@+id/dictionaryQueryScreen" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/dictionaryManager"
@@ -43,5 +51,50 @@
     <!--        android:name="com.example.cashdog.cashdog.BlankFragment"-->
     <!--        android:label="Blank"-->
     <!--        tools:layout="@layout/fragment_blank" />-->
+
+    <dialog
+        android:id="@+id/simpleDialog"
+        android:name="eu.kalnarapps.kalnardict.androidui.dialogs.SimpleDialog"
+        android:label="Simple Dialog">
+
+        <argument
+            android:name="title"
+            app:argType="string" />
+
+        <argument
+            android:name="description"
+            app:argType="string" />
+
+    </dialog>
+
+    <dialog
+        android:id="@+id/successTableRegistrationDialog"
+        android:name="eu.kalnarapps.kalnardict.androidui.dialogs.SuccessTableRegistrationDialog"
+        android:label="Successful Table Registration">
+
+        <argument
+            android:name="originalTableName"
+            app:argType="string" />
+
+        <argument
+            android:name="dictionaryName"
+            app:argType="string" />
+
+    </dialog>
+
+    <dialog
+        android:id="@+id/failedTableRegistrationDialog"
+        android:name="eu.kalnarapps.kalnardict.androidui.dialogs.FailedTableRegistrationDialog"
+        android:label="Failed Table Registration">
+
+        <argument
+            android:name="originalTableName"
+            app:argType="string" />
+
+        <argument
+            android:name="errorMessage"
+            app:argType="string" />
+
+    </dialog>
 
 </navigation>

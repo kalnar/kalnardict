@@ -8,6 +8,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
@@ -31,7 +32,8 @@ class TableInfoViewHolder(
     private val languageToSelector: Spinner = itemView.findViewById(R.id.language_to_selector)
     private val dictionaryNameEditText: TextInputEditText =
         itemView.findViewById(R.id.dictionary_name_key_edit)
-
+    private val registeringSwitch: SwitchMaterial =
+        itemView.findViewById(R.id.table_registering_switch)
 
     fun bind(
         tableInfoUi: ExternalTableUiInfo,
@@ -42,38 +44,21 @@ class TableInfoViewHolder(
             hint = tableInfoUi.dictionaryName
             addTextChangedListener {
                 onTableInfoChangeListener.onChanged(
-                    tableInfoUi.copy(dictionaryName = it.toString())
+                    getTableUiInfo()
                 )
             }
         }
         languageFromView.text = tableInfoUi.originalLanguageFrom
         languageToView.text = tableInfoUi.originalLanguageTo
         titleView.setOnClickListener {
-            onTableInfoChangeListener.onChanged(tableInfoUi)
+            onTableInfoChangeListener.onChanged(getTableUiInfo())
         }
         languageFromSelector.apply {
             adapter = LanguageSelectorSpinnerAdapter(
                 context = languageFromView.context,
                 dictionarySelectorItems = languageItemUiModels
             ).apply {
-                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        onTableInfoChangeListener.onChanged(
-                            tableInfoUi.copy(languageFromUi = SelectableLanguage.NotSet)
-                        )
-                    }
-
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        onTableInfoChangeListener.onChanged(
-                            tableInfoUi.copy(languageFromUi = getItem(position))
-                        )
-                    }
-                }
+                onItemSelectedListener = OnLanguageSelectedListener()
             }
         }
         languageToSelector.apply {
@@ -81,27 +66,46 @@ class TableInfoViewHolder(
                 context = languageToView.context,
                 dictionarySelectorItems = languageItemUiModels
             ).apply {
-                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        onTableInfoChangeListener.onChanged(
-                            tableInfoUi.copy(languageToUi = SelectableLanguage.NotSet)
-                        )
-                    }
-
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        onTableInfoChangeListener.onChanged(
-                            tableInfoUi.copy(languageToUi = getItem(position))
-                        )
-                    }
-                }
+                onItemSelectedListener = OnLanguageSelectedListener()
             }
+
+        }
+        registeringSwitch.setOnCheckedChangeListener { _, _ ->
+            onTableInfoChangeListener.onChanged(
+                getTableUiInfo()
+            )
+        }
+    }
+
+    private fun getTableUiInfo(): ExternalTableUiInfo {
+        return ExternalTableUiInfo(
+            originalTableName = titleView.text.toString(),
+            dictionaryName = dictionaryNameEditText.editableText.toString(),
+            originalLanguageTo = languageToView.text.toString(),
+            originalLanguageFrom = languageFromView.text.toString(),
+            languageFromUi = languageFromSelector.selectedItem as SelectableLanguage,
+            languageToUi = languageToSelector.selectedItem as SelectableLanguage,
+            isSelected = registeringSwitch.isSelected
+        )
+    }
+
+    private inner class OnLanguageSelectedListener() :
+        AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+            onTableInfoChangeListener.onChanged(
+                getTableUiInfo()
+            )
         }
 
-
+        override fun onItemSelected(
+            parent: AdapterView<*>?,
+            view: View?,
+            position: Int,
+            id: Long
+        ) {
+            onTableInfoChangeListener.onChanged(
+                getTableUiInfo()
+            )
+        }
     }
 }

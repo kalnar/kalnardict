@@ -5,4 +5,5 @@
     <string name="language_to_key">destination language:</string>
     <string name="table_registering_submit_btn_text">register tables</string>
     <string name="dictionary_save_switch_text">import</string>
+    <string name="cta_ok">ok</string>
 </resources>

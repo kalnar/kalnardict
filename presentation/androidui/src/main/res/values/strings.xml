@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="query_input_hint">search for word</string>
+
+    <!-- dialog string resources -->
+    <string name="table_registration_dialog_title">Table is saved!</string>
+    <string name="table_registration_dialog_error_title">Table (%s) import failed!</string>
+    <string name="table_registration_dialog_description">Table "%s" is imported successfully as "%s".</string>
+    <string name="table_registration_dialog_error_description">Error log: %s</string>
 </resources>

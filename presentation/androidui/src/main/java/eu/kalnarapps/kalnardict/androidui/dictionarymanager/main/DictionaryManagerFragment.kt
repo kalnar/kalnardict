@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.ManageableDictionaryListAdapter
@@ -17,7 +18,6 @@ import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.net.URI
 
 
 open class DictionaryManagerFragment : Fragment() {
@@ -35,6 +35,7 @@ open class DictionaryManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listenToNavigationCommands()
         list_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ManageableDictionaryListAdapter(
@@ -63,8 +64,15 @@ open class DictionaryManagerFragment : Fragment() {
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         Toast.makeText(requireContext(), "get uri: $uri", Toast.LENGTH_SHORT).show()
-        navigator.navigateToDictionaryRegistry(URI(uri?.path.orEmpty()))
+        dictionaryManagerViewModel.onDbSelected(uri?.path.orEmpty())
     }
 
+    private fun listenToNavigationCommands() {
+        dictionaryManagerViewModel.navigationCommand.observe(
+            viewLifecycleOwner,
+            Observer { navCommand ->
+                navigator.execute(navCommand)
+            })
+    }
 
 }

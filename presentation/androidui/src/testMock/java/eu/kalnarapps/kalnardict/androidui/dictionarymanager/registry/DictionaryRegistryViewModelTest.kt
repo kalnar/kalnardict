@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsEmptyCollection
+import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -16,6 +17,7 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.koin.core.KoinComponent
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
 class DictionaryRegistryViewModelTest : KoinComponent {
@@ -37,6 +39,11 @@ class DictionaryRegistryViewModelTest : KoinComponent {
                 )
             )
         }
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test
