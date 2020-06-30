@@ -1,10 +1,9 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
@@ -24,19 +23,12 @@ class DictionaryRegistryViewModel(
     dbPath: String,
     loadDbMetaInfoOnDb: ReadExternalDbUseCase,
     private val registerNewDictionary: RegisterNewDictionaryUseCase
-) : ViewModel() {
-
-    private val _navigationCommand: MutableLiveData<NavigationCommand> = MutableLiveData()
-    val navigationCommand: LiveData<NavigationCommand>
-        get() = _navigationCommand
-    private val _state: MutableLiveData<DictionaryRegistryState> = MutableLiveData()
-    private val state: LiveData<DictionaryRegistryState>
-        get() = _state
+) : BaseViewModel<DictionaryRegistryState>() {
 
     init {
         viewModelScope.launch {
             val metaInfoFetch = loadDbMetaInfoOnDb(URI(dbPath))
-            _state.value =
+            setUiState(
                 DictionaryRegistryState(
                     dbPath = dbPath,
                     tableInfoUiModels = when (metaInfoFetch) {
@@ -50,6 +42,7 @@ class DictionaryRegistryViewModel(
                         is DataOperationResult.Failure -> listOf(metaInfoFetch.errorMessage)
                     }
                 )
+            )
         }
     }
 
@@ -76,14 +69,10 @@ class DictionaryRegistryViewModel(
         )
     }
 
-    fun getUiState(): LiveData<DictionaryRegistryState> {
-        return state
-    }
-
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {
         viewModelScope.launch {
             val currentState = state.value
-            _state.postValue(
+            postUiState(
                 currentState?.copy(
                     tableInfoUiModels = currentState.tableInfoUiModels.map {
                         if (it.originalTableName == newTableInfoUiModel.originalTableName) {
@@ -120,7 +109,7 @@ class DictionaryRegistryViewModel(
     ) {
 //        showRegisteringStatus(externalTableUiInfo, lastStatus)
         if (lastStatus is OperationResult.Success) {
-            _navigationCommand.postValue(
+            postNavigationCommand(
                 NavigationCommand.NavigateToDictionaryQuery
             )
         }
@@ -144,7 +133,7 @@ class DictionaryRegistryViewModel(
     ) {
         when (it) {
             OperationResult.Success -> {
-                _navigationCommand.postValue(
+                postNavigationCommand(
                     NavigationCommand.ShowDialog.SuccessTableRegistration(
                         table = tableUiInfo.originalTableName,
                         dictionaryName = tableUiInfo.dictionaryName
@@ -152,13 +141,13 @@ class DictionaryRegistryViewModel(
                 )
             }
             is OperationResult.Failure -> {
-                _navigationCommand.postValue(
+                postNavigationCommand(
                     NavigationCommand.ShowDialog.FailureTableRegistration(
                         table = tableUiInfo.originalTableName,
                         errorMessage = it.errorMessage
                     )
                 )
-                _state.postValue(
+                postUiState(
                     state.value?.copy(
                         errorMessages = state.value?.errorMessages.orEmpty().plus("failure")
                     )
@@ -167,9 +156,6 @@ class DictionaryRegistryViewModel(
         }.exhaustive
     }
 
-    fun resetNavigation() {
-        _navigationCommand.postValue(NavigationCommand.DoNothing)
-    }
 }
 
 private fun SelectableLanguage.toDataString(): String {
