@@ -1,16 +1,16 @@
 package eu.kalnarapps.kalnardict.androidui.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dialogs.FailedTableRegistrationDialogArgs
 import eu.kalnarapps.kalnardict.androidui.dialogs.SuccessTableRegistrationDialogArgs
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryFragmentArgs
-import eu.kalnarapps.kalnardict.androidui.navigationscreen.NavigationScreenDirections
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import org.koin.core.KoinComponent
 import java.net.URI
 
-class AndroidScreenNavigator : ScreenNavigator, KoinComponent {
+class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
     private val navController: NavController?
         get() {
             return getKoin().getProperty(Navigation.navControllerQualifier.value)
@@ -25,12 +25,13 @@ class AndroidScreenNavigator : ScreenNavigator, KoinComponent {
             NavigationCommand.NavigateToDictionaryQuery -> navigateToDictionaryQuery()
             NavigationCommand.NavigateToDictionaryManager -> navigateToDictionaryManager()
             is NavigationCommand.ShowDialog -> showDialog(navigationCommand)
+            NavigationCommand.DoNothing -> Unit
         }.exhaustive
     }
 
     private fun navigateToDictionaryManager() {
         navController?.navigate(
-            NavigationScreenDirections.navigateToDictionaryManager()
+            R.id.dictionaryManager
         )
     }
 
@@ -71,8 +72,15 @@ class AndroidScreenNavigator : ScreenNavigator, KoinComponent {
     }
 
     private fun navigateToDictionaryQuery() {
-        navController?.navigate(
-            R.id.dictionaryQueryScreen
-        )
+        navController?.let {
+            val navOptions: NavOptions = NavOptions.Builder()
+                .setPopUpTo(it.graph.startDestination, true)
+                .build()
+            it.navigate(
+                R.id.dictionaryQueryScreen,
+                null,
+                navOptions
+            )
+        }
     }
 }

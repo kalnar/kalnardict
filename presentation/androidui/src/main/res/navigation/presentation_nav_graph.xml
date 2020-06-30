@@ -12,12 +12,6 @@
     <fragment
         android:id="@+id/navigation_screen"
         android:name="eu.kalnarapps.kalnardict.androidui.navigationscreen.NavigationScreen">
-        <action
-            android:id="@+id/navigateToDictionaryManager"
-            app:destination="@+id/dictionaryManager" />
-        <action
-            android:id="@+id/navigateToDictionaryQuery"
-            app:destination="@+id/dictionaryQueryScreen" />
 
     </fragment>
 
@@ -25,13 +19,6 @@
         android:id="@+id/dictionaryManager"
         android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerFragment"
         android:label="Dictionary Manager">
-        <action
-            android:id="@+id/navigateToDictionaryRegistry"
-            app:destination="@+id/dictionaryRegistry">
-            <argument
-                android:name="dbPath"
-                app:argType="string" />
-        </action>
     </fragment>
 
     <fragment
@@ -46,11 +33,6 @@
         android:id="@+id/dictionaryQueryScreen"
         android:name="eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryFragment"
         android:label="Dictionary Query" />
-    <!--    <fragment-->
-    <!--        android:id="@+id/blankFragment"-->
-    <!--        android:name="com.example.cashdog.cashdog.BlankFragment"-->
-    <!--        android:label="Blank"-->
-    <!--        tools:layout="@layout/fragment_blank" />-->
 
     <dialog
         android:id="@+id/simpleDialog"

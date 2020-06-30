@@ -13,6 +13,7 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.OnRegisterTablesListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
+import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.table_info_list_submit_button
@@ -62,7 +63,10 @@ class DictionaryRegistryFragment : Fragment() {
 
     private fun listenToNavigationCommands() {
         registryViewModel.navigationCommand.observe(viewLifecycleOwner, Observer { navCommand ->
-            navigator.execute(navCommand)
+            if (navCommand != NavigationCommand.DoNothing) {
+                navigator.execute(navCommand)
+                registryViewModel.resetNavigation()
+            }
         })
     }
 }

@@ -118,7 +118,7 @@ class DictionaryRegistryViewModel(
         externalTableUiInfo: ExternalTableUiInfo,
         lastStatus: OperationResult
     ) {
-        showRegisteringStatus(externalTableUiInfo, lastStatus)
+//        showRegisteringStatus(externalTableUiInfo, lastStatus)
         if (lastStatus is OperationResult.Success) {
             _navigationCommand.postValue(
                 NavigationCommand.NavigateToDictionaryQuery
@@ -134,7 +134,7 @@ class DictionaryRegistryViewModel(
             languageFrom = externalTableUiInfo.languageFromUi.toDataString(),
             languageTo = externalTableUiInfo.languageToUi.toDataString()
         ).also {
-            showRegisteringStatus(externalTableUiInfo, it)
+//            showRegisteringStatus(externalTableUiInfo, it)
         }
     }
 
@@ -165,6 +165,10 @@ class DictionaryRegistryViewModel(
                 )
             }
         }.exhaustive
+    }
+
+    fun resetNavigation() {
+        _navigationCommand.postValue(NavigationCommand.DoNothing)
     }
 }
 
