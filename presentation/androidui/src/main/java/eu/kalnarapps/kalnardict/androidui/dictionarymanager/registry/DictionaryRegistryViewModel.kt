@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
-import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
@@ -86,31 +86,28 @@ class DictionaryRegistryViewModel(
         }
     }
 
-
     fun registerDictionaries() {
         viewModelScope.launch {
-            val tableInfoUiModels = state.value?.tableInfoUiModels.orEmpty()
-            val iterator = tableInfoUiModels.listIterator()
-            while (iterator.hasNext()) {
-                val externalTable = iterator.next()
-                if (iterator.hasNext()) {
-                    registerDictionary(externalTable)
-                } else {
-                    val lastStatus = registerDictionary(externalTable)
-                    showLastStatusFeedback(externalTable, lastStatus)
-                }
-            }
+            postUiState(
+                state = state.value?.copy(
+                    importResults = importTables()
+                )
+            )
+            postNavigationCommand(
+                NavigationCommand.NavigateToDictionaryRegistryDialog(
+                    uri = URI(state.value?.dbPath.orEmpty())
+                )
+            )
         }
     }
 
-    private fun showLastStatusFeedback(
-        externalTableUiInfo: ExternalTableUiInfo,
-        lastStatus: OperationResult
-    ) {
-//        showRegisteringStatus(externalTableUiInfo, lastStatus)
-        if (lastStatus is OperationResult.Success) {
-            postNavigationCommand(
-                NavigationCommand.NavigateToDictionaryQuery
+    private suspend fun importTables(): List<ImportTableResult> {
+        val tableInfoUiModels = state.value?.tableInfoUiModels.orEmpty()
+        return tableInfoUiModels.filter { it.isSelected }.map {
+            ImportTableResult(
+                originalName = it.originalTableName,
+                registeringName = it.dictionaryName,
+                result = registerDictionary(it)
             )
         }
     }
@@ -122,38 +119,16 @@ class DictionaryRegistryViewModel(
             savingName = externalTableUiInfo.dictionaryName,
             languageFrom = externalTableUiInfo.languageFromUi.toDataString(),
             languageTo = externalTableUiInfo.languageToUi.toDataString()
-        ).also {
-//            showRegisteringStatus(externalTableUiInfo, it)
-        }
+        )
     }
 
-    private fun showRegisteringStatus(
-        tableUiInfo: ExternalTableUiInfo,
-        it: OperationResult
-    ) {
-        when (it) {
-            OperationResult.Success -> {
-                postNavigationCommand(
-                    NavigationCommand.ShowDialog.SuccessTableRegistration(
-                        table = tableUiInfo.originalTableName,
-                        dictionaryName = tableUiInfo.dictionaryName
-                    )
-                )
-            }
-            is OperationResult.Failure -> {
-                postNavigationCommand(
-                    NavigationCommand.ShowDialog.FailureTableRegistration(
-                        table = tableUiInfo.originalTableName,
-                        errorMessage = it.errorMessage
-                    )
-                )
-                postUiState(
-                    state.value?.copy(
-                        errorMessages = state.value?.errorMessages.orEmpty().plus("failure")
-                    )
-                )
-            }
-        }.exhaustive
+
+    fun getRegistrationStatus(): List<ImportTableResult> {
+        return state.value?.importResults.orEmpty()
+    }
+
+    fun onDialogButtonClicked() {
+        postNavigationCommand(NavigationCommand.NavigateToDictionaryQuery)
     }
 
 }

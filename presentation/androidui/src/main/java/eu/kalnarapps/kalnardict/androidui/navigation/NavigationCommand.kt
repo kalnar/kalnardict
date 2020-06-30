@@ -5,6 +5,7 @@ import java.net.URI
 sealed class NavigationCommand {
     object Back : NavigationCommand()
     class NavigateToDictionaryRegistry(val uri: URI) : NavigationCommand()
+    class NavigateToDictionaryRegistryDialog(val uri: URI) : NavigationCommand()
     object NavigateToDictionaryQuery : NavigationCommand()
     object NavigateToDictionaryManager : NavigationCommand()
     object DoNothing : NavigationCommand()

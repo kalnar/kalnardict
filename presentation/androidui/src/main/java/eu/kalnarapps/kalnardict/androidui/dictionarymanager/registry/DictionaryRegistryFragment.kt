@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
@@ -14,13 +15,25 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.table_info_list_submit_button
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
     private val args: DictionaryRegistryFragmentArgs by navArgs()
-    override val viewModel: DictionaryRegistryViewModel by viewModel { parametersOf(args.dbPath) }
+
+    //    override val viewModel: DictionaryRegistryViewModel by viewModel { parametersOf(args.dbPath) }
+    override val viewModel: DictionaryRegistryViewModel by navGraphViewModels(
+        R.id.dictionary_registration_navigation
+    ) {
+        DictionaryRegistryViewModelFactory(args.dbPath)
+    }
+//        {
+//            parametersOf(
+//                args.dbPath
+//            )
+//        })
+//    {
+//    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

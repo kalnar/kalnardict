@@ -7,4 +7,6 @@
     <string name="dictionary_save_switch_text">import</string>
     <string name="cta_ok">ok</string>
     <string name="dictionary_manager_menu_text">Go to dictionary manager</string>
+    <string name="dictionary_registry_dialog_cta">go back to query screen</string>
+    <string name="table_registration_dialog_dictionary_name_hint">new dictionary name</string>
 </resources>

@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dialogs.FailedTableRegistrationDialogArgs
 import eu.kalnarapps.kalnardict.androidui.dialogs.SuccessTableRegistrationDialogArgs
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryFragmentArgs
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog.DictionaryRegistrationStatusDialogArgs
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import org.koin.core.KoinComponent
 import java.net.URI
@@ -20,6 +21,9 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
         when (navigationCommand) {
             NavigationCommand.Back -> navigateBack()
             is NavigationCommand.NavigateToDictionaryRegistry -> navigateToDictionaryRegistry(
+                navigationCommand.uri
+            )
+            is NavigationCommand.NavigateToDictionaryRegistryDialog -> navigateToDictionaryRegistryDialog(
                 navigationCommand.uri
             )
             NavigationCommand.NavigateToDictionaryQuery -> navigateToDictionaryQuery()
@@ -37,11 +41,17 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
 
     private fun navigateToDictionaryRegistry(dbUri: URI) {
         navController?.navigate(
-            R.id.dictionaryRegistry,
+            R.id.dictionary_registration_navigation,
             DictionaryRegistryFragmentArgs(dbPath = dbUri.path).toBundle()
         )
     }
 
+    private fun navigateToDictionaryRegistryDialog(uri: URI) {
+        navController?.navigate(
+            R.id.dictionaryRegistrationStatusDialog,
+            DictionaryRegistrationStatusDialogArgs(dbPath = uri.path).toBundle()
+        )
+    }
 
     private fun showDialog(navigationCommand: NavigationCommand.ShowDialog) {
         when (navigationCommand) {

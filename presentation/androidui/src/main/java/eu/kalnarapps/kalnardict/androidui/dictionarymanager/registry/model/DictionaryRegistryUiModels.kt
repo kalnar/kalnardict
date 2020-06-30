@@ -1,9 +1,12 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model
 
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
+
 data class DictionaryRegistryState(
     val dbPath: String,
     val tableInfoUiModels: List<ExternalTableUiInfo>,
-    val errorMessages: List<String> = emptyList()
+    val errorMessages: List<String> = emptyList(),
+    val importResults: List<ImportTableResult> = emptyList()
 )
 
 data class ExternalTableUiInfo(
@@ -24,3 +27,9 @@ sealed class SelectableLanguage {
 
     object NotSet : SelectableLanguage()
 }
+
+data class ImportTableResult(
+    val originalName: String,
+    val registeringName: String,
+    val result: OperationResult
+)

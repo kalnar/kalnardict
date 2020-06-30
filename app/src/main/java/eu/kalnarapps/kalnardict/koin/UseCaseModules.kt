@@ -6,5 +6,5 @@ import org.koin.dsl.module
 
 
 val useCaseModule = module {
-    single { ListMetaInfoOnDb(get()) as ReadExternalDbUseCase }
+//    single { ListMetaInfoOnDb(get()) as ReadExternalDbUseCase }
 }

@@ -41,7 +41,8 @@ class TableInfoViewHolder(
     ) {
         titleView.text = tableInfoUi.dictionaryName
         dictionaryNameEditText.apply {
-            hint = tableInfoUi.dictionaryName
+            hint = context.getString(R.string.table_registration_dialog_dictionary_name_hint)
+            setText(tableInfoUi.dictionaryName)
             addTextChangedListener {
                 onTableInfoChangeListener.onChanged(
                     getTableUiInfo()
@@ -85,7 +86,7 @@ class TableInfoViewHolder(
             originalLanguageFrom = languageFromView.text.toString(),
             languageFromUi = languageFromSelector.selectedItem as SelectableLanguage,
             languageToUi = languageToSelector.selectedItem as SelectableLanguage,
-            isSelected = registeringSwitch.isSelected
+            isSelected = registeringSwitch.isChecked
         )
     }
 
