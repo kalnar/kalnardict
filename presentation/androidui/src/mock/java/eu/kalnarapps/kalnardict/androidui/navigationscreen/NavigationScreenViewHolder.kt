@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.navigationscreen.model.NavigationItemView
 
 class NavigationScreenViewHolder(
     inflater: LayoutInflater, parent: ViewGroup

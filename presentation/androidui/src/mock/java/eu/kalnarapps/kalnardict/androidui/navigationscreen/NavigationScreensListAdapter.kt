@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.androidui.navigationscreen
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import eu.kalnarapps.kalnardict.androidui.navigationscreen.model.NavigationItemView
 
 class NavigationScreensListAdapter(
     private val list: List<NavigationItemView>,

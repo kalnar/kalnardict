@@ -6,5 +6,6 @@ val androidUiKoinMockModules = listOf(
     dictionaryManagerKoinMockModule,
     dictionaryRegistryKoinMockModule,
     dictionaryQueryKoinMockModule,
+    navigationScreenKoinMockModule,
     navigationKoinModule
 )
