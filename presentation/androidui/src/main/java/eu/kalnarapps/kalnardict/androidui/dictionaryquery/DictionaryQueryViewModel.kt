@@ -1,12 +1,19 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: ListDictionaryQueryResults,
@@ -14,6 +21,9 @@ class DictionaryQueryViewModel(
     private val updateCurrentLanguageUseCase: UpdateCurrentLanguage,
     private val getCurrentLanguageUseCase: GetLanguageUseCase
 ) : ViewModel() {
+    private val _navigationCommand: MutableLiveData<NavigationCommand> = MutableLiveData()
+    val navigationCommand: LiveData<NavigationCommand>
+        get() = _navigationCommand
     private val _state: MutableLiveData<DictionaryQueryState> = MutableLiveData()
     private val state: LiveData<DictionaryQueryState>
         get() = _state
@@ -84,6 +94,14 @@ class DictionaryQueryViewModel(
                     }
                 )
             )
+        }
+    }
+
+    fun onDictionaryManagerMenu() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                _navigationCommand.postValue(NavigationCommand.NavigateToDictionaryManager)
+            }
         }
     }
 

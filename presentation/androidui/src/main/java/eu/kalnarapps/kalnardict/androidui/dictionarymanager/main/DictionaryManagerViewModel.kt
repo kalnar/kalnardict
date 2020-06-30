@@ -1,6 +1,5 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -50,23 +49,6 @@ class DictionaryManagerViewModel(
             )
         )
     }
-
-//    fun registerNewDictionary(externalTable: ExternalTableUiInfo) {
-//        viewModelScope.launch {
-//            registeredDictionaryUseCase(
-//                dbUri = externalTable.dbPath,
-//                originalName = externalTable.tableName,
-//                savingName = externalTable.dictionaryName,
-//                languageFrom = externalTable.languageFrom,
-//                languageTo = externalTable.languageTo
-//            )
-//            _state.postValue(
-//                state.value?.copy(
-//                    dictionaries = loadDictionaries()
-//                )
-//            )
-//        }
-//    }
 }
 
 data class DictionaryManagerState(

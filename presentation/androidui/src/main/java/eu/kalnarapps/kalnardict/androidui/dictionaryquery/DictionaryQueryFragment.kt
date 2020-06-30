@@ -2,6 +2,9 @@ package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -13,6 +16,7 @@ import eu.kalnarapps.kalnardict.android.utils.Logger
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview.QueryResultListAdapter
+import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_input
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner
@@ -23,6 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class DictionaryQueryFragment : Fragment() {
 
     private val queryViewModel: DictionaryQueryViewModel by viewModel()
+    private val navigator: ScreenNavigator by inject()
     private val logger: Logger by inject()
 
     override fun onCreateView(
@@ -30,6 +35,7 @@ class DictionaryQueryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.dictionary_query_fragment, container, false)
     }
 
@@ -73,6 +79,29 @@ class DictionaryQueryFragment : Fragment() {
             queryViewModel.refreshQueryResults()
         })
 
+        listenToNavigationCommands()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.dicitonay_query_menus, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.dictionary_manager_menu -> {
+                queryViewModel.onDictionaryManagerMenu()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun listenToNavigationCommands() {
+        queryViewModel.navigationCommand.observe(
+            viewLifecycleOwner,
+            Observer { navCommand ->
+                navigator.execute(navCommand)
+            })
     }
 }
 
