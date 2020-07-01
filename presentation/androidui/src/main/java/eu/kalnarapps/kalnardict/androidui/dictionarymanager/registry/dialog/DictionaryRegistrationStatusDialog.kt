@@ -41,13 +41,13 @@ class DictionaryRegistrationStatusDialog : DialogFragment() {
         val button: AppCompatButton = findViewById(R.id.simple_dialog_cta)
 
         titleView.text = "registration status"
-        descriptionView.text = viewModel.getRegistrationStatus().map {
+        descriptionView.text = viewModel.getRegistrationStatus().joinToString(separator = "\n") {
             if (it.result is OperationResult.Success) {
                 "${it.originalName} was saved as ${it.registeringName} successfully"
             } else {
                 "importing ${it.originalName} failed"
             }
-        }.joinToString(separator = "\n").ifBlank {
+        }.ifBlank {
             "an error has occurred: no import was detected"
         }
 

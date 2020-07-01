@@ -5,7 +5,6 @@ import eu.kalnarapps.kalnardict.common.operations.OperationResult
 data class DictionaryRegistryState(
     val dbPath: String,
     val tableInfoUiModels: List<ExternalTableUiInfo>,
-    val errorMessages: List<String> = emptyList(),
     val importResults: List<ImportTableResult> = emptyList()
 )
 

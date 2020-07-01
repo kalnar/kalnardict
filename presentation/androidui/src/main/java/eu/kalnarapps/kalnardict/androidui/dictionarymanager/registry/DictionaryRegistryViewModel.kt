@@ -1,8 +1,9 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
+import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
@@ -22,8 +23,9 @@ const val UNKNOWN_LANGUAGE: String = "unk"
 class DictionaryRegistryViewModel(
     dbPath: String,
     loadDbMetaInfoOnDb: ReadExternalDbUseCase,
-    private val registerNewDictionary: RegisterNewDictionaryUseCase
-) : BaseViewModel<DictionaryRegistryState>() {
+    private val registerNewDictionary: RegisterNewDictionaryUseCase,
+    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+) : BaseViewModel<DictionaryRegistryState>(dispatcherProvider = dispatcherProvider) {
 
     init {
         viewModelScope.launch {
@@ -35,11 +37,12 @@ class DictionaryRegistryViewModel(
                         is DataOperationResult.Success -> metaInfoFetch.data.map {
                             it.toExternalTableUiInfo()
                         }
-                        is DataOperationResult.Failure -> emptyList()
-                    },
-                    errorMessages = when (metaInfoFetch) {
-                        is DataOperationResult.Success -> emptyList<String>()
-                        is DataOperationResult.Failure -> listOf(metaInfoFetch.errorMessage)
+                        is DataOperationResult.Failure -> {
+                            postError(
+                                ErrorFromUi(logMessage = metaInfoFetch.errorMessage)
+                            )
+                            emptyList()
+                        }
                     }
                 )
             )
@@ -48,12 +51,6 @@ class DictionaryRegistryViewModel(
 
     fun getTables(): List<ExternalTableUiInfo> {
         return state.value?.tableInfoUiModels.orEmpty()
-    }
-
-    fun getErrors(): LiveData<List<String>> {
-        return Transformations.map(state) {
-            it.errorMessages
-        }
     }
 
     fun getKnownLanguages(): List<SelectableLanguage.LanguageUi> {
@@ -119,7 +116,13 @@ class DictionaryRegistryViewModel(
             savingName = externalTableUiInfo.dictionaryName,
             languageFrom = externalTableUiInfo.languageFromUi.toDataString(),
             languageTo = externalTableUiInfo.languageToUi.toDataString()
-        )
+        ).also {
+            if (it is OperationResult.Failure) {
+                postError(
+                    ErrorFromUi(logMessage = it.errorMessage)
+                )
+            }
+        }
     }
 
 

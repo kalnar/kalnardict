@@ -20,20 +20,11 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
     private val args: DictionaryRegistryFragmentArgs by navArgs()
 
-    //    override val viewModel: DictionaryRegistryViewModel by viewModel { parametersOf(args.dbPath) }
     override val viewModel: DictionaryRegistryViewModel by navGraphViewModels(
         R.id.dictionary_registration_navigation
     ) {
         DictionaryRegistryViewModelFactory(args.dbPath)
     }
-//        {
-//            parametersOf(
-//                args.dbPath
-//            )
-//        })
-//    {
-//    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

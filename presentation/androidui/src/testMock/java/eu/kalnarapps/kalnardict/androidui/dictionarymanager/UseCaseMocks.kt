@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 
+import eu.kalnarapps.kalnardict.androidui.UiUnitTestStubs
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
@@ -70,7 +71,7 @@ class RegisterNewDictionaryMockWithFailures(
         counter++
         return if (listOfFailureOccasions.contains(counter)) {
             OperationResult.Failure(
-                errorMessage = "incorrect use of new dictionary registration"
+                errorMessage = UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG
             )
         } else {
             OperationResult.Success

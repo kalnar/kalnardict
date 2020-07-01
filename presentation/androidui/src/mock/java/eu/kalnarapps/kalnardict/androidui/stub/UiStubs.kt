@@ -17,13 +17,15 @@ object UiStubs {
             dictionaryName = newDictionaryName,
             originalLanguageFrom = "ru",
             originalLanguageTo = "en",
-            originalTableName = "ru_en_dictionary"
+            originalTableName = "ru_en_dictionary",
+            isSelected = true
         )
         val externalTable2 = ExternalTableUiInfo(
             dictionaryName = "russian dict",
             originalLanguageFrom = "ru",
             originalLanguageTo = "ru",
-            originalTableName = "ru_ru_dictionary"
+            originalTableName = "ru_ru_dictionary",
+            isSelected = true
         )
     }
 

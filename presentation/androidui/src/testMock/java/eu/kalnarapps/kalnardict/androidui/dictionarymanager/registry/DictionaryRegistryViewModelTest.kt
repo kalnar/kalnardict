@@ -1,14 +1,21 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import eu.kalnarapps.kalnardict.androidui.UiUnitTestStubs
 import eu.kalnarapps.kalnardict.androidui.dependencies.mocks.ReadExternalDbUseCaseMock
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionaryMockWithFailures
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionarySuccessfullyMock
 import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.core.IsInstanceOf
+import org.hamcrest.core.IsNull
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -20,6 +27,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
+@ExperimentalCoroutinesApi
 class DictionaryRegistryViewModelTest : KoinComponent {
 
     @get:Rule
@@ -52,7 +60,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.validUri.path,
             getKoin().get(),
-            RegisterNewDictionarySuccessfullyMock()
+            RegisterNewDictionarySuccessfullyMock(),
+            dispatcherProvider = TestDispatcherProvider
         )
 
         val listOfTableUi = viewModel.getTables()
@@ -69,19 +78,18 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.invalidUri.path,
             getKoin().get(),
-            RegisterNewDictionarySuccessfullyMock()
+            RegisterNewDictionarySuccessfullyMock(),
+            dispatcherProvider = TestDispatcherProvider
         )
 
         val listOfTableUi = viewModel.getTables()
-        val errorMsg = viewModel.getErrors()
-        errorMsg.observeForever {}
 
         assertThat(
             listOfTableUi,
             IsEmptyCollection()
         )
         assertThat<String>(
-            errorMsg.value?.first(),
+            viewModel.error.value?.logMessage,
             containsString("not of correct")
         )
     }
@@ -93,7 +101,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.validUri.path,
             getKoin().get(),
-            RegisterNewDictionarySuccessfullyMock()
+            RegisterNewDictionarySuccessfullyMock(),
+            dispatcherProvider = TestDispatcherProvider
         )
 
         val listOfTableUi = viewModel.getTables()
@@ -116,10 +125,10 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             firstTable.copy(dictionaryName = firstTableNewDictionaryName)
         )
 
-        val firstTableFromNewFetch = viewModel.getTables().first()
+        val firstTableFromNewFetch = viewModel.getUiState().value?.tableInfoUiModels?.first()
 
         assertThat(
-            firstTableFromNewFetch.dictionaryName,
+            firstTableFromNewFetch?.dictionaryName,
             equalTo(firstTableNewDictionaryName)
         )
 
@@ -131,16 +140,15 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.validUri.path,
             getKoin().get(),
-            RegisterNewDictionarySuccessfullyMock()
+            RegisterNewDictionarySuccessfullyMock(),
+            dispatcherProvider = TestDispatcherProvider
         )
 
-        val errors = viewModel.getErrors()
-        errors.observeForever { }
         val tables = viewModel.getTables()
 
         assertThat(
-            errors.value,
-            IsEmptyCollection()
+            viewModel.error.value,
+            IsNull()
         )
         assertThat(
             tables,
@@ -150,8 +158,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         viewModel.registerDictionaries()
 
         assertThat(
-            errors.value,
-            IsEmptyCollection()
+            viewModel.error.value,
+            IsNull()
         )
     }
 
@@ -161,27 +169,45 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.validUri.path,
             getKoin().get(),
-            RegisterNewDictionaryMockWithFailures(listOf(2))
+            RegisterNewDictionaryMockWithFailures(listOf(2)),
+            dispatcherProvider = TestDispatcherProvider
+        )
+        viewModel.onTableRegisteringUpdate(
+            UiStubs.TableUiInfo.externalTable1
+        )
+        viewModel.onTableRegisteringUpdate(
+            UiStubs.TableUiInfo.externalTable2
         )
 
-        val errors = viewModel.getErrors()
-        errors.observeForever { }
-        val tables = viewModel.getTables()
+        val tables = viewModel.getUiState().value?.tableInfoUiModels
 
         assertThat(
-            errors.value,
-            IsEmptyCollection()
+            viewModel.error.value,
+            IsNull()
         )
         assertThat(
-            tables,
-            not(IsEmptyCollection())
+            tables?.filter { it.isSelected },
+            IsCollectionWithSize(equalTo(2))
         )
 
         viewModel.registerDictionaries()
 
         assertThat(
-            errors.value,
-            not(IsEmptyCollection())
+            viewModel.error.value,
+            not(IsNull())
+        )
+
+        val lastResult = viewModel.getRegistrationStatus().last().result
+        assertThat(
+            lastResult,
+            IsInstanceOf(OperationResult.Failure::class.java)
+        )
+
+        check(lastResult is OperationResult.Failure)
+
+        assertThat(
+            lastResult,
+            equalTo(OperationResult.Failure(UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG))
         )
     }
 }

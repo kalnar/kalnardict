@@ -19,6 +19,13 @@ abstract class BaseFragment<UiModel> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         listenToNavigationCommands()
         listenToUiStateChanges()
+        listenToErrors()
+    }
+
+    private fun listenToErrors() {
+        viewModel.error.observe(viewLifecycleOwner, Observer {
+            logger.logErrorFromUi(it)
+        })
     }
 
     private fun listenToUiStateChanges() {
