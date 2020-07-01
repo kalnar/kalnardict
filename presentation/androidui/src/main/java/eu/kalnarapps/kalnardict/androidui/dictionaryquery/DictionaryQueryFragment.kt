@@ -9,26 +9,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import eu.kalnarapps.kalnardict.android.utils.Logger
 import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview.QueryResultListAdapter
-import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_input
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class DictionaryQueryFragment : Fragment() {
+class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
 
-    private val queryViewModel: DictionaryQueryViewModel by viewModel()
-    private val navigator: ScreenNavigator by inject()
-    private val logger: Logger by inject()
+    override val viewModel: DictionaryQueryViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,24 +38,24 @@ class DictionaryQueryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         query_screen_input.addTextChangedListener {
-            queryViewModel.onQueryChanged(it.toString())
+            viewModel.onQueryChanged(it.toString())
         }
 
         query_result_list_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = QueryResultListAdapter()
-            queryViewModel.getQueryResult().observe(viewLifecycleOwner, Observer {
+            viewModel.getQueryResult().observe(viewLifecycleOwner, Observer {
                 (adapter as QueryResultListAdapter).updateWords(it)
             })
         }
         query_screen_spinner.apply {
             adapter = DictionarySelectorSpinnerAdapter(
                 context,
-                queryViewModel.getRegisteredDictionaries()
+                viewModel.getRegisteredDictionaries()
             ).apply {
                 onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onNothingSelected(parent: AdapterView<*>?) {
-                        queryViewModel.onDictionaryChanged(getItem(0))
+                        viewModel.onDictionaryChanged(getItem(0))
                     }
 
                     override fun onItemSelected(
@@ -69,17 +64,16 @@ class DictionaryQueryFragment : Fragment() {
                         position: Int,
                         id: Long
                     ) {
-                        queryViewModel.onDictionaryChanged(getItem(position))
+                        viewModel.onDictionaryChanged(getItem(position))
                     }
                 }
             }
         }
 
-        queryViewModel.getDictionary().observe(viewLifecycleOwner, Observer {
-            queryViewModel.refreshQueryResults()
+        viewModel.getDictionary().observe(viewLifecycleOwner, Observer {
+            viewModel.refreshQueryResults()
         })
 
-        listenToNavigationCommands()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -89,19 +83,12 @@ class DictionaryQueryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.dictionary_manager_menu -> {
-                queryViewModel.onDictionaryManagerMenu()
+                viewModel.onDictionaryManagerMenu()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun listenToNavigationCommands() {
-        queryViewModel.navigationCommand.observe(
-            viewLifecycleOwner,
-            Observer { navCommand ->
-                navigator.execute(navCommand)
-            })
-    }
 }
 

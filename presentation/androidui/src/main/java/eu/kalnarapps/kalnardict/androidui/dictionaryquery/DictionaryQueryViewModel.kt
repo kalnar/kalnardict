@@ -1,17 +1,17 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
+import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -19,26 +19,23 @@ class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: ListDictionaryQueryResults,
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionaries,
     private val updateCurrentLanguageUseCase: UpdateCurrentLanguage,
-    private val getCurrentLanguageUseCase: GetLanguageUseCase
-) : ViewModel() {
-    private val _navigationCommand: MutableLiveData<NavigationCommand> = MutableLiveData()
-    val navigationCommand: LiveData<NavigationCommand>
-        get() = _navigationCommand
-    private val _state: MutableLiveData<DictionaryQueryState> = MutableLiveData()
-    private val state: LiveData<DictionaryQueryState>
-        get() = _state
+    private val getCurrentLanguageUseCase: GetLanguageUseCase,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+) : BaseViewModel<DictionaryQueryState>(dispatcherProvider = dispatcherProvider) {
 
     init {
         viewModelScope.launch {
-            _state.value = DictionaryQueryState(
-                typedQueryString = "",
-                queryResults = listQueryResultsUseCase.invokeWith("").map {
-                    WordView(baseForm = it.baseForm)
-                },
-                dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke().map {
-                    it.toDictionarySelectorItem()
-                },
-                currentDictionaryItemView = getCurrentLanguageUseCase().toDictionarySelectorItem()
+            setUiState(
+                DictionaryQueryState(
+                    typedQueryString = "",
+                    queryResults = listQueryResultsUseCase.invokeWith("").map {
+                        WordView(baseForm = it.baseForm)
+                    },
+                    dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke().map {
+                        it.toDictionarySelectorItem()
+                    },
+                    currentDictionaryItemView = getCurrentLanguageUseCase().toDictionarySelectorItem()
+                )
             )
         }
     }
@@ -61,7 +58,7 @@ class DictionaryQueryViewModel(
 
     fun onQueryChanged(newQuery: String) {
         viewModelScope.launch {
-            _state.postValue(
+            postUiState(
                 state.value?.copy(
                     typedQueryString = newQuery,
                     queryResults = listQueryResultsUseCase.invokeWith(newQuery).map {
@@ -74,7 +71,7 @@ class DictionaryQueryViewModel(
 
     fun onDictionaryChanged(dictionaryItem: DictionarySelectorItem) {
         viewModelScope.launch {
-            _state.postValue(
+            postUiState(
                 state.value?.copy(
                     currentDictionaryItemView = dictionaryItem
                 )
@@ -85,7 +82,7 @@ class DictionaryQueryViewModel(
 
     fun refreshQueryResults() {
         viewModelScope.launch {
-            _state.postValue(
+            postUiState(
                 state.value?.copy(
                     queryResults = listQueryResultsUseCase.invokeWith(
                         state.value?.typedQueryString.orEmpty()
@@ -99,8 +96,8 @@ class DictionaryQueryViewModel(
 
     fun onDictionaryManagerMenu() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                _navigationCommand.postValue(NavigationCommand.NavigateToDictionaryManager)
+            withContext(dispatcherProvider.io()) {
+                postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
             }
         }
     }

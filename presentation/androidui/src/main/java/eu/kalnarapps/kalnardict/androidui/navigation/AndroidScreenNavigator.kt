@@ -84,7 +84,8 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
     private fun navigateToDictionaryQuery() {
         navController?.let {
             val navOptions: NavOptions = NavOptions.Builder()
-                .setPopUpTo(it.graph.startDestination, true)
+                .setPopUpTo(it.graph.startDestination, false)
+//                .setPopUpTo(R.id.navigation_screen, false)
                 .build()
             it.navigate(
                 R.id.dictionaryQueryScreen,

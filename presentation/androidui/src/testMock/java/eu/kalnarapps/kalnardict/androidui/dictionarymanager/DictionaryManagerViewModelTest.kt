@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
@@ -21,6 +22,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
+@ExperimentalCoroutinesApi
 class DictionaryManagerViewModelTest : KoinComponent {
 
     @get:Rule
@@ -89,27 +91,4 @@ class DictionaryManagerViewModelTest : KoinComponent {
         }
     }
 
-//    @Test
-//    fun add_external_dictionary_table() {
-//        testCoroutineRule.runBlockingTest {
-//
-//            val viewModel: DictionaryManagerViewModel = getKoin().get()
-//
-//            // when
-//            viewModel.registerNewDictionary(UiStubs.DictionaryManager.externalTable)
-//
-//            // then
-//            val dicts = viewModel.getRegisteredDictionaries()
-//            assertThat(
-//                dicts,
-//                IsIterableContaining(
-//                    HasPropertyWithValue<String>(
-//                        "dictionaryName",
-//                        containsString(UiStubs.DictionaryManager.newDictionaryName)
-//                    )
-//                )
-//            )
-//        }
-//
-//    }
 }
