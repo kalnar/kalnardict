@@ -1,0 +1,31 @@
+package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
+
+class SuccessfulImportResultViewHolder(
+    inflater: LayoutInflater, parent: ViewGroup
+) : RecyclerView.ViewHolder(
+    inflater.inflate(
+        R.layout.dictionary_registry_dialog_successful_import_result_item_view,
+        parent,
+        false
+    )
+), ImportResultViewHolder {
+    private val statusTextView: TextView = itemView.findViewById(R.id.import_result_text)
+
+    override fun bind(
+        importTableResult: ImportTableResult
+    ) {
+        statusTextView.text = statusTextView.context.getString(
+            R.string.table_registration_dialog_success_status_message,
+            importTableResult.originalName,
+            importTableResult.registeringName
+        )
+    }
+
+}

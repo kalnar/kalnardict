@@ -3,8 +3,9 @@
     <string name="query_input_hint">search for word</string>
 
     <!-- dialog string resources -->
-    <string name="table_registration_dialog_title">Table is saved!</string>
+    <string name="table_registration_dialog_title">Table imports status</string>
+    <string name="table_registration_dialog_success_status_message">Table &lt;%s&gt; is imported successfully as &lt;%s&gt;.</string>
     <string name="table_registration_dialog_error_title">Table (%s) import failed!</string>
-    <string name="table_registration_dialog_description">Table "%s" is imported successfully as "%s".</string>
     <string name="table_registration_dialog_error_description">Error log: %s</string>
+    <string name="table_registration_dialog_error_status_message">The import of table &lt;%s&gt; failed.</string>
 </resources>

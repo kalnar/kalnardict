@@ -2,4 +2,6 @@
 <resources>
     <color name="white">#E1E1E1</color>
     <color name="cardBackground">#1B2836</color>
+    <color name="ok_status_color">#587547</color>
+    <color name="error_status_color">#B04C45</color>
 </resources>
