@@ -8,17 +8,18 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
-import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
-import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
+import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DictionaryQueryViewModel(
-    private val listQueryResultsUseCase: ListDictionaryQueryResults,
-    private val listRegisteredDictionariesUseCase: ListRegisteredDictionaries,
-    private val updateCurrentLanguageUseCase: UpdateCurrentLanguage,
+    private val listQueryResultsUseCase: SearchQueryUseCase,
+    private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCase,
+    private val updateCurrentLanguageUseCase: ChangeDictLanguageUseCase,
     private val getCurrentLanguageUseCase: GetLanguageUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : BaseViewModel<DictionaryQueryState>(dispatcherProvider = dispatcherProvider) {

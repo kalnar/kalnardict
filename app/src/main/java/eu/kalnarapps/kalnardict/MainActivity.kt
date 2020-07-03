@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import eu.kalnarapps.kalnardict.androidui.navigation.Navigation
 import org.koin.android.ext.android.getKoin
@@ -12,11 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getKoin().declare(
-            findNavController(R.id.main_nav_host_fragment),
-            Navigation.navControllerQualifier
-        )
-        setActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(findViewById(R.id.toolbar))
 //        requestPermissionsIfNeeded()
 //        button.setOnClickListener {
 //            (getStorageRootPath() + "kalnardict/").apply {
@@ -39,6 +36,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        getKoin().setProperty(
+            Navigation.navControllerQualifier.value,
+            findNavController(R.id.main_nav_host_fragment) as NavController
+        )
     }
 
     override fun onStop() {
