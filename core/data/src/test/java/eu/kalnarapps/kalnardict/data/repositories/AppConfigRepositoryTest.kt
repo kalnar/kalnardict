@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.TestDictDao
-import eu.kalnarapps.kalnardict.data.TestLanguageDataDao
+import eu.kalnarapps.kalnardict.data.mock.MockDictDao
+import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataDao
 import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDao
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,8 +35,8 @@ class AppConfigRepositoryTest {
 
             val repository = AppConfigRepository(
                 configurationDao = MockConfigurationDao(),
-                dictDao = TestDictDao(),
-                languageDataDao = TestLanguageDataDao()
+                dictDao = MockDictDao(),
+                languageDataDao = MockLanguageDataDao()
             )
             val language = repository.getCurrentDictionary()
             assertThat(
@@ -52,8 +52,8 @@ class AppConfigRepositoryTest {
         testCoroutineRule.runBlockingTest {
             val repository = AppConfigRepository(
                 configurationDao = MockConfigurationDao(),
-                dictDao = TestDictDao(),
-                languageDataDao = TestLanguageDataDao()
+                dictDao = MockDictDao(),
+                languageDataDao = MockLanguageDataDao()
             )
 
             repository.updateCurrentDictionary(

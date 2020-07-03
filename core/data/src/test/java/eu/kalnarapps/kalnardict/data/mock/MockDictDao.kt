@@ -1,14 +1,21 @@
-package eu.kalnarapps.kalnardict.data
+package eu.kalnarapps.kalnardict.data.mock
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.DatabaseValidity
+import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
+import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
+import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toTableInfo
+import eu.kalnarapps.kalnardict.data.newWordsInFrench
+import eu.kalnarapps.kalnardict.data.validExternalResource
 
-open class TestDictDao : DictDao {
+open class MockDictDao : DictDao {
     private val mockDb = ArrayList<DictEntry>()
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
         addAll(
@@ -78,7 +85,7 @@ data class NewLogEntry(
     override val languageTo: String
 ) : DictionaryLogEntryData
 
-class TestEmptyDictDao : TestDictDao() {
+class MockEmptyDictDao : MockDictDao() {
     init {
         mockDictionaries.clear()
     }
