@@ -1,6 +1,7 @@
-package eu.kalnarapps.kalnardict.data
+package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
 import eu.kalnarapps.kalnardict.data.mapper.toDictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage

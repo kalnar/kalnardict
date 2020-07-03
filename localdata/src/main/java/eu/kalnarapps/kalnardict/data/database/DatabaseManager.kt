@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict.data.database
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
@@ -22,6 +23,17 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun languageDao(): LanguageDao
     abstract fun dictionaryLogDao(): DictionaryLogDao
+
+    companion object {
+        fun buildDatabase(context: Context): AppDatabase =
+            Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                context.getDatabasePath()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
+    }
 }
 
 fun Context.getDatabasePath(): String {

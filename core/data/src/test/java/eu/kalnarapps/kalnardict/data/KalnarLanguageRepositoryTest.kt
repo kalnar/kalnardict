@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.repositories.KalnarLanguageRepository
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
@@ -11,7 +12,10 @@ import org.junit.Test
 
 class KalnarLanguageRepositoryTest {
 
-    private val repository = KalnarLanguageRepository(TestLanguageDataDao())
+    private val repository =
+        KalnarLanguageRepository(
+            TestLanguageDataDao()
+        )
     private val testCoroutineScope = TestCoroutineScope()
 
     @After

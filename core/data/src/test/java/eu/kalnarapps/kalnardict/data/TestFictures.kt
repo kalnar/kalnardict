@@ -11,7 +11,7 @@ import java.net.URI
 val sampleQueryNewWord = DictQuery(
     "nouveau",
     dictionary = Dictionary(
-        id = 2,
+        id = 3,
         languageFrom = DictLanguage("French", "fr"),
         languageTo = DictLanguage("English", "en"),
         description = "French to English dictionary"

@@ -1,7 +1,11 @@
-package eu.kalnarapps.kalnardict.data
+package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.data.DictionaryRepository
+import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
+import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
+import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData

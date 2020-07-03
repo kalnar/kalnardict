@@ -32,6 +32,7 @@ data class DictionaryLogEntry(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "dictionary_name") val dictionaryName: String,
+    // TODO: use a FK with Language
     @ColumnInfo(name = "language_from") val languageFrom: String,
     @ColumnInfo(name = "language_to") val languageTo: String,
     @ColumnInfo(name = "description") val description: String = "$languageFrom to $languageTo dictionary",

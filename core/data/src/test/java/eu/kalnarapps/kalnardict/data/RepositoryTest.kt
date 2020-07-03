@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.data.repositories.Repository
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +24,11 @@ import java.net.URI
 @ExperimentalCoroutinesApi
 class RepositoryTest {
 
-    private val repository = Repository(TestDictDao(), TestExternalDatabaseHandler())
+    private val repository =
+        Repository(
+            TestDictDao(),
+            TestExternalDatabaseHandler()
+        )
     private val testCoroutineScope = TestCoroutineScope()
 
     @Test
@@ -40,7 +45,7 @@ class RepositoryTest {
                     IsIterableContaining(
                         HasPropertyWithValue<Int>(
                             "id",
-                            equalTo(2)
+                            equalTo(Stubs.Dictionaries.newDictionary.id)
                         )
                     )
                 )
@@ -63,7 +68,7 @@ class RepositoryTest {
                 IsIterableContaining(
                     HasPropertyWithValue<Int>(
                         "id",
-                        equalTo(2)
+                        equalTo(Stubs.Dictionaries.newDictionary.id)
                     )
                 )
             )
@@ -78,8 +83,8 @@ class RepositoryTest {
                 IsIterableContaining(
                     HasPropertyWithValue<String>(
                         "description",
-                        containsString(
-                            "en_dictionary"
+                        equalTo(
+                            sampleExternalDbTable.name
                         )
                     )
                 )
@@ -122,7 +127,10 @@ class RepositoryTest {
     @Test
     fun read_registered_dictionaries_and_find_none() {
 
-        val repository = Repository(TestEmptyDictDao(), TestExternalDatabaseHandler())
+        val repository = Repository(
+            TestEmptyDictDao(),
+            TestExternalDatabaseHandler()
+        )
 
         testCoroutineScope.runBlockingTest {
             assertThat(

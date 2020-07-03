@@ -5,23 +5,27 @@ import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toTableInfo
 
 open class TestDictDao : DictDao {
     private val mockDb = ArrayList<DictEntry>()
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
-        add(
-            object :
-                DictionaryLogEntryData {
-                override val id: Int
-                    get() = 1
-                override val name: String
-                    get() = "test_fr_dictionary"
-                override val languageFrom: String
-                    get() = "hu"
-                override val languageTo: String
-                    get() = "fr"
-            }
+        addAll(
+            listOf(
+                object :
+                    DictionaryLogEntryData {
+                    override val id: Int
+                        get() = 1
+                    override val name: String
+                        get() = "test_fr_dictionary"
+                    override val languageFrom: String
+                        get() = "hu"
+                    override val languageTo: String
+                        get() = "fr"
+                },
+                Stubs.Dictionaries.frenchEnglishDictionary.toDictionaryLogEntryData()
+            )
         )
     }
 
@@ -45,6 +49,16 @@ open class TestDictDao : DictDao {
 
     override suspend fun getDictionaries(): List<DictionaryLogEntryData> {
         return mockDictionaries
+    }
+
+    override suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData> {
+        return mockDictionaries.find { it.id == id }?.let {
+            DataOperationResult.Success(
+                data = it
+            )
+        } ?: DataOperationResult.Failure(
+            errorMessage = "no dictionary found by the id: $id"
+        )
     }
 }
 

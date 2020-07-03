@@ -24,4 +24,20 @@ sealed class DataOperationResult<T> {
             return errorMessage + "\ncause: ${cause?.errorMessage() ?: "source cause"}"
         }
     }
+
+    companion object {
+
+        fun <T> firstFailure(vararg results: DataOperationResult<*>): Failure<T> {
+            val failures = results.filterIsInstance(Failure::class.java)
+            return if (failures.isNotEmpty()) {
+                Failure<T>(
+                    errorMessage = "an error has occurred",
+                    // TODO: create a combined failure object with list of causes
+                    cause = failures.first()
+                )
+            } else {
+                Failure<T>("tried to combine failures when there were none")
+            }
+        }
+    }
 }
