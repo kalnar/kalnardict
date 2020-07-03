@@ -47,3 +47,18 @@ data class DictionaryLogWithWords(
     )
     val words: List<Word>
 )
+
+@Entity(
+    tableName = DataBaseConstants.CONFIGURATION_PROPERTY_TABLE_NAME
+)
+data class ConfigurationProperty(
+    @PrimaryKey
+    @ColumnInfo(name = "property_key") val propertyKey: String,
+    @ColumnInfo(name = "property_value") val propertyValue: String
+)
+
+object DataBaseConstants {
+    const val UNINITIALIZED_PROPERTY: String = "uninitialized"
+    const val UNINITIALIZED_INT_PROPERTY: Int = -1
+    const val CONFIGURATION_PROPERTY_TABLE_NAME = "configuration_property"
+}

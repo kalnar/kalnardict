@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
+import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
@@ -15,7 +16,8 @@ import eu.kalnarapps.kalnardict.data.entities.Word
     entities = [
         Word::class,
         DictionaryLogEntry::class,
-        Language::class
+        Language::class,
+        ConfigurationProperty::class
     ],
     version = 3
 )

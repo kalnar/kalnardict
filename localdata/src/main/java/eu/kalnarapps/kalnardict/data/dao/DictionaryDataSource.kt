@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.data.dao
 
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
@@ -40,6 +41,15 @@ class DictionaryDataSource(
         return dictionaryMetaDao.getDictionaries().map {
             it.toDictionaryLogEntryData()
         }
+    }
+
+    override suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData> {
+        // TODO: to test
+        return dictionaryMetaDao.getDictionaryById(id)?.let {
+            DataOperationResult.Success(it.toDictionaryLogEntryData())
+        } ?: DataOperationResult.Failure(
+            errorMessage = "no dictionary in data source with id $id"
+        )
     }
 }
 
