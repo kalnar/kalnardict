@@ -20,7 +20,7 @@ class ConfigurationPropertyMockDao(
         }
     }
 
-    override fun getPropertyByKey(key: String): ConfigurationProperty? {
+    override suspend fun getPropertyByKey(key: String): ConfigurationProperty? {
         return ConfigurationPropertyKey.fromString(key)?.let {
             ConfigurationProperty(
                 propertyKey = it.key,
@@ -29,7 +29,12 @@ class ConfigurationPropertyMockDao(
         }
     }
 
-    override fun updateProperty(property: ConfigurationProperty) {
+    override suspend fun updateProperty(property: ConfigurationProperty) {
+        propertyRegistry[ConfigurationPropertyKey.fromString(property.propertyKey)] =
+            property.propertyValue
+    }
+
+    override fun insertProperty(property: ConfigurationProperty) {
         propertyRegistry[ConfigurationPropertyKey.fromString(property.propertyKey)] =
             property.propertyValue
     }

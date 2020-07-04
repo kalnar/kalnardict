@@ -1,5 +1,8 @@
 package eu.kalnarapps.kalnardict.data
 
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
+import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
+import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 
 object TestFixtures {
@@ -25,5 +28,16 @@ object TestFixtures {
         version = "0.01"
     )
 
+    object ConfigurationProperties {
+        val lastDictionaryUninitialized = ConfigurationProperty(
+            propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
+            propertyValue = DataBaseConstants.UNINITIALIZED_PROPERTY
+        )
+        const val updatedDictionaryId = "2"
+        val updatedLastDictionaryProperty = ConfigurationProperty(
+            propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
+            propertyValue = updatedDictionaryId
+        )
+    }
 
 }

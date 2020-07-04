@@ -5,15 +5,15 @@ import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 
 class DictionaryLogDaoMock : DictionaryLogDao {
     private val mockDictionaryInfoMap = hashMapOf<Int, DictionaryLogEntry>()
-    override fun insertDictionary(sampleDictionaryLogEntry: DictionaryLogEntry) {
+    override suspend fun insertDictionary(sampleDictionaryLogEntry: DictionaryLogEntry) {
         mockDictionaryInfoMap[sampleDictionaryLogEntry.id] = sampleDictionaryLogEntry
     }
 
-    override fun getDictionaryById(id: Int): DictionaryLogEntry? {
+    override suspend fun getDictionaryById(id: Int): DictionaryLogEntry? {
         return mockDictionaryInfoMap[id]
     }
 
-    override fun getDictionaries(): List<DictionaryLogEntry> {
+    override suspend fun getDictionaries(): List<DictionaryLogEntry> {
         return mockDictionaryInfoMap.values.toList()
     }
 

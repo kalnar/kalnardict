@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
@@ -18,9 +19,11 @@ interface ConfigurationPropertyDao {
         """
     )
     // @formatter:on
-    fun getPropertyByKey(key: String): ConfigurationProperty?
+    suspend fun getPropertyByKey(key: String): ConfigurationProperty?
 
     @Update
-    fun updateProperty(property: ConfigurationProperty)
+    suspend fun updateProperty(property: ConfigurationProperty)
 
+    @Insert
+    fun insertProperty(property: ConfigurationProperty)
 }

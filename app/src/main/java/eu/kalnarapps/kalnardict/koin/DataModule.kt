@@ -2,6 +2,9 @@ package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.dao.AuxiliaryDataSource
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
@@ -10,18 +13,22 @@ import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.database.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val dataModule: Module = module {
 
+    factory { CoroutineScope(Dispatchers.IO) }
     single {
-        AppDatabase.buildDatabase(androidContext()) as AppDatabase
+        AppDatabase.getInstance(androidContext(), get()) as AppDatabase
     }
     single { get<AppDatabase>().wordDao() as WordDao }
     single { get<AppDatabase>().languageDao() as LanguageDao }
     single { get<AppDatabase>().dictionaryLogDao() as DictionaryLogDao }
+    single { get<AppDatabase>().configurationPropertyDao() as ConfigurationPropertyDao }
 
     single {
         DictionaryDataSource(
@@ -39,5 +46,10 @@ val dataModule: Module = module {
         ExternalDbImporter(
             context = androidContext()
         ) as ExternalDatabaseHandler
+    }
+    single {
+        ConfigurationDataSource(
+            configurationPropertyDao = get()
+        ) as ConfigurationDao
     }
 }

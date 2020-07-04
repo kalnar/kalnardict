@@ -10,7 +10,7 @@ class ConfigurationDataSource(
     override suspend fun getLastDictionaryId(): Int {
         return configurationPropertyDao.getPropertyByKey(
             ConfigurationPropertyKey.LAST_DICTIONARY.key
-        )?.propertyValue?.toInt() ?: DataBaseConstants.UNINITIALIZED_INT_PROPERTY
+        )?.propertyValue?.toIntOrNull() ?: DataBaseConstants.UNINITIALIZED_INT_PROPERTY
     }
 
     override suspend fun updateLastDictionary(dictionaryId: Int) {

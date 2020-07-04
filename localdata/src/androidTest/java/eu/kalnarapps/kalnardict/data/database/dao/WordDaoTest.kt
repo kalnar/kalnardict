@@ -51,8 +51,6 @@ class WordDaoTest {
     fun createDb() {
         wordDao = db.wordDao()
         dictionaryLogDao = db.dictionaryLogDao()
-        db.clearAllTables()
-        db.close()
     }
 
     @After
@@ -77,7 +75,9 @@ class WordDaoTest {
     }
 
     private fun insertTableInHungarian() {
-        wordDao.insertWord(sampleTableInHungarian)
+        testCoroutineDispatcher.runBlockingTest {
+            wordDao.insertWord(sampleTableInHungarian)
+        }
     }
 
     @Test
@@ -102,7 +102,8 @@ class WordDaoTest {
             insertTableInHungarian()
             dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
 
-            val dictionaryLogWithWords = wordDao.getWordsByQueryInDictionary("asztal", 1).firstOrNull()
+            val dictionaryLogWithWords =
+                wordDao.getWordsByQueryInDictionary("asztal", 1).firstOrNull()
             assertThat(
                 dictionaryLogWithWords?.words?.firstOrNull()?.translation,
                 equalTo("table")

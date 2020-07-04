@@ -47,7 +47,6 @@ class DictionaryLogDaoTest {
     fun createDb() {
         dictionaryLogDao = db.dictionaryLogDao()
         db.clearAllTables()
-        db.close()
     }
 
     @After
@@ -78,9 +77,11 @@ class DictionaryLogDaoTest {
     }
 
     private fun insertDictionaryLogEntry() {
-        dictionaryLogDao.insertDictionary(
-            TestFixtures.sampleDictionaryLogEntry
-        )
+        testCoroutineDispatcher.runBlockingTest {
+            dictionaryLogDao.insertDictionary(
+                TestFixtures.sampleDictionaryLogEntry
+            )
+        }
     }
 
     @Test

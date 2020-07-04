@@ -14,10 +14,10 @@ interface WordDao {
     suspend fun getByQuery(queryString: String): List<Word>
 
     @Insert
-    fun insertWord(word: Word)
+    suspend fun insertWord(word: Word)
 
     @Insert
-    fun insertWords(wordsToInsert: List<Word>)
+    suspend fun insertWords(wordsToInsert: List<Word>)
 
     @Transaction
     @Query(
@@ -28,7 +28,7 @@ interface WordDao {
                 " FROM Word join dictionary_log ON dictionary_log.id = dictionary_id " +
                 "WHERE base_form LIKE :queryString and dictionary_id = :dictId LIMIT 100;"
     )
-    fun getWordsByQueryInDictionary(queryString: String, dictId: Int): List<DictionaryLogWithWords>
+    suspend fun getWordsByQueryInDictionary(queryString: String, dictId: Int): List<DictionaryLogWithWords>
 
 }
 
