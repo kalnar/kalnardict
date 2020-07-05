@@ -4,16 +4,24 @@ import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.interactors.GetCurrentLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListMetaInfoOnDb
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
+import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import org.koin.dsl.module
 
 
 val useCaseModule = module {
+    single {
+        RegisterNewDictionary(
+            dictionaryRepository = get(),
+            languageRepository = get()
+        ) as RegisterNewDictionaryUseCase
+    }
     single {
         ListMetaInfoOnDb(
             dictionaryRepository = get()
@@ -43,3 +51,4 @@ val useCaseModule = module {
         ) as GetLanguageUseCase
     }
 }
+
