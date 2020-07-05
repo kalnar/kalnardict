@@ -1,12 +1,15 @@
 package eu.kalnarapps.kalnardict.androidui.dependencies.mocks
 
+import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 
 class MockConfigurationRepository : ConfigurationRepository {
-    private var currentDictionary: CurrentDictionary = CurrentDictionary.DictionaryNotSet
+    private var currentDictionary: CurrentDictionary =
+        CurrentDictionary.SetDictionary(Stubs.Domain.Dictionaries.englishDict)
+
     override suspend fun getCurrentDictionary(): CurrentDictionary =
         currentDictionary
 

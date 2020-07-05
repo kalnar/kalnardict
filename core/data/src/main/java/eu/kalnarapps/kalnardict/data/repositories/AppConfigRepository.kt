@@ -22,16 +22,27 @@ class AppConfigRepository(
                 configurationDao.getLastDictionaryId()
             )) {
             is DataOperationResult.Success -> {
-                when (val dictionaryFetch = getDictionaryFromData(fetchDictionary.data)) {
-                    is DataOperationResult.Success -> CurrentDictionary.SetDictionary(
-                        dictionaryFetch.data
-                    )
-                    is DataOperationResult.Failure -> {
-                        CurrentDictionary.DictionaryNotSet
-                    }
+                getCurrentDictionaryFromData(fetchDictionary.data)
+            }
+            is DataOperationResult.Failure -> {
+                val dictionaries = dictDao.getDictionaries()
+                if (dictionaries.isEmpty()) {
+                    CurrentDictionary.DictionaryNotSet
+                } else {
+                    getCurrentDictionaryFromData(dictionaries.first())
                 }
             }
-            is DataOperationResult.Failure -> CurrentDictionary.DictionaryNotSet
+        }
+    }
+
+    private suspend fun getCurrentDictionaryFromData(data: DictionaryLogEntryData): CurrentDictionary {
+        return when (val dictionaryFetch = getDictionaryFromData(data)) {
+            is DataOperationResult.Success -> CurrentDictionary.SetDictionary(
+                dictionaryFetch.data
+            )
+            is DataOperationResult.Failure -> {
+                CurrentDictionary.DictionaryNotSet
+            }
         }
     }
 
