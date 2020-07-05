@@ -11,11 +11,9 @@ import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import org.koin.core.KoinComponent
 import java.net.URI
 
-class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
-    private val navController: NavController?
-        get() {
-            return getKoin().getProperty(Navigation.navControllerQualifier.value)
-        }
+class AndroidScreenNavigator(
+    private val navController: NavController
+) : ScreenNavigator, KoinComponent {
 
     override fun execute(navigationCommand: NavigationCommand) {
         when (navigationCommand) {
@@ -34,20 +32,20 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
     }
 
     private fun navigateToDictionaryManager() {
-        navController?.navigate(
+        navController.navigate(
             R.id.dictionaryManager
         )
     }
 
     private fun navigateToDictionaryRegistry(dbUri: URI) {
-        navController?.navigate(
+        navController.navigate(
             R.id.dictionary_registration_navigation,
             DictionaryRegistryFragmentArgs(dbPath = dbUri.path).toBundle()
         )
     }
 
     private fun navigateToDictionaryRegistryDialog(uri: URI) {
-        navController?.navigate(
+        navController.navigate(
             R.id.dictionaryRegistrationStatusDialog,
             DictionaryRegistrationStatusDialogArgs(dbPath = uri.path).toBundle()
         )
@@ -56,7 +54,7 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
     private fun showDialog(navigationCommand: NavigationCommand.ShowDialog) {
         when (navigationCommand) {
             is NavigationCommand.ShowDialog.SuccessTableRegistration -> {
-                navController?.navigate(
+                navController.navigate(
                     R.id.successTableRegistrationDialog,
                     SuccessTableRegistrationDialogArgs(
                         originalTableName = navigationCommand.table,
@@ -65,7 +63,7 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
                 )
             }
             is NavigationCommand.ShowDialog.FailureTableRegistration -> {
-                navController?.navigate(
+                navController.navigate(
                     R.id.failedTableRegistrationDialog,
                     FailedTableRegistrationDialogArgs(
                         originalTableName = navigationCommand.table,
@@ -77,12 +75,12 @@ class AndroidScreenNavigator() : ScreenNavigator, KoinComponent {
     }
 
     private fun navigateBack() {
-        navController?.popBackStack()
+        navController.popBackStack()
         return
     }
 
     private fun navigateToDictionaryQuery() {
-        navController?.let {
+        navController.let {
             val navOptions: NavOptions = NavOptions.Builder()
                 .setPopUpTo(it.graph.startDestination, false)
 //                .setPopUpTo(R.id.navigation_screen, false)

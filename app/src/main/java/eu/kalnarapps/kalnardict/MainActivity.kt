@@ -2,11 +2,6 @@ package eu.kalnarapps.kalnardict
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import eu.kalnarapps.kalnardict.androidui.navigation.Navigation
-import org.koin.android.ext.android.getKoin
-import org.koin.core.context.stopKoin
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,16 +29,4 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        getKoin().setProperty(
-            Navigation.navControllerQualifier.value,
-            findNavController(R.id.main_nav_host_fragment) as NavController
-        )
-    }
-
-    override fun onStop() {
-        stopKoin()
-        super.onStop()
-    }
 }

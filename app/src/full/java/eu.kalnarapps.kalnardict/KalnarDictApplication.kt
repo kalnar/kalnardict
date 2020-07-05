@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.koin.utilsModule
 import eu.kalnarapps.kalnardict.koin.viewModuleModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 
 
 class KalnarDictApplication : Application() {
@@ -17,13 +18,17 @@ class KalnarDictApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@KalnarDictApplication)
+            modules(navigationKoinModule)
             modules(dataModule)
             modules(repositoryModule)
             modules(useCaseModule)
-            modules(navigationKoinModule)
             modules(utilsModule)
             modules(viewModuleModule)
         }
     }
 
+    override fun onTerminate() {
+        stopKoin()
+        super.onTerminate()
+    }
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
@@ -14,10 +15,11 @@ import eu.kalnarapps.kalnardict.androidui.navigationscreen.model.NavigationItemV
 import kotlinx.android.synthetic.mock.navigation_screen_fragment.list
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class NavigationScreen : Fragment() {
 
-    private val navigator: ScreenNavigator by inject()
+    private val navigator: ScreenNavigator by inject { parametersOf(findNavController()) }
     private val viewModel: NavigationViewModel by viewModel()
 
     override fun onCreateView(

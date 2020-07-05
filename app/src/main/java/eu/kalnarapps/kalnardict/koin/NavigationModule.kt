@@ -1,13 +1,14 @@
 package eu.kalnarapps.kalnardict.koin
 
+import androidx.navigation.NavController
 import eu.kalnarapps.kalnardict.androidui.navigation.AndroidScreenNavigator
 import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
 
 val navigationKoinModule = module {
-    single {
-        AndroidScreenNavigator() as ScreenNavigator
+    factory {(navController: NavController) ->
+        AndroidScreenNavigator(navController) as ScreenNavigator
     }
 }
 
