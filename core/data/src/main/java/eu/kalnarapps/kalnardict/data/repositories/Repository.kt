@@ -19,7 +19,6 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
-import java.net.URI
 import java.util.Locale
 
 class Repository(
@@ -157,7 +156,7 @@ private fun ExternalDatabaseTable.toTableInfo(): ImportEntry.TableInfo {
 
 private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryResource {
     return object : ExternalDictionaryResource {
-        override fun uri(): URI = uri
+        override fun sdCardPath(): String = uri
     }
 }
 

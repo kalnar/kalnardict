@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.database.getStorageRootPath
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictEntryToData
 
@@ -17,7 +18,7 @@ class ExternalDbImporter(
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-                resource.uri().path
+                "${context.getStorageRootPath()}/${resource.sdCardPath()}"
             )
         val missingColumnsInMetaInfo = dbHelper.getMissingColumnsInMetaInfo()
         if (missingColumnsInMetaInfo.isEmpty()) {
@@ -48,7 +49,7 @@ class ExternalDbImporter(
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-                resource.uri().path
+                "${context.getStorageRootPath()}/${resource.sdCardPath()}"
             )
         val cursorOnMetaInfo =
             dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
@@ -86,7 +87,8 @@ class ExternalDbImporter(
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-                importJob.externalDictionaryResource().uri().path
+                "${context.getStorageRootPath()}/${importJob.externalDictionaryResource()
+                    .sdCardPath()}"
             )
         val tableName = importJob.tableInfo().name()
         val cursorOnDictTable =

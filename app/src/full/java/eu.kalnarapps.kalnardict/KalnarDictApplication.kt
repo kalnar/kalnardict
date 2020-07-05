@@ -7,6 +7,7 @@ import eu.kalnarapps.kalnardict.koin.repositoryModule
 import eu.kalnarapps.kalnardict.koin.useCaseModule
 import eu.kalnarapps.kalnardict.koin.utilsModule
 import eu.kalnarapps.kalnardict.koin.viewModuleModule
+import eu.kalnarapps.kalnardict.koin.utilsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -24,6 +25,7 @@ class KalnarDictApplication : Application() {
             modules(useCaseModule)
             modules(utilsModule)
             modules(viewModuleModule)
+            modules(utilsModule)
         }
     }
 

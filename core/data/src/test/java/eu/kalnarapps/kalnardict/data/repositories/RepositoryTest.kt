@@ -113,7 +113,7 @@ class RepositoryTest {
             val importResult = repository.importTableFromDb(
                 ImportJob(
                     sampleExternalDbTable,
-                    ExternalDatabase.LocalFile(uri = URI(externalDbPath))
+                    ExternalDatabase.LocalFile(localPath = externalDbPath)
                 )
             )
             assertThat(

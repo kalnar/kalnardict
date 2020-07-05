@@ -16,7 +16,6 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import kotlinx.coroutines.launch
-import java.net.URI
 
 const val UNKNOWN_LANGUAGE: String = "unk"
 
@@ -29,7 +28,7 @@ class DictionaryRegistryViewModel(
 
     init {
         viewModelScope.launch {
-            val metaInfoFetch = loadDbMetaInfoOnDb(URI(dbPath))
+            val metaInfoFetch = loadDbMetaInfoOnDb(dbPath)
             setUiState(
                 DictionaryRegistryState(
                     dbPath = dbPath,
@@ -39,7 +38,9 @@ class DictionaryRegistryViewModel(
                         }
                         is DataOperationResult.Failure -> {
                             postError(
-                                ErrorFromUi(logMessage = metaInfoFetch.errorMessage)
+                                ErrorFromUi(
+                                    logMessage = metaInfoFetch.errorMessage
+                                )
                             )
                             emptyList()
                         }
@@ -92,7 +93,7 @@ class DictionaryRegistryViewModel(
             )
             postNavigationCommand(
                 NavigationCommand.NavigateToDictionaryRegistryDialog(
-                    uri = URI(state.value?.dbPath.orEmpty())
+                    uri = state.value?.dbPath.orEmpty()
                 )
             )
         }

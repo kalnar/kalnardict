@@ -98,22 +98,22 @@ class TestExternalDatabaseHandler :
     }
 
     override fun readTableInfosFrom(resource: ExternalDictionaryResource): DataOperationResult<List<ImportEntry.TableInfo>> {
-        return when (resource.uri()) {
-            Stubs.Db.validExternalDatabase.uri -> DataOperationResult.Success(
+        return when (resource.sdCardPath()) {
+            Stubs.Db.validExternalDatabase.localPath -> DataOperationResult.Success(
                 listOf(
                     Stubs.MetaInfoOnDb.table1.toTableInfo(),
                     Stubs.MetaInfoOnDb.table2.toTableInfo()
                 )
             )
             else -> DataOperationResult.Failure(
-                errorMessage = "error while reading ${resource.uri()}"
+                errorMessage = "error while reading ${resource.sdCardPath()}"
             )
         }
     }
 
     override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>> {
-        val resource = importJob.externalDictionaryResource().uri()
-        return if (resource == validExternalResource.uri) {
+        val resource = importJob.externalDictionaryResource().sdCardPath()
+        return if (resource == validExternalResource.localPath) {
             DataOperationResult.Success(data = newWordsInFrench)
         } else {
             DataOperationResult.Failure(

@@ -8,7 +8,6 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
-import java.net.URI
 
 class RegisterNewDictionary(
     private val dictionaryRepository: DictionaryRepository,
@@ -34,7 +33,7 @@ class RegisterNewDictionary(
                         languageFrom = sourceLanguageFetch.data.code,
                         languageTo = destinationLanguageFetch.data.code
                     ),
-                    resource = ExternalDatabase.LocalFile(URI(dbUri)),
+                    resource = ExternalDatabase.LocalFile(dbUri),
                     displayName = savingName
                 )
             )

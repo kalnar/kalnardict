@@ -6,7 +6,6 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import java.net.URI
 
 object Stubs {
     object Languages {
@@ -49,7 +48,7 @@ object Stubs {
     }
 
     object Db {
-        val validExternalDatabase = ExternalDatabase.LocalFile(URI("valid"))
-        val invalidExternalDatabase = ExternalDatabase.LocalFile(URI("invalid"))
+        val validExternalDatabase = ExternalDatabase.LocalFile("valid")
+        val invalidExternalDatabase = ExternalDatabase.LocalFile("invalid")
     }
 }

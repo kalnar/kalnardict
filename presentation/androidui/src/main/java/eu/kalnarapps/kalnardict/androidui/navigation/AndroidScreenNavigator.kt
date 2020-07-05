@@ -9,7 +9,6 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryR
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog.DictionaryRegistrationStatusDialogArgs
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import org.koin.core.KoinComponent
-import java.net.URI
 
 class AndroidScreenNavigator(
     private val navController: NavController
@@ -37,17 +36,17 @@ class AndroidScreenNavigator(
         )
     }
 
-    private fun navigateToDictionaryRegistry(dbUri: URI) {
+    private fun navigateToDictionaryRegistry(dbUri: String) {
         navController.navigate(
             R.id.dictionary_registration_navigation,
-            DictionaryRegistryFragmentArgs(dbPath = dbUri.path).toBundle()
+            DictionaryRegistryFragmentArgs(dbPath = dbUri).toBundle()
         )
     }
 
-    private fun navigateToDictionaryRegistryDialog(uri: URI) {
+    private fun navigateToDictionaryRegistryDialog(uri: String) {
         navController.navigate(
             R.id.dictionaryRegistrationStatusDialog,
-            DictionaryRegistrationStatusDialogArgs(dbPath = uri.path).toBundle()
+            DictionaryRegistrationStatusDialogArgs(dbPath = uri).toBundle()
         )
     }
 

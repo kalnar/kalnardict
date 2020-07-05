@@ -1,11 +1,9 @@
 package eu.kalnarapps.kalnardict.androidui.navigation
 
-import java.net.URI
-
 sealed class NavigationCommand {
     object Back : NavigationCommand()
-    class NavigateToDictionaryRegistry(val uri: URI) : NavigationCommand()
-    class NavigateToDictionaryRegistryDialog(val uri: URI) : NavigationCommand()
+    class NavigateToDictionaryRegistry(val uri: String) : NavigationCommand()
+    class NavigateToDictionaryRegistryDialog(val uri: String) : NavigationCommand()
     object NavigateToDictionaryQuery : NavigationCommand()
     object NavigateToDictionaryManager : NavigationCommand()
     object DoNothing : NavigationCommand()

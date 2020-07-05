@@ -1,15 +1,22 @@
 package eu.kalnarapps.kalnardict.data.dao
 
+import android.Manifest
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.rule.GrantPermissionRule
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.TestFixtures
-import eu.kalnarapps.kalnardict.data.database.*
+import eu.kalnarapps.kalnardict.data.database.EXTERNAL_TEST_DB_NAME
+import eu.kalnarapps.kalnardict.data.database.INVALID_EXTERNAL_TEST_DB_NAME
+import eu.kalnarapps.kalnardict.data.database.SQLiteDbMockHelper
+import eu.kalnarapps.kalnardict.data.database.TEST_TEMP_DIR_LOCAL_PATH
+import eu.kalnarapps.kalnardict.data.database.copyTestDbFromAssetsToTempTestDir
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
+import eu.kalnarapps.kalnardict.data.database.getStorageRootPath
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
@@ -17,11 +24,18 @@ import org.hamcrest.core.IsInstanceOf
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.File
-import java.net.URI
 
 class ExternalDbImporterTest {
+
+    @get:Rule
+    val mRuntimePermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
 
     private val externalResourceImporter =
         ExternalDbImporter(
@@ -40,8 +54,8 @@ class ExternalDbImporterTest {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
-            override fun uri(): URI =
-                URI("${context.createTestTempDir()}/$EXTERNAL_TEST_DB_NAME")
+            override fun sdCardPath(): String =
+                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val dbValidity =
@@ -59,21 +73,21 @@ class ExternalDbImporterTest {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         val invalidExternalResource = object : ExternalDictionaryResource {
-            override fun uri(): URI =
-                URI("${context.createTestTempDir()}/$INVALID_EXTERNAL_TEST_DB_NAME")
+            override fun sdCardPath(): String =
+                "$TEST_TEMP_DIR_LOCAL_PATH/$INVALID_EXTERNAL_TEST_DB_NAME"
         }
-        File(invalidExternalResource.uri().path).apply {
+        File(invalidExternalResource.sdCardPath()).apply {
             delete()
             assertFalse(exists())
         }
-        File("${invalidExternalResource.uri().path}-journal").apply {
+        File("${invalidExternalResource.sdCardPath()}-journal").apply {
             delete()
             assertFalse(exists())
         }
 
         SQLiteDbMockHelper(
             context,
-            invalidExternalResource.uri().path,
+            "${context.getStorageRootPath()}/${invalidExternalResource.sdCardPath()}",
             listOf(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
         ).apply {
             // on create is called only if db is accessed
@@ -96,21 +110,21 @@ class ExternalDbImporterTest {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         val invalidExternalResource = object : ExternalDictionaryResource {
-            override fun uri(): URI =
-                URI("${context.createTestTempDir()}/$INVALID_EXTERNAL_TEST_DB_NAME")
+            override fun sdCardPath(): String =
+                "${TEST_TEMP_DIR_LOCAL_PATH}/$INVALID_EXTERNAL_TEST_DB_NAME"
         }
-        File(invalidExternalResource.uri().path).apply {
+        File(invalidExternalResource.sdCardPath()).apply {
             delete()
             assertFalse(exists())
         }
-        File("${invalidExternalResource.uri().path}-journal").apply {
+        File("${invalidExternalResource.sdCardPath()}-journal").apply {
             delete()
             assertFalse(exists())
         }
 
         SQLiteDbMockHelper(
             context,
-            invalidExternalResource.uri().path,
+            "${context.getStorageRootPath()}/${invalidExternalResource.sdCardPath()}",
             missingColumnsDictionary = listOf(
                 DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
             )
@@ -133,8 +147,8 @@ class ExternalDbImporterTest {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
-            override fun uri(): URI =
-                URI("${context.createTestTempDir()}/$EXTERNAL_TEST_DB_NAME")
+            override fun sdCardPath(): String =
+                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val tableList = externalResourceImporter.readTableInfosFrom(validExternalResource)
@@ -168,8 +182,8 @@ class ExternalDbImporterTest {
     fun import_one_dictionary_entry_from_valid_table() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
-            override fun uri(): URI =
-                URI("${context.createTestTempDir()}/$EXTERNAL_TEST_DB_NAME")
+            override fun sdCardPath(): String =
+                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val readingDictionaryEntriesResult = externalResourceImporter.readTableEntriesFrom(

@@ -6,7 +6,6 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import java.net.URI
 
 val sampleQueryNewWord = DictQuery(
     "nouveau",
@@ -49,9 +48,9 @@ data class MockDictEntry(
 ) : DictEntry
 
 val validExternalResource = ExternalDatabase.LocalFile(
-    uri = URI("mockDbPath")
+    localPath = "mockDbPath"
 )
 
 val invalidExternalResource = ExternalDatabase.LocalFile(
-    uri = URI("mockInvalidDbPath")
+    localPath = "mockInvalidDbPath"
 )

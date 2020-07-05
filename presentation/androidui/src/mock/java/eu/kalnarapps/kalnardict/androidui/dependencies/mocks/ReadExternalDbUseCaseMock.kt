@@ -4,11 +4,10 @@ import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
-import java.net.URI
 
 class ReadExternalDbUseCaseMock(private val isAlwaysValid: Boolean = false) :
     ReadExternalDbUseCase {
-    override suspend fun invoke(uri: URI): DataOperationResult<List<ExternalDatabaseTable>> {
+    override suspend fun invoke(uri: String): DataOperationResult<List<ExternalDatabaseTable>> {
         return when {
             uri == UiStubs.Uris.validUri || isAlwaysValid -> DataOperationResult.Success(
                 listOf(
@@ -17,7 +16,7 @@ class ReadExternalDbUseCaseMock(private val isAlwaysValid: Boolean = false) :
                 )
             )
             else -> DataOperationResult.Failure(
-                errorMessage = "db: ${uri.path} is not of correct format"
+                errorMessage = "db: $uri is not of correct format"
             )
         }
     }

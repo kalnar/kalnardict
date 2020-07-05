@@ -12,7 +12,7 @@ class MockRegisterNewDictionaryUseCase() : RegisterNewDictionaryUseCase {
         languageFrom: String,
         languageTo: String
     ): OperationResult =
-        if (dbUri == UiStubs.Uris.validUri.path) OperationResult.Success else OperationResult.Failure(
+        if (dbUri == UiStubs.Uris.validUri) OperationResult.Success else OperationResult.Failure(
             errorMessage = "this mock fails always"
         )
 }

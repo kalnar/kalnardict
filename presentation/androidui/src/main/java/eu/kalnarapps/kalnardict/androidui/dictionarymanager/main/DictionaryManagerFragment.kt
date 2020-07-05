@@ -8,18 +8,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
+import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.ManageableDictionaryListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnDictionaryClickListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnNewButtonAction
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
 
     override val viewModel: DictionaryManagerViewModel by viewModel()
+    private val uriAdapter: UriAdapter by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +50,6 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
                 object : OnNewButtonAction {
                     override fun invoke() {
                         getContent.launch("*/*")
-                        Toast.makeText(context, "new button clicked", Toast.LENGTH_SHORT).show()
                     }
 
                 }
@@ -58,7 +60,6 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
     private val getContent = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        Toast.makeText(requireContext(), "get uri: $uri", Toast.LENGTH_SHORT).show()
-        viewModel.onDbSelected(uri?.path.orEmpty())
+        viewModel.onDbSelected(uriAdapter.convertUriToSdcardPath(uri))
     }
 }

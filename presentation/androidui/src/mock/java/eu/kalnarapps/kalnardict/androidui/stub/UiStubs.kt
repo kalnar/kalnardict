@@ -2,13 +2,12 @@ package eu.kalnarapps.kalnardict.androidui.stub
 
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import java.net.URI
 
 object UiStubs {
 
     object Uris {
-        val validUri = URI("valid")
-        val invalidUri = URI("invalid")
+        const val validUri = "valid"
+        const val invalidUri = "invalid"
     }
 
     object TableUiInfo {

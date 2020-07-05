@@ -2,7 +2,6 @@ package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
-import java.net.URI
 
 interface ExternalDatabaseHandler {
 
@@ -18,7 +17,7 @@ enum class DatabaseValidity {
 }
 
 interface ExternalDictionaryResource {
-    fun uri(): URI
+    fun sdCardPath(): String
 }
 
 interface ImportEntry {

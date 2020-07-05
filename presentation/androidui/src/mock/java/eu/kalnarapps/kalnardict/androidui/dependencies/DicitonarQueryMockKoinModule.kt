@@ -1,7 +1,5 @@
 package eu.kalnarapps.kalnardict.androidui.dependencies
 
-import eu.kalnarapps.kalnardict.android.utils.KalnarLogger
-import eu.kalnarapps.kalnardict.android.utils.Logger
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryViewModel
 import eu.kalnarapps.kalnardict.interactors.GetCurrentLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
@@ -29,5 +27,4 @@ val dictionaryQueryKoinMockModule: Module = module {
             )
         )
     }
-    single { KalnarLogger() as Logger }
 }

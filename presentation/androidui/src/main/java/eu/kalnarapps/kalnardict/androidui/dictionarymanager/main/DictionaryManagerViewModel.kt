@@ -5,7 +5,6 @@ import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import kotlinx.coroutines.launch
-import java.net.URI
 
 class DictionaryManagerViewModel(
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCase
@@ -38,7 +37,7 @@ class DictionaryManagerViewModel(
     fun onDbSelected(uriPath: String) {
         postNavigationCommand(
             NavigationCommand.NavigateToDictionaryRegistry(
-                uri = URI(uriPath)
+                uri = uriPath
             )
         )
     }
