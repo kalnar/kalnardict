@@ -44,7 +44,7 @@ class DictionaryQueryViewModel(
                     )
                 }
                 CurrentDictionary.DictionaryNotSet -> {
-                    // No op
+                    postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
                 }
             }.exhaustive
         }

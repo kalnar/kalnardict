@@ -21,7 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.KoinComponent
 
 @Database(
     entities = [
@@ -30,7 +29,7 @@ import org.koin.core.KoinComponent
         Language::class,
         ConfigurationProperty::class
     ],
-    version = 3
+    version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
@@ -38,7 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dictionaryLogDao(): DictionaryLogDao
     abstract fun configurationPropertyDao(): ConfigurationPropertyDao
 
-    companion object : KoinComponent {
+    companion object {
         private var instance: AppDatabase? = null
 
         /**
@@ -60,7 +59,7 @@ abstract class AppDatabase : RoomDatabase() {
                         RoomDatabaseInitializer(
                             context,
                             scope,
-                            getKoin().get()
+                            DefaultDbInitializer
                         )
                     )
                     .fallbackToDestructiveMigration()
@@ -84,7 +83,7 @@ abstract class AppDatabase : RoomDatabase() {
                     RoomDatabaseInitializer(
                         context,
                         scope,
-                        getKoin().get()
+                        DefaultDbInitializer
                     )
                 )
                 .build()

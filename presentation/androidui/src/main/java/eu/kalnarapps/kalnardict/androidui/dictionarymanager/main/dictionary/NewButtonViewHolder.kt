@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import eu.kalnarapps.kalnardict.androidui.R
 
 class NewButtonViewHolder(
@@ -16,7 +16,7 @@ class NewButtonViewHolder(
     )
 ) {
 
-    private val button: ImageView = itemView.findViewById(R.id.new_dictionary_button)
+    private val button: MaterialButton = itemView.findViewById(R.id.new_dictionary_button)
 
     fun bind(onNewButtonAction: OnNewButtonAction) {
         button.setOnClickListener {

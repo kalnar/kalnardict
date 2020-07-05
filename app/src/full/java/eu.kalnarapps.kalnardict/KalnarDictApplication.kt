@@ -25,7 +25,6 @@ class KalnarDictApplication : Application() {
             modules(useCaseModule)
             modules(utilsModule)
             modules(viewModuleModule)
-            modules(utilsModule)
         }
     }
 

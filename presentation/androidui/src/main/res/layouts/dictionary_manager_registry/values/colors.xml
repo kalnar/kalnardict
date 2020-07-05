@@ -4,4 +4,6 @@
     <color name="cardBackground">#1B2836</color>
     <color name="ok_status_color">#587547</color>
     <color name="error_status_color">#B04C45</color>
+    <color name="message_white">#E0F7FA</color>
+    <color name="card_background">#e3f2fd</color>
 </resources>
