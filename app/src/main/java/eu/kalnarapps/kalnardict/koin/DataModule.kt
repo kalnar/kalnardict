@@ -11,7 +11,7 @@ import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
-import eu.kalnarapps.kalnardict.data.database.AppDatabase
+import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -7,7 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
-import eu.kalnarapps.kalnardict.data.database.AppDatabase
+import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.newWordToInsert
 import eu.kalnarapps.kalnardict.data.database.sampleDictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.database.sampleTableInHungarian

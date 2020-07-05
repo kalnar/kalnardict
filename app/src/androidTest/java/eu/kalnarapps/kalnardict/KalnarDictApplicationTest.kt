@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import eu.kalnarapps.kalnardict.data.database.getDatabasePath
+import eu.kalnarapps.kalnardict.data.database.inapp.getDatabasePath
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.io.FileMatchers
 import org.junit.Test

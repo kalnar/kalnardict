@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import eu.kalnarapps.kalnardict.data.database.inapp.getDatabasePath
+import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import org.hamcrest.CoreMatchers.*
 import org.junit.Test
 

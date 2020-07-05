@@ -16,7 +16,7 @@ import eu.kalnarapps.kalnardict.data.database.TEST_TEMP_DIR_LOCAL_PATH
 import eu.kalnarapps.kalnardict.data.database.copyTestDbFromAssetsToTempTestDir
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
-import eu.kalnarapps.kalnardict.data.database.getStorageRootPath
+import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection

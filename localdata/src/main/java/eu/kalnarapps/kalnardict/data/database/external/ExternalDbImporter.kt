@@ -6,7 +6,7 @@ import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
-import eu.kalnarapps.kalnardict.data.database.getStorageRootPath
+import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictEntryToData
 

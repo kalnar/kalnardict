@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.database
+package eu.kalnarapps.kalnardict.data.database.inapp
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
@@ -57,7 +57,12 @@ abstract class AppDatabase : RoomDatabase() {
                         AppDatabase::class.java,
                         context.getDatabasePath()
                     )
-                    .addCallback(RoomDatabaseInitializer(context, scope))
+                    .addCallback(
+                        RoomDatabaseInitializer(
+                            context,
+                            scope
+                        )
+                    )
                     .fallbackToDestructiveMigration()
                     .build()
             }
@@ -75,7 +80,12 @@ abstract class AppDatabase : RoomDatabase() {
                 .setTransactionExecutor(dispatcher.asExecutor())
                 .setQueryExecutor(dispatcher.asExecutor())
                 .fallbackToDestructiveMigration()
-                .addCallback(RoomDatabaseInitializer(context, scope))
+                .addCallback(
+                    RoomDatabaseInitializer(
+                        context,
+                        scope
+                    )
+                )
                 .build()
         }
     }
@@ -94,7 +104,10 @@ private class RoomDatabaseInitializer(
         scope.launch {
             withContext(dispatcherProvider.io()) {
                 populateInitialData(
-                    AppDatabase.getInstance(context, scope).configurationPropertyDao()
+                    AppDatabase.getInstance(
+                        context,
+                        scope
+                    ).configurationPropertyDao()
                 )
             }
         }
