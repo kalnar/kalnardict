@@ -11,8 +11,10 @@ import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
-import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
+import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
+import eu.kalnarapps.kalnardict.data.database.inapp.AppDbDataInitializer
+import eu.kalnarapps.kalnardict.data.database.inapp.DefaultDbInitializer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -21,6 +23,8 @@ import org.koin.dsl.module
 
 val dataModule: Module = module {
 
+    single { DefaultDbInitializer as AppDbDataInitializer }
+    // TODO: check why some use + Job() for dispatcher
     factory { CoroutineScope(Dispatchers.IO) }
     single {
         AppDatabase.getInstance(androidContext(), get()) as AppDatabase

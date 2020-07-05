@@ -9,12 +9,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
-import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
@@ -23,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.KoinComponent
 
 @Database(
     entities = [
@@ -39,7 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dictionaryLogDao(): DictionaryLogDao
     abstract fun configurationPropertyDao(): ConfigurationPropertyDao
 
-    companion object {
+    companion object : KoinComponent {
         private var instance: AppDatabase? = null
 
         /**
@@ -60,7 +59,8 @@ abstract class AppDatabase : RoomDatabase() {
                     .addCallback(
                         RoomDatabaseInitializer(
                             context,
-                            scope
+                            scope,
+                            getKoin().get()
                         )
                     )
                     .fallbackToDestructiveMigration()
@@ -83,7 +83,8 @@ abstract class AppDatabase : RoomDatabase() {
                 .addCallback(
                     RoomDatabaseInitializer(
                         context,
-                        scope
+                        scope,
+                        getKoin().get()
                     )
                 )
                 .build()
@@ -96,6 +97,7 @@ abstract class AppDatabase : RoomDatabase() {
 private class RoomDatabaseInitializer(
     private val context: Context,
     private val scope: CoroutineScope,
+    private val dbInitializer: AppDbDataInitializer,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : RoomDatabase.Callback() {
 
@@ -103,26 +105,16 @@ private class RoomDatabaseInitializer(
         super.onCreate(db)
         scope.launch {
             withContext(dispatcherProvider.io()) {
-                populateInitialData(
+                dbInitializer.populateInitialData(
                     AppDatabase.getInstance(
                         context,
                         scope
-                    ).configurationPropertyDao()
+                    )
                 )
             }
         }
     }
 
-    private fun populateInitialData(configDao: ConfigurationPropertyDao) {
-        for (propertyEnum in ConfigurationPropertyKey.values()) {
-            configDao.insertProperty(
-                property = ConfigurationProperty(
-                    propertyKey = propertyEnum.key,
-                    propertyValue = DataBaseConstants.UNINITIALIZED_PROPERTY
-                )
-            )
-        }
-    }
 }
 
 
