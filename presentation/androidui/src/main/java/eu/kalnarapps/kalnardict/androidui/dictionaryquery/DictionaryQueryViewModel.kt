@@ -7,12 +7,13 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvi
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
+import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
-import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -26,18 +27,26 @@ class DictionaryQueryViewModel(
 
     init {
         viewModelScope.launch {
-            setUiState(
-                DictionaryQueryState(
-                    typedQueryString = "",
-                    queryResults = listQueryResultsUseCase.invokeWith("").map {
-                        WordView(baseForm = it.baseForm)
-                    },
-                    dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke().map {
-                        it.toDictionarySelectorItem()
-                    },
-                    currentDictionaryItemView = getCurrentLanguageUseCase().toDictionarySelectorItem()
-                )
-            )
+            when (val currentDictionary = getCurrentLanguageUseCase()) {
+                is CurrentDictionary.SetDictionary -> {
+                    setUiState(
+                        DictionaryQueryState(
+                            typedQueryString = "",
+                            queryResults = listQueryResultsUseCase.invokeWith("").map {
+                                WordView(baseForm = it.baseForm)
+                            },
+                            dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke()
+                                .map {
+                                    it.toDictionarySelectorItem()
+                                },
+                            currentDictionaryItemView = currentDictionary.dictionary.toDictionarySelectorItem()
+                        )
+                    )
+                }
+                CurrentDictionary.DictionaryNotSet -> {
+                    // No op
+                }
+            }.exhaustive
         }
     }
 

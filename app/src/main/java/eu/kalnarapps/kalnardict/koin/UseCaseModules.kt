@@ -46,9 +46,7 @@ val useCaseModule = module {
     }
     single {
         GetCurrentLanguageUseCase(
-            configurationRepository = get(),
-            dictionaryRepository = get()
+            configurationRepository = get()
         ) as GetLanguageUseCase
     }
 }
-
