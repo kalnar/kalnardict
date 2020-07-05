@@ -18,15 +18,15 @@ class WordDaoMock : WordDao {
         return words.filter { it.baseForm.contains(queryString) }
     }
 
-    override fun insertWord(word: Word) {
+    override suspend fun insertWord(word: Word) {
         words.add(word)
     }
 
-    override fun insertWords(newWords: List<Word>) {
+    override suspend fun insertWords(newWords: List<Word>) {
         this.words.addAll(newWords)
     }
 
-    override fun getWordsByQueryInDictionary(
+    override suspend fun getWordsByQueryInDictionary(
         queryString: String,
         dictId: Int
     ): List<DictionaryLogWithWords> {
