@@ -17,3 +17,4 @@
 /presentation/androidui/src/main/java/eu/kalnarapps/kalnardict/androidui/dictionarymanager/DicitonaryManagerKoinModule.kt
 /app/src/main/res/navigation/main_nav_graph.xml
 /notes/tags
+*.swp
