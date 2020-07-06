@@ -1,9 +1,12 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
+import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.DomainToUiMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
@@ -58,12 +61,21 @@ class DictionaryRegistryViewModel(
         }
     }
 
+    fun isAddNewLanguageSelected(): LiveData<Boolean> {
+        return Transformations.map(state) {
+            it.tableInfoUiModels.any { tableRegisteringForm ->
+                tableRegisteringForm.languageFromUi == SelectableLanguage.AddNewLanguage ||
+                        tableRegisteringForm.languageToUi == SelectableLanguage.AddNewLanguage
+            }
+        }
+    }
+
     fun getTables(): List<ExternalTableUiInfo> {
         return state.value?.tableInfoUiModels.orEmpty()
     }
 
-    fun getKnownLanguages(): List<SelectableLanguage.LanguageUi> {
-        return state.value?.availableLanguages.orEmpty()
+    fun getSelectableLanguages(): List<SelectableLanguage> {
+        return state.value?.availableLanguages.orEmpty() + SelectableLanguage.AddNewLanguage
     }
 
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {
@@ -110,19 +122,46 @@ class DictionaryRegistryViewModel(
     }
 
     private suspend fun registerDictionary(externalTableUiInfo: ExternalTableUiInfo): OperationResult {
-        return registerNewDictionary(
-            dbUri = state.value?.dbPath.orEmpty(),
-            originalName = externalTableUiInfo.originalTableName,
-            savingName = externalTableUiInfo.dictionaryName,
-            languageFrom = externalTableUiInfo.languageFromUi.toDataString(),
-            languageTo = externalTableUiInfo.languageToUi.toDataString()
-        ).also {
-            if (it is OperationResult.Failure) {
-                postError(
-                    ErrorFromUi(logMessage = it.errorMessage)
-                )
+        // TODO: this check should happen in registerDictionaries or onRegisterDictionariesClicked
+        if (externalTableUiInfo.languageFromUi is SelectableLanguage.LanguageUi &&
+            externalTableUiInfo.languageToUi is SelectableLanguage.LanguageUi
+        ) {
+            return registerNewDictionary(
+                dbUri = state.value?.dbPath.orEmpty(),
+                originalName = externalTableUiInfo.originalTableName,
+                savingName = externalTableUiInfo.dictionaryName,
+                languageFrom = externalTableUiInfo.languageFromUi.code,
+                languageTo = externalTableUiInfo.languageToUi.code
+            ).also {
+                if (it is OperationResult.Failure) {
+                    postError(
+                        ErrorFromUi(logMessage = it.errorMessage)
+                    )
+                }
             }
+        } else {
+            return handleLanguageNotSetError(externalTableUiInfo)
         }
+    }
+
+    private fun handleLanguageNotSetError(
+        externalTableUiInfo: ExternalTableUiInfo
+    ): OperationResult.Failure {
+        val errorMsg =
+            "either ${externalTableUiInfo.languageFromUi} or " +
+                    "${externalTableUiInfo.languageToUi} wasn't set"
+        postError(
+            ErrorFromUi(
+                // TODO: find a solution that can use string resources
+                //  and doesn't require context in viewmodel
+                // idea: specific uIfeedback object even for single use cases then in base
+                // fragment use some external class to handle all of when as it might grow big
+                errorMsg, ErrorUiFeedBack.ShowToast(
+                    "please set language"
+                )
+            )
+        )
+        return OperationResult.Failure(errorMsg)
     }
 
 
@@ -134,15 +173,15 @@ class DictionaryRegistryViewModel(
         postNavigationCommand(NavigationCommand.NavigateToDictionaryQuery)
     }
 
-}
-
-private fun SelectableLanguage.toDataString(): String {
-    return when (this) {
-        is SelectableLanguage.LanguageUi -> code
-        SelectableLanguage.NotSet -> UNKNOWN_LANGUAGE
+    fun onLanguageAdditionRequest() {
+        postNavigationCommand(
+            NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog
+        )
     }
+
 }
 
+// TODO: refactor to DomainToUiModel mapper
 private fun ExternalDatabaseTable.toExternalTableUiInfo(): ExternalTableUiInfo {
     return ExternalTableUiInfo(
         originalTableName = this.name,

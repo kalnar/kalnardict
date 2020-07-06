@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
-import eu.kalnarapps.kalnardict.androidui.common.viewextensions.visibleIf
+import eu.kalnarapps.kalnardict.androidui.common.viewextensions.visibleXorGone
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.ManageableDictionaryListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnDictionaryClickListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnNewButtonAction
@@ -37,7 +37,7 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val dictionaries = viewModel.getRegisteredDictionaries()
-        dictionary_manager_no_dictionary_description.visibleIf(dictionaries.isEmpty())
+        dictionary_manager_no_dictionary_description.visibleXorGone(dictionaries.isEmpty())
         list_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ManageableDictionaryListAdapter(

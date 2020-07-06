@@ -9,6 +9,7 @@ data class ErrorFromUi(
 
 sealed class ErrorUiFeedBack {
     class ShowSnackBar(val msg: String) : ErrorUiFeedBack()
+    class ShowToast(val msg: String) : ErrorUiFeedBack()
     class Navigate(val navCommand: NavigationCommand) : ErrorUiFeedBack()
     object OnlyLog : ErrorUiFeedBack()
 }

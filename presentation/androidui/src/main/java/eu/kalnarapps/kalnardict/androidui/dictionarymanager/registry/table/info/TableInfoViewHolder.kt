@@ -37,7 +37,7 @@ class TableInfoViewHolder(
 
     fun bind(
         tableInfoUi: ExternalTableUiInfo,
-        languageItemUiModels: List<SelectableLanguage.LanguageUi>
+        languageItemUiModels: List<SelectableLanguage>
     ) {
         titleView.text = tableInfoUi.dictionaryName
         dictionaryNameEditText.apply {

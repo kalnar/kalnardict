@@ -246,7 +246,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         )
 
         assertThat(
-            viewModel.getKnownLanguages(),
+            viewModel.getSelectableLanguages(),
             IsIterableContainingInAnyOrder(
                 Stubs.Domain.Languages.frenchAndEnglishLanguage.map {
                     equalTo(LanguageMapper().toUiModel(it))
@@ -268,7 +268,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         )
 
         assertThat(
-            viewModel.getKnownLanguages(),
+            viewModel.getSelectableLanguages(),
             IsEmptyCollection()
         )
     }

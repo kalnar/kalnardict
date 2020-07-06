@@ -17,17 +17,26 @@ class AndroidScreenNavigator(
     override fun execute(navigationCommand: NavigationCommand) {
         when (navigationCommand) {
             NavigationCommand.Back -> navigateBack()
-            is NavigationCommand.NavigateToDictionaryRegistry -> navigateToDictionaryRegistry(
-                navigationCommand.uri
-            )
-            is NavigationCommand.NavigateToDictionaryRegistryDialog -> navigateToDictionaryRegistryDialog(
-                navigationCommand.uri
-            )
+            is NavigationCommand.NavigateToDictionaryRegistry -> {
+                navigateToDictionaryRegistry(navigationCommand.uri)
+            }
+            is NavigationCommand.NavigateToDictionaryRegistryDialog -> {
+                navigateToDictionaryRegistryDialog(navigationCommand.uri)
+            }
+            NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog -> {
+                showLanguageRegistryDialog()
+            }
             NavigationCommand.NavigateToDictionaryQuery -> navigateToDictionaryQuery()
             NavigationCommand.NavigateToDictionaryManager -> navigateToDictionaryManager()
             is NavigationCommand.ShowDialog -> showDialog(navigationCommand)
             NavigationCommand.DoNothing -> Unit
         }.exhaustive
+    }
+
+    private fun showLanguageRegistryDialog() {
+        navController.navigate(
+            R.id.newLanguageDialog
+        )
     }
 
     private fun navigateToDictionaryManager() {

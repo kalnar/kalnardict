@@ -3,6 +3,9 @@
     <string name="table_registering_name">name to register:</string>
     <string name="language_from_key">source language:</string>
     <string name="language_to_key">destination language:</string>
+    <string name="new_language_tag">add new language:</string>
+    <string name="new_language_code_tag">code:</string>
+    <string name="new_language_description_tag">description:</string>
     <string name="table_registering_submit_btn_text">register tables</string>
     <string name="import_database">import new dictionaries</string>
     <string name="dictionary_save_switch_text">import</string>
@@ -12,4 +15,9 @@
     <string name="table_registration_dialog_dictionary_name_hint">new dictionary name</string>
     <string name="dictionary_manager_title">Dictionary Manager</string>
     <string name="dictionary_manager_no_dictionary_description">No registered dictionaries found. Please register a dictionary from an external database</string>
+    <string name="add_new_language_text">add new language</string>
+    <string name="no_languages_available">N/A</string>
+    <string name="selected_language_text">%s (%s)</string>
+    <string name="add_new_language_dialog_title_text">Add new language</string>
+    <string name="language_registry_dialog_cta">register language</string>
 </resources>

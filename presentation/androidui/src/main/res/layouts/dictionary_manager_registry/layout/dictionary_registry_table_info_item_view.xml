@@ -143,7 +143,6 @@
                 tools:listitem="@layout/dictionary_registry_table_info_language_item_view"
                 />
 
-
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/table_info_tag_end_barrier"
                 android:layout_width="0dp"

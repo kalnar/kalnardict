@@ -26,6 +26,7 @@ sealed class SelectableLanguage {
     ) : SelectableLanguage()
 
     object NotSet : SelectableLanguage()
+    object AddNewLanguage : SelectableLanguage()
 }
 
 data class ImportTableResult(

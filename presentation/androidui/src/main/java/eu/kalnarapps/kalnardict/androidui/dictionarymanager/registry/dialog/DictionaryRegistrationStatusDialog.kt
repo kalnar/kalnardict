@@ -23,9 +23,11 @@ class DictionaryRegistrationStatusDialog : DialogFragment() {
 
     private val viewModel: DictionaryRegistryViewModel by navGraphViewModels(
         R.id.dictionary_registration_navigation
-    ) {
-        DictionaryRegistryViewModelFactory(args.dbPath)
-    }
+    )
+//
+//    {
+//        DictionaryRegistryViewModelFactory(args.dbPath)
+//    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialDialog(

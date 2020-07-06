@@ -67,6 +67,11 @@
                 app:argType="string" />
 
         </dialog>
+        <dialog
+            android:id="@+id/newLanguageDialog"
+            android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog.newlanguage.NewLanguageDialog"
+            android:label="Language Addition Dialog" />
+
         <fragment
             android:id="@+id/dictionaryRegistry"
             android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryFragment"

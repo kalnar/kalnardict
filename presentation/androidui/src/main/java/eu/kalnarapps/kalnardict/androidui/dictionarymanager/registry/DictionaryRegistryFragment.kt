@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,11 +37,12 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listenToButtonEvents()
         list_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = TableInfoListAdapter(
                 viewModel.getTables(),
-                viewModel.getKnownLanguages(),
+                viewModel.getSelectableLanguages(),
                 object : OnRegisterTablesListener {
                     override fun onChanged(newTableInfoUiModel: ExternalTableUiInfo) {
                         viewModel.onTableRegisteringUpdate(newTableInfoUiModel)
@@ -54,6 +56,15 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
             }
         }
 
+    }
+
+    private fun listenToButtonEvents() {
+        viewModel.isAddNewLanguageSelected()
+            .observe(viewLifecycleOwner, Observer { languageAdditionInitiated ->
+                if (languageAdditionInitiated) {
+                    viewModel.onLanguageAdditionRequest()
+                }
+            })
     }
 
 }

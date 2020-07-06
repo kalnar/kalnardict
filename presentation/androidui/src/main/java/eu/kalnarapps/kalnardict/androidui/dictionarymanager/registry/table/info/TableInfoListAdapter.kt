@@ -10,7 +10,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.Selec
 
 class TableInfoListAdapter(
     list: List<ExternalTableUiInfo>,
-    private val languageList: List<SelectableLanguage.LanguageUi>,
+    private val languageList: List<SelectableLanguage>,
     private val onRegisterTablesListener: OnRegisterTablesListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
