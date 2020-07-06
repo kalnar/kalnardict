@@ -41,7 +41,7 @@ class DictionaryManagerViewModelTest : KoinComponent {
                     module {
                         single {
                             DictionaryListMock().apply {
-                                addAll(Stubs.Domain.Dictionaries.ALL)
+                                addAll(Stubs.Domain.Dictionaries.englishAndFrenchDicts)
                             }
                         }
                         viewModel {

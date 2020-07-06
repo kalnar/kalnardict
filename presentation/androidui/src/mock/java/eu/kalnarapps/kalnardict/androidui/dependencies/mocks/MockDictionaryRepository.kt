@@ -53,7 +53,7 @@ class MockDictionaryRepository : DictionaryRepository {
     }
 
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
-        return Stubs.Domain.Dictionaries.ALL.find { it.id == dictionaryId }?.let {
+        return Stubs.Domain.Dictionaries.englishAndFrenchDicts.find { it.id == dictionaryId }?.let {
             DataOperationResult.Success(it)
         } ?: DataOperationResult.Failure(
             errorMessage = "no dictionaries found with given id: $dictionaryId"

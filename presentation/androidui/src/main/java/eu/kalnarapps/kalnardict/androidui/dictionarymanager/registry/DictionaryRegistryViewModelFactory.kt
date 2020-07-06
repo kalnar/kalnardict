@@ -12,7 +12,9 @@ class DictionaryRegistryViewModelFactory(
             return DictionaryRegistryViewModel(
                 dbPath = dbPath,
                 loadDbMetaInfoOnDb = getKoin().get(),
-                registerNewDictionary = getKoin().get()
+                registerNewDictionary = getKoin().get(),
+                getAvailableLanguages = getKoin().get(),
+                languageMapper = getKoin().get()
             ) as T
         } else {
             throw IllegalArgumentException(

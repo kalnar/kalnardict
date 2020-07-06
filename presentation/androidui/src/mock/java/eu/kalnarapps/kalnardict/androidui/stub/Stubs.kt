@@ -21,6 +21,7 @@ object Stubs {
                 name = "French",
                 code = "fr"
             )
+            val frenchAndEnglishLanguage = listOf(english, french)
         }
 
         object Dictionaries {
@@ -42,7 +43,7 @@ object Stubs {
                 languageTo = english,
                 description = "french english dictionary"
             )
-            val ALL = listOf(englishDict, englishFrenchDict)
+            val englishAndFrenchDicts = listOf(englishDict, englishFrenchDict)
 
             object Translations {
                 val englishEnglishTranslations = englishWords.map {

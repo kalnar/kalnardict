@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvi
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.DomainToUiMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
@@ -12,7 +13,9 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.Selec
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import kotlinx.coroutines.launch
@@ -23,7 +26,8 @@ class DictionaryRegistryViewModel(
     dbPath: String,
     loadDbMetaInfoOnDb: ReadExternalDbUseCase,
     private val registerNewDictionary: RegisterNewDictionaryUseCase,
-    private val getAvailableLanguages: RegisterNewDictionaryUseCase,
+    private val getAvailableLanguages: ListRegisteredLanguagesUseCase,
+    private val languageMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
     dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : BaseViewModel<DictionaryRegistryState>(dispatcherProvider = dispatcherProvider) {
 
@@ -45,6 +49,9 @@ class DictionaryRegistryViewModel(
                             )
                             emptyList()
                         }
+                    },
+                    availableLanguages = getAvailableLanguages().map {
+                        languageMapper.toUiModel(it)
                     }
                 )
             )
@@ -56,16 +63,7 @@ class DictionaryRegistryViewModel(
     }
 
     fun getKnownLanguages(): List<SelectableLanguage.LanguageUi> {
-        return listOf(
-            SelectableLanguage.LanguageUi(
-                code = "fr",
-                name = "French"
-            ),
-            SelectableLanguage.LanguageUi(
-                code = "en",
-                name = "English"
-            )
-        )
+        return state.value?.availableLanguages.orEmpty()
     }
 
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {

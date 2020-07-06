@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import java.util.Locale
 
@@ -44,6 +45,14 @@ class ListDictionariesMock(
 ) : ListRegisteredDictionariesUseCase {
     override suspend fun invoke(): List<Dictionary> {
         return dictionaryListMock
+    }
+}
+
+class ListLanguagesMock(
+    private val dictionaryListMock: DictionaryListMock
+) : ListRegisteredLanguagesUseCase {
+    override suspend fun invoke(): List<DictLanguage> {
+        return dictionaryListMock.flatMap { listOf(it.languageFrom, it.languageTo) }.distinct()
     }
 }
 

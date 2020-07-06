@@ -21,4 +21,8 @@ class MockLanguageRepository : LanguageRepository {
         )
     }
 
+    override suspend fun getLanguages(): List<DictLanguage> {
+        return languages
+    }
+
 }

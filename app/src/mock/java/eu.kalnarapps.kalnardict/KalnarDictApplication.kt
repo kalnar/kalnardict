@@ -4,6 +4,7 @@ import android.app.Application
 import eu.kalnarapps.kalnardict.androidui.dependencies.androidUiKoinMockModules
 import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.di.useCaseMockModule
+import eu.kalnarapps.kalnardict.koin.mapperModule
 import eu.kalnarapps.kalnardict.koin.navigationKoinModule
 import eu.kalnarapps.kalnardict.koin.utilsModule
 import org.koin.android.ext.koin.androidContext
@@ -19,6 +20,7 @@ class KalnarDictMockApplication : Application() {
             modules(useCaseMockModule)
             modules(androidUiKoinMockModules)
             modules(navigationKoinModule)
+            modules(mapperModule)
             modules(utilsModule)
         }
     }
