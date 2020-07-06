@@ -8,6 +8,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -46,6 +48,38 @@ class AuxiliaryDataSourceTest {
             assertThat(
                 auxiliaryDataSourceTest.getLanguageById("N/A"),
                 IsInstanceOf(DataOperationResult.Failure::class.java)
+            )
+        }
+
+    }
+
+    @Test
+    fun get_languages_when_available() {
+        testCoroutineScope.runBlockingTest {
+            val auxiliaryDataSourceTest = AuxiliaryDataSource(
+                LanguageDaoMock(Languages.frenchAndEnglish)
+            )
+            assertThat(
+                auxiliaryDataSourceTest.getLanguages(),
+                IsIterableContainingInAnyOrder(
+                    Languages.frenchAndEnglish.map {
+                        equalTo<LanguageLogEntryData>(it.toLanguageToData())
+                    }
+                )
+            )
+        }
+
+    }
+
+    @Test
+    fun get_empty_list_of_languages_when_none_available() {
+        testCoroutineScope.runBlockingTest {
+            val auxiliaryDataSourceTest = AuxiliaryDataSource(
+                LanguageDaoMock(emptyList())
+            )
+            assertThat(
+                auxiliaryDataSourceTest.getLanguages(),
+                IsEmptyCollection()
             )
         }
 

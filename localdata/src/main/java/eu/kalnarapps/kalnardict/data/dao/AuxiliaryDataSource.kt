@@ -18,4 +18,8 @@ class AuxiliaryDataSource(
         )
     }
 
+    override suspend fun getLanguages(): List<LanguageLogEntryData> {
+        return languageDao.getLanguages().map { it.toLanguageToData() }
+    }
+
 }

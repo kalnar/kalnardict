@@ -10,5 +10,8 @@ interface LanguageDao {
     @Query("SELECT * FROM Language WHERE id = :idString LIMIT 1")
     suspend fun getLanguageById(idString: String): Language?
 
+    @Query("SELECT * FROM Language")
+    suspend fun getLanguages(): List<Language>
+
 }
 
