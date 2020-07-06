@@ -5,4 +5,5 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 
 interface LanguageRepository {
     suspend fun getLanguageById(id: String): DataOperationResult<DictLanguage>
+    suspend fun getLanguages(): List<DictLanguage>
 }

@@ -23,6 +23,7 @@ class DictionaryRegistryViewModel(
     dbPath: String,
     loadDbMetaInfoOnDb: ReadExternalDbUseCase,
     private val registerNewDictionary: RegisterNewDictionaryUseCase,
+    private val getAvailableLanguages: RegisterNewDictionaryUseCase,
     dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : BaseViewModel<DictionaryRegistryState>(dispatcherProvider = dispatcherProvider) {
 

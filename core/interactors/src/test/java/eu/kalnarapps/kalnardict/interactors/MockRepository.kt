@@ -3,8 +3,6 @@ package eu.kalnarapps.kalnardict.interactors
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
-import eu.kalnarapps.kalnardict.data.LanguageRepository
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
@@ -25,8 +23,10 @@ class StubDictionaryRepository : DictionaryRepository {
     }
 
     override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
-        val languageFrom = Stubs.Languages.all.find { importJob.table.languageFrom == it.code }
-        val languageTo = Stubs.Languages.all.find { importJob.table.languageTo == it.code }
+        val languageFrom =
+            Stubs.Languages.french_and_english.find { importJob.table.languageFrom == it.code }
+        val languageTo =
+            Stubs.Languages.french_and_english.find { importJob.table.languageTo == it.code }
         return if (languageFrom != null && languageTo != null) {
             dictionaries.add(
                 Dictionary(
@@ -68,20 +68,3 @@ class StubDictionaryRepository : DictionaryRepository {
 
 }
 
-class StubLanguageRepository : LanguageRepository {
-    private val languages = ArrayList<DictLanguage>(
-        listOf(
-            Stubs.Languages.english,
-            Stubs.Languages.french
-        )
-    )
-
-    override suspend fun getLanguageById(id: String): DataOperationResult<DictLanguage> {
-        return languages.find { it.code == id }?.let {
-            DataOperationResult.Success(it)
-        } ?: DataOperationResult.Failure(
-            errorMessage = "no language with id: $id"
-        )
-    }
-
-}

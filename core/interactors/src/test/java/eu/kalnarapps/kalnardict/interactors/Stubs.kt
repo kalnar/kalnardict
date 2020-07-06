@@ -2,7 +2,6 @@ package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import java.net.URI
 
 object Stubs {
     object RegisteringDictionary {
@@ -22,7 +21,7 @@ object Stubs {
             name = "English",
             code = "en"
         )
-        val all = listOf(french, english)
+        val french_and_english = listOf(french, english)
     }
 
     object MetaInfoOnDb {
@@ -39,7 +38,7 @@ object Stubs {
     }
 
     object Uris {
-        val invalidUri = URI("invalid")
-        val valid = URI("valid")
+        val invalidUri = "invalid"
+        val valid = "valid"
     }
 }

@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.interactors
 
+import eu.kalnarapps.kalnardict.interactors.mock.MockLanguageRepository
 import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
@@ -21,7 +22,7 @@ class RegisterNewDictionaryTest {
         testCoroutineRule.runBlockingTest {
 
             val dictionaryRepository = StubDictionaryRepository()
-            val stubLanguageRepository = StubLanguageRepository()
+            val stubLanguageRepository = MockLanguageRepository(Stubs.Languages.french_and_english)
             val registerNewDictionary = RegisterNewDictionary(
                 dictionaryRepository,
                 stubLanguageRepository
