@@ -17,6 +17,8 @@ object Stubs {
             name = "English",
             code = "en"
         )
+        const val nonExistingLanguageId = "N/A"
+        val frenchAndEnglish = listOf(french, english)
     }
 
     object Dictionaries {

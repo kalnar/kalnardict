@@ -22,5 +22,9 @@ class KalnarLanguageRepository(
             )
         }
     }
+
+    override suspend fun getLanguages(): List<DictLanguage> {
+        return languageDataDao.getLanguages().map { it.toDictLanguage() }
+    }
 }
 
