@@ -4,6 +4,7 @@ import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import eu.kalnarapps.kalnardict.data.entities.Language
 
 object TestFixtures {
     const val testDictionaryLanguageTo: String = "English"
@@ -38,6 +39,14 @@ object TestFixtures {
             propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
             propertyValue = updatedDictionaryId
         )
+    }
+
+    object Languages {
+        val frenchLanguage = Language(
+            id = "fr",
+            description = "French"
+        )
+        const val nonAvailableLanguageId = "N/A"
     }
 
 }

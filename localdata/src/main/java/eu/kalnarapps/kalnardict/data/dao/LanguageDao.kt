@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import eu.kalnarapps.kalnardict.data.entities.Language
 
@@ -13,5 +14,7 @@ interface LanguageDao {
     @Query("SELECT * FROM Language")
     suspend fun getLanguages(): List<Language>
 
+    @Insert
+    suspend fun insertLanguage(language: Language)
 }
 
