@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
@@ -8,31 +9,40 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
+import eu.kalnarapps.kalnardict.androidui.common.model.LiveUiNotification
+import eu.kalnarapps.kalnardict.androidui.common.model.UiNotification
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.DomainToUiMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import kotlinx.coroutines.launch
-
-const val UNKNOWN_LANGUAGE: String = "unk"
+import kotlinx.coroutines.withContext
 
 class DictionaryRegistryViewModel(
     dbPath: String,
     loadDbMetaInfoOnDb: ReadExternalDbUseCase,
     private val registerNewDictionary: RegisterNewDictionaryUseCase,
-    private val getAvailableLanguages: ListRegisteredLanguagesUseCase,
+    private val listAvailableLanguages: ListRegisteredLanguagesUseCase,
+    private val addNewLanguage: RegisterLanguageUseCase,
     private val languageMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
-    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : BaseViewModel<DictionaryRegistryState>(dispatcherProvider = dispatcherProvider) {
+
+    private val _registryError: MutableLiveData<RegistryError> = MutableLiveData()
+    val registryError: LiveData<RegistryError>
+        get() = _registryError
 
     init {
         viewModelScope.launch {
@@ -53,11 +63,18 @@ class DictionaryRegistryViewModel(
                             emptyList()
                         }
                     },
-                    availableLanguages = getAvailableLanguages().map {
+                    availableLanguages = listAvailableLanguages().map {
                         languageMapper.toUiModel(it)
-                    }
+                    },
+                    languageUpdated = UiNotification()
                 )
             )
+        }
+    }
+
+    fun isLanguageAdded(): LiveData<UiNotification> {
+        return Transformations.map(state) {
+            it.languageUpdated
         }
     }
 
@@ -177,6 +194,48 @@ class DictionaryRegistryViewModel(
         postNavigationCommand(
             NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog
         )
+    }
+
+    fun onNewLanguageRegistryClicked(languageUi: SelectableLanguage.LanguageUi) {
+        viewModelScope.launch {
+            withContext(dispatcherProvider.io()) {
+                val operationResult = addNewLanguage(
+                    language = languageMapper.toDomainModel(languageUi)
+                )
+                when (operationResult) {
+                    OperationResult.Success -> {
+                        updateAvailableLanguages()
+                    }
+                    is OperationResult.Failure -> {
+                        postError(
+                            ErrorFromUi(
+                                logMessage = operationResult.errorMessage
+                            )
+                        )
+                        _registryError.postValue(RegistryError.LanguageIdDuplicate)
+                    }
+                }.exhaustive
+            }
+        }
+    }
+
+    private suspend fun updateAvailableLanguages() {
+        state.value?.let { state ->
+            postUiState(
+                state = state.copy(
+                    availableLanguages = listAvailableLanguages().map {
+                        languageMapper.toUiModel(it)
+                    },
+                    languageUpdated = LiveUiNotification()
+                )
+            )
+        }
+    }
+
+    fun getAvailableLanguages(): LiveData<List<SelectableLanguage.LanguageUi>> {
+        return Transformations.map(state) {
+            it.availableLanguages
+        }
     }
 
 }

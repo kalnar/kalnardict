@@ -1,17 +1,19 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog.newlanguage
 
-import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryViewModel
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 
 
 class NewLanguageDialog : DialogFragment() {
@@ -20,19 +22,61 @@ class NewLanguageDialog : DialogFragment() {
         R.id.dictionary_registration_navigation
     )
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return MaterialDialog(
-            requireContext()
-        ).customView(R.layout.new_language_dialog).also {
-            it.getCustomView().setUpView()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.new_language_dialog, container, false).apply {
+            setUpView()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(
+            STYLE_NORMAL,
+            theme
+        )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.isLanguageAdded().observe(viewLifecycleOwner, Observer {
+            if (it.toBeHandled()) {
+                it.handled()
+                dismiss()
+            }
+        })
+
+        val newLanguageIdEditText: TextInputEditText =
+            view.findViewById(R.id.add_new_language_dialog_id_edit_text)
+
+        viewModel.registryError.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                RegistryError.LanguageIdDuplicate -> {
+                    newLanguageIdEditText.error =
+                        "id already used, please use an other id"
+                }
+            }.exhaustive
+        })
+
     }
 
     private fun View.setUpView() {
         val button: MaterialButton = findViewById(R.id.add_new_language_dialog_button)
+        val newLanguageIdEditText: TextInputEditText =
+            findViewById(R.id.add_new_language_dialog_id_edit_text)
+        val newLanguageNameEditText: TextInputEditText =
+            findViewById(R.id.add_new_language_dialog_description_edit_text)
 
         button.setOnClickListener {
-            Toast.makeText(requireContext(), "clicked language registry", Toast.LENGTH_SHORT).show()
+            viewModel.onNewLanguageRegistryClicked(
+                SelectableLanguage.LanguageUi(
+                    code = newLanguageIdEditText.editableText.toString(),
+                    name = newLanguageNameEditText.editableText.toString()
+                )
+            )
         }
     }
 }

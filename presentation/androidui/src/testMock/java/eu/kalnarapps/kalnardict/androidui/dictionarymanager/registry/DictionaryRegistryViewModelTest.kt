@@ -4,10 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import eu.kalnarapps.kalnardict.androidui.UiUnitTestStubs
 import eu.kalnarapps.kalnardict.androidui.dependencies.mocks.ReadExternalDbUseCaseMock
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.DictionaryListMock
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.ListLanguagesMock
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionaryMockWithFailures
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionarySuccessfullyMock
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.ListLanguagesMock
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.MockRegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.LanguageMapper
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
@@ -20,6 +23,7 @@ import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
+import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsNull
 import org.junit.After
@@ -54,7 +58,11 @@ class DictionaryRegistryViewModelTest : KoinComponent {
                                 addAll(Stubs.Domain.Dictionaries.englishAndFrenchDicts)
                             }
                         }
-                        single { ListLanguagesMock(get()) as ListRegisteredLanguagesUseCase }
+                        single {
+                            ListLanguagesMock(
+                                ArrayList(Stubs.Domain.Languages.frenchAndEnglishLanguage)
+                            ) as ListRegisteredLanguagesUseCase
+                        }
                     }
                 )
             )
@@ -74,8 +82,9 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = getKoin().get(),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
 
         val listOfTableUi = viewModel.getTables()
@@ -94,8 +103,9 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = getKoin().get(),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
 
         val listOfTableUi = viewModel.getTables()
@@ -119,8 +129,9 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = getKoin().get(),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
 
         val listOfTableUi = viewModel.getTables()
@@ -160,8 +171,9 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = getKoin().get(),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
 
         val tables = viewModel.getTables()
@@ -191,8 +203,9 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionaryMockWithFailures(listOf(2)),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = getKoin().get(),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
         viewModel.onTableRegisteringUpdate(
             UiStubs.TableUiInfo.externalTable1
@@ -241,35 +254,113 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = getKoin().get(),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
 
         assertThat(
             viewModel.getSelectableLanguages(),
             IsIterableContainingInAnyOrder(
                 Stubs.Domain.Languages.frenchAndEnglishLanguage.map {
-                    equalTo(LanguageMapper().toUiModel(it))
-                }
+                    equalTo<SelectableLanguage>(LanguageMapper().toUiModel(it))
+                }.plus(
+                    equalTo<SelectableLanguage>(SelectableLanguage.AddNewLanguage)
+                )
             )
         )
     }
 
     @Test
-    fun get_empty_list_of_languages_when_unavailable() {
+    fun get_add_new_language_when_none_unavailable() {
 
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getKoin().get(),
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
-            getAvailableLanguages = ListLanguagesMock(DictionaryListMock()),
-            languageMapper = LanguageMapper()
+            listAvailableLanguages = ListLanguagesMock(ArrayList()),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase()
         )
 
         assertThat(
             viewModel.getSelectableLanguages(),
-            IsEmptyCollection()
+            IsCollectionContaining(
+                equalTo(SelectableLanguage.AddNewLanguage)
+            )
+        )
+    }
+
+    @Test
+    fun add_new_language_on_new_language_registry_clicked() {
+
+        // given that the available languages are english and french
+        val languages = ArrayList(Stubs.Domain.Languages.frenchAndEnglishLanguage)
+        val languageToAdd = UiStubs.TableUiInfo.langUiRu
+
+        val viewModel = DictionaryRegistryViewModel(
+            UiStubs.Uris.validUri,
+            loadDbMetaInfoOnDb = getKoin().get(),
+            registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
+            dispatcherProvider = TestDispatcherProvider,
+            listAvailableLanguages = ListLanguagesMock(languages),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase(languages)
+        )
+
+        // when we register russian
+        viewModel.onNewLanguageRegistryClicked(
+            languageToAdd
+        )
+
+        // then russian is available
+        assertThat(
+            viewModel.getSelectableLanguages(),
+            IsCollectionContaining(
+                equalTo(languageToAdd)
+            )
+        )
+    }
+
+    @Test
+    fun fail_on_new_language_registry_clicked_if_id_is_already_used() {
+
+        // given that the available languages are english and french
+        val languages = ArrayList(
+            listOf(
+                Stubs.Domain.Languages.french,
+                Stubs.Domain.Languages.english
+            )
+        )
+        val languageToAdd = SelectableLanguage.LanguageUi(
+            code = Stubs.Domain.Languages.french.code,
+            name = Stubs.Domain.Languages.french.name
+        )
+
+        val viewModel = DictionaryRegistryViewModel(
+            UiStubs.Uris.validUri,
+            loadDbMetaInfoOnDb = getKoin().get(),
+            registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
+            dispatcherProvider = TestDispatcherProvider,
+            listAvailableLanguages = ListLanguagesMock(languages),
+            languageMapper = LanguageMapper(),
+            addNewLanguage = MockRegisterLanguageUseCase(languages)
+        )
+
+        // when we register french
+        viewModel.onNewLanguageRegistryClicked(
+            languageToAdd
+        )
+
+        // then operation fails
+        assertThat(
+            viewModel.error.value,
+            not(IsNull())
+        )
+        assertThat(
+            viewModel.registryError.value,
+            IsInstanceOf(RegistryError.LanguageIdDuplicate::class.java)
         )
     }
 }

@@ -21,6 +21,10 @@ object Stubs {
                 name = "French",
                 code = "fr"
             )
+            val russian = DictLanguage(
+                name = "Russian",
+                code = "ru"
+            )
             val frenchAndEnglishLanguage = listOf(english, french)
         }
 
@@ -98,5 +102,9 @@ object Stubs {
 
             }
         }
+    }
+
+    object Errors {
+        const val duplicateLangugageId = "duplicate language id"
     }
 }

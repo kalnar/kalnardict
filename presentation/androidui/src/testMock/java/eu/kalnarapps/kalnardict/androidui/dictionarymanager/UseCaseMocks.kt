@@ -48,14 +48,6 @@ class ListDictionariesMock(
     }
 }
 
-class ListLanguagesMock(
-    private val dictionaryListMock: DictionaryListMock
-) : ListRegisteredLanguagesUseCase {
-    override suspend fun invoke(): List<DictLanguage> {
-        return dictionaryListMock.flatMap { listOf(it.languageFrom, it.languageTo) }.distinct()
-    }
-}
-
 class RegisterNewDictionarySuccessfullyMock : RegisterNewDictionaryUseCase {
     override suspend fun invoke(
         dbUri: String,

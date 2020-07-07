@@ -13,8 +13,9 @@ class DictionaryRegistryViewModelFactory(
                 dbPath = dbPath,
                 loadDbMetaInfoOnDb = getKoin().get(),
                 registerNewDictionary = getKoin().get(),
-                getAvailableLanguages = getKoin().get(),
-                languageMapper = getKoin().get()
+                listAvailableLanguages = getKoin().get(),
+                languageMapper = getKoin().get(),
+                addNewLanguage = getKoin().get()
             ) as T
         } else {
             throw IllegalArgumentException(

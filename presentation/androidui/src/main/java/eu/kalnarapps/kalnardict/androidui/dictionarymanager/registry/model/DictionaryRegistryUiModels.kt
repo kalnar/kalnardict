@@ -1,12 +1,14 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model
 
+import eu.kalnarapps.kalnardict.androidui.common.model.UiNotification
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 
 data class DictionaryRegistryState(
     val dbPath: String,
     val tableInfoUiModels: List<ExternalTableUiInfo>,
     val availableLanguages: List<SelectableLanguage.LanguageUi> = emptyList(),
-    val importResults: List<ImportTableResult> = emptyList()
+    val importResults: List<ImportTableResult> = emptyList(),
+    val languageUpdated: UiNotification
 )
 
 data class ExternalTableUiInfo(
@@ -34,3 +36,7 @@ data class ImportTableResult(
     val registeringName: String,
     val result: OperationResult
 )
+
+sealed class RegistryError() {
+    object LanguageIdDuplicate : RegistryError()
+}

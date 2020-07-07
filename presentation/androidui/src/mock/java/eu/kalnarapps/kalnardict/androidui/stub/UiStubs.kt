@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.stub
 
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 
 object UiStubs {
@@ -12,10 +13,14 @@ object UiStubs {
 
     object TableUiInfo {
         const val newDictionaryName = "newDictionary"
+        val langUiEn = SelectableLanguage.LanguageUi(name = "English", code = "en")
+        val langUiRu = SelectableLanguage.LanguageUi(name = "Russian", code = "ru")
         val externalTable1 = ExternalTableUiInfo(
             dictionaryName = newDictionaryName,
             originalLanguageFrom = "ru",
+            languageFromUi = langUiRu,
             originalLanguageTo = "en",
+            languageToUi = langUiEn,
             originalTableName = "ru_en_dictionary",
             isSelected = true
         )
@@ -23,6 +28,8 @@ object UiStubs {
             dictionaryName = "russian dict",
             originalLanguageFrom = "ru",
             originalLanguageTo = "ru",
+            languageFromUi = langUiRu,
+            languageToUi = langUiRu,
             originalTableName = "ru_ru_dictionary",
             isSelected = true
         )

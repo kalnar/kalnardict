@@ -10,4 +10,11 @@ class LanguageMapper : DomainToUiMapper<DictLanguage, SelectableLanguage.Languag
             code = domainModel.code
         )
     }
+
+    override fun toDomainModel(uiModel: SelectableLanguage.LanguageUi): DictLanguage {
+        return DictLanguage(
+            name = uiModel.name,
+            code = uiModel.code
+        )
+    }
 }
