@@ -33,5 +33,6 @@ class KalnarLanguageRepository(
     override suspend fun addNewLanguage(language: DictLanguage): OperationResult {
         return languageDataDao.addLanguage(languageDataMapper.toLocalData(language))
     }
+
 }
 

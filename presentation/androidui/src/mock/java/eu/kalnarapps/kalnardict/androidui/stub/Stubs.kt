@@ -26,6 +26,8 @@ object Stubs {
                 code = "ru"
             )
             val frenchAndEnglishLanguage = listOf(english, french)
+            const val idDuplicateErrorMsg: String =
+                "The language id needs to be unique, an already used id was used to create the language"
         }
 
         object Dictionaries {
