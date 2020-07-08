@@ -42,7 +42,8 @@ val dataModule: Module = module {
     }
     single {
         AuxiliaryDataSource(
-            languageDao = get()
+            languageDao = get(),
+            languageRoomMapper = get()
         ) as LanguageDataDao
     }
 

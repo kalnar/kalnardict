@@ -4,6 +4,7 @@ import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
 import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.LanguageEntryToData
 
 
 val newWordToInsert = Word(
@@ -62,5 +63,12 @@ val sampleDictEntries = listOf(SampleEyeDictEntry, SampleBoxDictEntry)
 object Languages {
     val english = Language("en", "English")
     val french = Language("fr", "French")
+    val russian = Language("ru", "Russian")
     val frenchAndEnglish = listOf(english, french)
+}
+
+object LocalDataLanguages {
+    val english = LanguageEntryToData("en", "English")
+    val french = LanguageEntryToData("fr", "French")
+    val russian = LanguageEntryToData("ru", "Russian")
 }
