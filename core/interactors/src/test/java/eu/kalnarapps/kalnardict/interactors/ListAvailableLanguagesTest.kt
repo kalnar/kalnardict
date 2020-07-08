@@ -23,7 +23,7 @@ class ListAvailableLanguagesTest {
             // given there are no languages
 
             val useCase = ListAvailableLanguages(
-                MockLanguageRepository(emptyList())
+                MockLanguageRepository()
             )
 
             assertThat(
@@ -44,7 +44,7 @@ class ListAvailableLanguagesTest {
             )
 
             val useCase = ListAvailableLanguages(
-                MockLanguageRepository(languages)
+                MockLanguageRepository(ArrayList(languages))
             )
 
             assertThat(

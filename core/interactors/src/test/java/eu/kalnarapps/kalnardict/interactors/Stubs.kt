@@ -13,6 +13,8 @@ object Stubs {
     }
 
     object Languages {
+        const val idDuplicateErrorMsg: String =
+            "The language id needs to be unique, an already used id was used to create the language"
         val french = DictLanguage(
             name = "French",
             code = "fr"
@@ -21,7 +23,11 @@ object Stubs {
             name = "English",
             code = "en"
         )
-        val french_and_english = listOf(french, english)
+        val russian = DictLanguage(
+            name = "Russian",
+            code = "ru"
+        )
+        val frenchAndEnglish = listOf(french, english)
     }
 
     object MetaInfoOnDb {

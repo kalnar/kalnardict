@@ -22,7 +22,8 @@ class RegisterNewDictionaryTest {
         testCoroutineRule.runBlockingTest {
 
             val dictionaryRepository = StubDictionaryRepository()
-            val stubLanguageRepository = MockLanguageRepository(Stubs.Languages.french_and_english)
+            val stubLanguageRepository =
+                MockLanguageRepository(ArrayList(Stubs.Languages.frenchAndEnglish))
             val registerNewDictionary = RegisterNewDictionary(
                 dictionaryRepository,
                 stubLanguageRepository

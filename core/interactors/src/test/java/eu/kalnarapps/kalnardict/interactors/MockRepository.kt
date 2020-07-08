@@ -24,9 +24,9 @@ class StubDictionaryRepository : DictionaryRepository {
 
     override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
         val languageFrom =
-            Stubs.Languages.french_and_english.find { importJob.table.languageFrom == it.code }
+            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageFrom == it.code }
         val languageTo =
-            Stubs.Languages.french_and_english.find { importJob.table.languageTo == it.code }
+            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageTo == it.code }
         return if (languageFrom != null && languageTo != null) {
             dictionaries.add(
                 Dictionary(
