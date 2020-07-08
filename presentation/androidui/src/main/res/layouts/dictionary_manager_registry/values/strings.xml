@@ -12,6 +12,8 @@
     <string name="cta_ok">ok</string>
     <string name="dictionary_manager_menu_text">Go to dictionary manager</string>
     <string name="dictionary_registry_dialog_cta">go back to query screen</string>
+    <string name="dictionary_registry_new_language_cta">add new language</string>
+    <string name="dictionary_registry_select_language_text">select language</string>
     <string name="table_registration_dialog_dictionary_name_hint">new dictionary name</string>
     <string name="dictionary_manager_title">Dictionary Manager</string>
     <string name="dictionary_manager_no_dictionary_description">No registered dictionaries found. Please register a dictionary from an external database</string>

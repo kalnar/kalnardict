@@ -11,7 +11,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionarySelectorItem
 
 class LanguageSelectorSpinnerAdapter(
     private val context: Context,
-    private val dictionarySelectorItems: List<SelectableLanguage> = emptyList()
+    private val dictionarySelectorItems: List<SelectableLanguage.LanguageUi> = emptyList()
 ) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

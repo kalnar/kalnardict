@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.common.model.NewChangeObserver
+import eu.kalnarapps.kalnardict.androidui.common.model.UiEventObserver
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
@@ -42,17 +43,14 @@ class NewLanguageDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.isLanguageAdded().observe(viewLifecycleOwner, Observer {
-            if (it.toBeHandled()) {
-                it.handled()
-                dismiss()
-            }
+        viewModel.getAvailableLanguages().observe(viewLifecycleOwner, NewChangeObserver {
+            dismiss()
         })
 
         val newLanguageIdEditText: TextInputEditText =
             view.findViewById(R.id.add_new_language_dialog_id_edit_text)
 
-        viewModel.registryError.observe(viewLifecycleOwner, Observer {
+        viewModel.registryError.observe(viewLifecycleOwner, UiEventObserver {
             when (it) {
                 RegistryError.LanguageIdDuplicate -> {
                     newLanguageIdEditText.error =

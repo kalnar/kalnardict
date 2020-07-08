@@ -15,6 +15,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.Exter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.OnRegisterTablesListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
+import kotlinx.android.synthetic.main.dictionary_registry_fragment.dictionary_registry_new_language_button
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.table_info_list_submit_button
 
 class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
@@ -37,7 +38,6 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        listenToButtonEvents()
         list_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = TableInfoListAdapter(
@@ -48,23 +48,22 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
                         viewModel.onTableRegisteringUpdate(newTableInfoUiModel)
                     }
                 }
-            )
+            ).apply {
+                viewModel.getAvailableLanguages().observe(viewLifecycleOwner, Observer {
+                    this.updateLanguageList(it, viewModel.getTables())
+                })
+            }
         }
         table_info_list_submit_button.apply {
             setOnClickListener {
                 viewModel.registerDictionaries()
             }
         }
+        dictionary_registry_new_language_button.setOnClickListener {
+            viewModel.onLanguageAdditionRequest()
+        }
 
     }
 
-    private fun listenToButtonEvents() {
-        viewModel.isAddNewLanguageSelected()
-            .observe(viewLifecycleOwner, Observer { languageAdditionInitiated ->
-                if (languageAdditionInitiated) {
-                    viewModel.onLanguageAdditionRequest()
-                }
-            })
-    }
 
 }

@@ -11,23 +11,34 @@
         android:id="@+id/list_recycler_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@id/table_info_list_submit_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/table_info_list_submit_button"
+        tools:itemCount="2"
         tools:listitem="@layout/dictionary_registry_table_info_item_view">
 
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.button.MaterialButton
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:id="@+id/table_info_list_submit_button"
+        android:id="@+id/dictionary_registry_new_language_button"
+        style="@style/ButtonSecondary"
         android:layout_width="@dimen/long_button_width"
         android:layout_height="wrap_content"
-        android:text="@string/table_registering_submit_btn_text"
         android:layout_margin="10dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/dictionary_registry_new_language_cta"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/table_info_list_submit_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/table_info_list_submit_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="@dimen/long_button_width"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/table_registering_submit_btn_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

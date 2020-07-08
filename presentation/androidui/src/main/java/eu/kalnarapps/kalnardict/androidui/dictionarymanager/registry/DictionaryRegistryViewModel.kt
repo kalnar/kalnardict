@@ -10,6 +10,7 @@ import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.LiveUiNotification
+import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.common.model.UiNotification
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.DomainToUiMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
@@ -40,8 +41,8 @@ class DictionaryRegistryViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : BaseViewModel<DictionaryRegistryState>(dispatcherProvider = dispatcherProvider) {
 
-    private val _registryError: MutableLiveData<RegistryError> = MutableLiveData()
-    val registryError: LiveData<RegistryError>
+    private val _registryError: MutableLiveData<UiEvent<RegistryError>> = MutableLiveData()
+    val registryError: LiveData<UiEvent<RegistryError>>
         get() = _registryError
 
     init {
@@ -91,8 +92,8 @@ class DictionaryRegistryViewModel(
         return state.value?.tableInfoUiModels.orEmpty()
     }
 
-    fun getSelectableLanguages(): List<SelectableLanguage> {
-        return state.value?.availableLanguages.orEmpty() + SelectableLanguage.AddNewLanguage
+    fun getSelectableLanguages(): List<SelectableLanguage.LanguageUi> {
+        return state.value?.availableLanguages.orEmpty()
     }
 
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {
@@ -212,7 +213,9 @@ class DictionaryRegistryViewModel(
                                 logMessage = operationResult.errorMessage
                             )
                         )
-                        _registryError.postValue(RegistryError.LanguageIdDuplicate)
+                        _registryError.postValue(
+                            UiEvent(RegistryError.LanguageIdDuplicate)
+                        )
                     }
                 }.exhaustive
             }

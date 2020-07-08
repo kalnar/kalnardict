@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="ButtonSecondary" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:backgroundTint">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorSecondary</item>
+    </style>
+</resources>

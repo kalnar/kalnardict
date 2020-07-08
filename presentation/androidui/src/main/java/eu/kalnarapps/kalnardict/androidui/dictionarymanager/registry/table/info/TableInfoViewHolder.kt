@@ -37,7 +37,7 @@ class TableInfoViewHolder(
 
     fun bind(
         tableInfoUi: ExternalTableUiInfo,
-        languageItemUiModels: List<SelectableLanguage>
+        languageItemUiModels: List<SelectableLanguage.LanguageUi>
     ) {
         titleView.text = tableInfoUi.dictionaryName
         dictionaryNameEditText.apply {
@@ -58,7 +58,13 @@ class TableInfoViewHolder(
             adapter = LanguageSelectorSpinnerAdapter(
                 context = languageFromView.context,
                 dictionarySelectorItems = languageItemUiModels
-            ).apply {
+            )
+            post {
+                languageItemUiModels.find { it == tableInfoUi.languageFromUi }?.let {
+                    setSelection(languageItemUiModels.indexOf(it))
+                }
+            }
+            adapter.apply {
                 onItemSelectedListener = OnLanguageSelectedListener()
             }
         }
@@ -69,7 +75,11 @@ class TableInfoViewHolder(
             ).apply {
                 onItemSelectedListener = OnLanguageSelectedListener()
             }
-
+            post {
+                languageItemUiModels.find { it == tableInfoUi.languageToUi }?.let {
+                    setSelection(languageItemUiModels.indexOf(it))
+                }
+            }
         }
         registeringSwitch.setOnCheckedChangeListener { _, _ ->
             onTableInfoChangeListener.onChanged(

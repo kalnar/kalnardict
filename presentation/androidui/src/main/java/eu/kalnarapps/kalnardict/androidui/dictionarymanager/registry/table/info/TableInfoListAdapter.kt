@@ -10,7 +10,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.Selec
 
 class TableInfoListAdapter(
     list: List<ExternalTableUiInfo>,
-    private val languageList: List<SelectableLanguage>,
+    private var languageList: List<SelectableLanguage.LanguageUi>,
     private val onRegisterTablesListener: OnRegisterTablesListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -20,7 +20,7 @@ class TableInfoListAdapter(
                 oldItem: ExternalTableUiInfo,
                 newItem: ExternalTableUiInfo
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.originalTableName == newItem.originalTableName
             }
 
             override fun areContentsTheSame(
@@ -29,7 +29,6 @@ class TableInfoListAdapter(
             ): Boolean {
                 return oldItem == newItem
             }
-
         }
 
     private val differ: AsyncListDiffer<ExternalTableUiInfo> = AsyncListDiffer(
@@ -59,8 +58,15 @@ class TableInfoListAdapter(
 
 
     override fun getItemCount(): Int = differ.currentList.size
-    fun updateList(it: List<ExternalTableUiInfo>?) {
-        differ.submitList(it)
+
+    fun updateLanguageList(
+        it: List<SelectableLanguage.LanguageUi>,
+        tables: List<ExternalTableUiInfo>
+    ) {
+        if (languageList.size != it.size) {
+            languageList = it
+            differ.submitList(tables)
+        }
     }
 
 }
