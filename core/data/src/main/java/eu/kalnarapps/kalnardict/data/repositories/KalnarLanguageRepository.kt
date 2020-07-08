@@ -6,7 +6,6 @@ import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
 import eu.kalnarapps.kalnardict.data.mapper.DomainToLocalDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.toDictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 
 class KalnarLanguageRepository(
@@ -18,7 +17,7 @@ class KalnarLanguageRepository(
             val languageFetch = languageDataDao.getLanguageById(id)
             ) {
             is DataOperationResult.Success -> DataOperationResult.Success(
-                languageFetch.data.toDictLanguage()
+                languageDataMapper.toDomainModel(languageFetch.data)
             )
             is DataOperationResult.Failure -> DataOperationResult.Failure(
                 "Language with id: $id needs to be added",
@@ -28,7 +27,7 @@ class KalnarLanguageRepository(
     }
 
     override suspend fun getLanguages(): List<DictLanguage> {
-        return languageDataDao.getLanguages().map { it.toDictLanguage() }
+        return languageDataDao.getLanguages().map { languageDataMapper.toDomainModel(it) }
     }
 
     override suspend fun addNewLanguage(language: DictLanguage): OperationResult {
