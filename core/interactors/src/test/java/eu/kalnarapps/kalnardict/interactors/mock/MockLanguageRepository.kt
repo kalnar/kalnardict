@@ -21,7 +21,7 @@ class MockLanguageRepository(
         return languages
     }
 
-    override fun addNewLanguage(language: DictLanguage): OperationResult {
+    override suspend fun addNewLanguage(language: DictLanguage): OperationResult {
         return if (languages.any { it.code == language.code }) {
             OperationResult.Failure(
                 errorMessage = Stubs.Languages.idDuplicateErrorMsg

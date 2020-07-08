@@ -18,7 +18,8 @@ val repositoryModule: Module = module {
     }
     single {
         KalnarLanguageRepository(
-            languageDataDao = get()
+            languageDataDao = get(),
+            languageDataMapper = get()
         ) as LanguageRepository
     }
     single {

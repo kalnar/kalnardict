@@ -1,12 +1,5 @@
 package eu.kalnarapps.kalnardict.data.mapper
 
-//interface DictEntry {
-//    fun getId(): Int
-//    fun getBaseForm(): String
-//    fun getAlternativeBaseForm(): String
-//    fun getTranslation(): String
-//    fun getDictionaryId(): Int
-//}
 interface DictEntry {
     val id: Int
     val baseForm: String
@@ -25,6 +18,11 @@ interface LanguageLogEntryData {
     val id: String
     val name: String
 }
+
+data class LanguageLocalDataDto(
+    override val id: String,
+    override val name: String
+) : LanguageLogEntryData
 
 interface NewDictionaryLogEntryData {
     val name: String

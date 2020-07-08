@@ -17,7 +17,12 @@ object Stubs {
             name = "English",
             code = "en"
         )
+        val russian = DictLanguage(
+            name = "Russian",
+            code = "ru"
+        )
         const val nonExistingLanguageId = "N/A"
+        const val duplicateIdError = "error: the used id was already used"
         val frenchAndEnglish = listOf(french, english)
     }
 
