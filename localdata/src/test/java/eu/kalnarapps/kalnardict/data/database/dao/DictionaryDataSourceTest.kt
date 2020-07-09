@@ -35,7 +35,7 @@ class DictionaryDataSourceTest {
 
     @Test
     fun get_dict_entry_for_asztal_by_query() = testCoroutineDispatcher.runBlockingTest {
-        val queryResult = dataSource.getDictEntryByQuery("asztal")
+        val queryResult = dataSource.queryWithMatchAnyWhere("asztal")
 
         assertThat(
             queryResult,
@@ -48,7 +48,7 @@ class DictionaryDataSourceTest {
         )
 
         assertThat(
-            dataSource.getDictEntryByQuery("x"),
+            dataSource.queryWithMatchAnyWhere("x"),
             IsEmptyCollection()
         )
 
@@ -57,18 +57,18 @@ class DictionaryDataSourceTest {
     @Test
     fun insert_new_word_in_data_source() = testCoroutineDispatcher.runBlockingTest {
         assertThat(
-            dataSource.getDictEntryByQuery("szem"),
+            dataSource.queryWithMatchAnyWhere("szem"),
             IsEmptyCollection()
         )
 
         dataSource.insertDictEntry(SampleEyeDictEntry)
 
         assertThat(
-            dataSource.getDictEntryByQuery("szem"),
+            dataSource.queryWithMatchAnyWhere("szem"),
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.getDictEntryByQuery("szem").firstOrNull()?.translation,
+            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.translation,
             equalTo("eye")
         )
 
@@ -77,30 +77,30 @@ class DictionaryDataSourceTest {
     @Test
     fun insert_multiple_entries_in_data_source() = testCoroutineDispatcher.runBlockingTest {
         assertThat(
-            dataSource.getDictEntryByQuery("szem"),
+            dataSource.queryWithMatchAnyWhere("szem"),
             IsEmptyCollection()
         )
         assertThat(
-            dataSource.getDictEntryByQuery("doboz"),
+            dataSource.queryWithMatchAnyWhere("doboz"),
             IsEmptyCollection()
         )
 
         dataSource.insertDictEntries(sampleDictEntries)
 
         assertThat(
-            dataSource.getDictEntryByQuery("szem"),
+            dataSource.queryWithMatchAnyWhere("szem"),
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.getDictEntryByQuery("szem").firstOrNull()?.translation,
+            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.translation,
             equalTo("eye")
         )
         assertThat(
-            dataSource.getDictEntryByQuery("doboz"),
+            dataSource.queryWithMatchAnyWhere("doboz"),
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.getDictEntryByQuery("doboz").firstOrNull()?.translation,
+            dataSource.queryWithMatchAnyWhere("doboz").firstOrNull()?.translation,
             equalTo("box")
         )
     }

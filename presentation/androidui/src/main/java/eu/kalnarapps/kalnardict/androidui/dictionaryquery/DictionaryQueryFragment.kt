@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
+import eu.kalnarapps.kalnardict.androidui.common.model.ChangeObserver
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview.QueryResultListAdapter
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
@@ -48,6 +49,17 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                 (adapter as QueryResultListAdapter).updateWords(it)
             })
         }
+        viewModel.getLiveIsDictionaryListInitialized().observe(viewLifecycleOwner, ChangeObserver {
+            setUpSpinner()
+        })
+
+        viewModel.getDictionary().observe(viewLifecycleOwner, ChangeObserver {
+            viewModel.refreshQueryResults()
+        })
+
+    }
+
+    private fun setUpSpinner() {
         query_screen_spinner.apply {
             adapter = DictionarySelectorSpinnerAdapter(
                 context,
@@ -69,11 +81,6 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                 }
             }
         }
-
-        viewModel.getDictionary().observe(viewLifecycleOwner, Observer {
-            viewModel.refreshQueryResults()
-        })
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

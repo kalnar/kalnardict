@@ -23,8 +23,8 @@ class DictionaryDataSource(
         wordDao.insertWords(dictEntries.map { it.toWord() })
     }
 
-    override suspend fun getDictEntryByQuery(query: String): List<DictEntry> {
-        return wordDao.getByQuery(query).map { it.toDictEntry() }
+    override suspend fun queryWithMatchAnyWhere(query: String): List<DictEntry> {
+        return wordDao.getByQuery("%${query}%").map { it.toDictEntry() }
     }
 
     override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData) {

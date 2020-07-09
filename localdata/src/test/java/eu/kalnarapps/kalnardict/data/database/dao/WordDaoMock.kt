@@ -15,7 +15,23 @@ class WordDaoMock : WordDao {
     }
 
     override suspend fun getByQuery(queryString: String): List<Word> {
-        return words.filter { it.baseForm.contains(queryString) }
+        return words.filter {
+            it.baseForm.contains(
+                queryString.run {
+                    var searchText = if (this[0] == '%') {
+                        substring(1)
+                    } else {
+                        this
+                    }
+                    searchText = if (searchText.last() == '%') {
+                        searchText.substring(0, searchText.lastIndex)
+                    } else {
+                        searchText
+                    }
+                    searchText
+                }
+            )
+        }
     }
 
     override suspend fun insertWord(word: Word) {

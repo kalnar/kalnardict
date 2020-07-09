@@ -44,7 +44,7 @@ open class MockDictDao : DictDao {
         mockDb.addAll(dictEntries)
     }
 
-    override suspend fun getDictEntryByQuery(query: String): List<DictEntry> {
+    override suspend fun queryWithMatchAnyWhere(query: String): List<DictEntry> {
         return mockDb.filter { it.baseForm.contains(query) }
     }
 

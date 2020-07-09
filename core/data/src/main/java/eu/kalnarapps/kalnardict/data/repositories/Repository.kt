@@ -15,6 +15,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
@@ -35,16 +36,17 @@ class Repository(
     }
 
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
-        return dictDao.getDictEntryByQuery(query.queryString).map {
-            DictWord(
-                it.id,
-                DictLanguage("name", "code"),
-                baseForm = it.baseForm,
-                alternativeForm = it.alternativeBaseForm
-            )
-//            it.toDictTranslation(
-//                dictionary = getDictionaryById(it.getDictionaryId())
-//            )
+        return when (query.queryMode) {
+            QueryMode.MATCH_ANYWHERE -> {
+                dictDao.queryWithMatchAnyWhere(query.queryString).map {
+                    DictWord(
+                        it.id,
+                        query.dictionary.languageFrom,
+                        baseForm = it.baseForm,
+                        alternativeForm = it.alternativeBaseForm
+                    )
+                }
+            }
         }
     }
 
