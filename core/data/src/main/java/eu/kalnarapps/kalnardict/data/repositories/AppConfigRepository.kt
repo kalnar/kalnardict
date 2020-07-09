@@ -68,7 +68,7 @@ class AppConfigRepository(
     }
 
     override suspend fun getCurrentAccentMode(): AccentMode {
-        TODO("Not yet implemented")
+        return AccentMode.ACCENT_SENSITIVE
     }
 
     override suspend fun updateCurrentDictionary(dictionary: Dictionary) {
