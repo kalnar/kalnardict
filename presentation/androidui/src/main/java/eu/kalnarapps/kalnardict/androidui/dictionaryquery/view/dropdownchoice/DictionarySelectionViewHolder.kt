@@ -1,11 +1,11 @@
-package eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice
+package eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
 
 class DictionarySelectionViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?

@@ -1,11 +1,11 @@
-package eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview
+package eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.WordView
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 
 class QueryResultItemViewHolder(
     inflater: LayoutInflater, parent: ViewGroup

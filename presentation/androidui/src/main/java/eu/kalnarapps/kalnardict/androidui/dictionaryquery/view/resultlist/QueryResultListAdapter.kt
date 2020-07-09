@@ -1,9 +1,9 @@
-package eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview
+package eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.WordView
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 
 class QueryResultListAdapter : RecyclerView.Adapter<QueryResultItemViewHolder>() {
     private var list: List<WordView> = emptyList()

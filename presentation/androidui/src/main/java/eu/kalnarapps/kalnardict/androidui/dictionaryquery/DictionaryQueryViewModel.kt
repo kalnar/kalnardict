@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
@@ -33,7 +36,9 @@ class DictionaryQueryViewModel(
                         DictionaryQueryState(
                             typedQueryString = "",
                             queryResults = listQueryResultsUseCase.invokeWith("").map {
-                                WordView(baseForm = it.baseForm)
+                                WordView(
+                                    baseForm = it.baseForm
+                                )
                             },
                             dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke()
                                 .map {
@@ -78,7 +83,9 @@ class DictionaryQueryViewModel(
                 state.value?.copy(
                     typedQueryString = newQuery,
                     queryResults = listQueryResultsUseCase.invokeWith(newQuery).map {
-                        WordView(baseForm = it.baseForm)
+                        WordView(
+                            baseForm = it.baseForm
+                        )
                     }
                 )
             )
@@ -103,7 +110,9 @@ class DictionaryQueryViewModel(
                     queryResults = listQueryResultsUseCase.invokeWith(
                         state.value?.typedQueryString.orEmpty()
                     ).map {
-                        WordView(baseForm = it.baseForm)
+                        WordView(
+                            baseForm = it.baseForm
+                        )
                     }
                 )
             )
@@ -119,28 +128,3 @@ class DictionaryQueryViewModel(
     }
 
 }
-
-private fun Dictionary.toDictionarySelectorItem(): DictionarySelectorItem {
-    return DictionarySelectorItem(
-        this.id,
-        "${this.languageFrom.code} -> ${this.languageTo.code}",
-        this.description
-    )
-}
-
-data class DictionaryQueryState(
-    val typedQueryString: String,
-    val queryResults: List<WordView>,
-    val currentDictionaryItemView: DictionarySelectorItem,
-    val dictionarySelectorItems: List<DictionarySelectorItem>
-)
-
-data class WordView(
-    val baseForm: String
-)
-
-data class DictionarySelectorItem(
-    val id: Int,
-    val displayString: String,
-    val description: String
-)

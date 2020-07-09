@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper
+package eu.kalnarapps.kalnardict.androidui.common.mapper
 
 interface DomainToUiMapper<DomainModel, UiModel> {
 

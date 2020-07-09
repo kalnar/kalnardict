@@ -14,8 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.common.model.ChangeObserver
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice.DictionarySelectorSpinnerAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.listview.QueryResultListAdapter
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.DictionarySelectorSpinnerAdapter
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_input
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner

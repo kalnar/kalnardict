@@ -1,13 +1,11 @@
-package eu.kalnarapps.kalnardict.androidui.dictionaryquery.dropdownchoice
+package eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageListItemViewHolder
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageSelectorDropDownViewHolder
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
 
 
 class DictionarySelectorSpinnerAdapter(
