@@ -36,7 +36,7 @@ class MockLanguageDataDao(
         return languages.map { LanguageData(it.code, it.name) }
     }
 
-    override fun addLanguage(language: LanguageLogEntryData): OperationResult {
+    override suspend fun addLanguage(language: LanguageLogEntryData): OperationResult {
         return if (languages.any { it.code == language.id }) {
             OperationResult.Failure(
                 errorMessage = Stubs.Languages.duplicateIdError
