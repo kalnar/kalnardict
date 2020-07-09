@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
+import eu.kalnarapps.kalnardict.androidui.common.viewextensions.visibleXorGone
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 
 class LanguageSelectorDropDownViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?
@@ -19,8 +21,19 @@ class LanguageSelectorDropDownViewHolder(
     private val displayTitle: TextView = itemView.findViewById(R.id.selector_title)
     private val descriptionView: TextView = itemView.findViewById(R.id.dictionary_description_view)
 
-    fun bind(queryLanguageView: SelectableLanguage.LanguageUi) {
-        displayTitle.text = queryLanguageView.name
-        descriptionView.text = queryLanguageView.code
+    fun bind(queryLanguageView: SelectableLanguage) {
+        descriptionView.visibleXorGone(queryLanguageView is SelectableLanguage.LanguageUi)
+        when (queryLanguageView) {
+            is SelectableLanguage.LanguageUi -> {
+                displayTitle.text = queryLanguageView.name
+                descriptionView.text = queryLanguageView.code
+            }
+            SelectableLanguage.NotSet -> {
+                displayTitle.text = displayTitle.context.getString(
+                    R.string.add_new_language_text
+                )
+            }
+            SelectableLanguage.AddNewLanguage -> TODO()
+        }.exhaustive
     }
 }

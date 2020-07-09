@@ -9,13 +9,12 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
-import eu.kalnarapps.kalnardict.androidui.common.model.LiveUiNotification
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
-import eu.kalnarapps.kalnardict.androidui.common.model.UiNotification
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.DomainToUiMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
@@ -48,12 +47,18 @@ class DictionaryRegistryViewModel(
     init {
         viewModelScope.launch {
             val metaInfoFetch = loadDbMetaInfoOnDb(dbPath)
+            val availableLanguages = listAvailableLanguages().map {
+                languageMapper.toUiModel(it)
+            }
             setUiState(
                 DictionaryRegistryState(
                     dbPath = dbPath,
-                    tableInfoUiModels = when (metaInfoFetch) {
+                    registerDictionaryUiModels = when (metaInfoFetch) {
                         is DataOperationResult.Success -> metaInfoFetch.data.map {
-                            it.toExternalTableUiInfo()
+                            RegisterDictionaryUi(
+                                it.toExternalTableUiInfo(),
+                                availableLanguages
+                            )
                         }
                         is DataOperationResult.Failure -> {
                             postError(
@@ -66,30 +71,20 @@ class DictionaryRegistryViewModel(
                     },
                     availableLanguages = listAvailableLanguages().map {
                         languageMapper.toUiModel(it)
-                    },
-                    languageUpdated = UiNotification()
+                    }
                 )
             )
         }
     }
 
-    fun isLanguageAdded(): LiveData<UiNotification> {
-        return Transformations.map(state) {
-            it.languageUpdated
-        }
+    fun getRegisterDictionaryUiModels(): List<RegisterDictionaryUi> {
+        return state.value?.registerDictionaryUiModels.orEmpty()
     }
 
-    fun isAddNewLanguageSelected(): LiveData<Boolean> {
+    fun getLiveIsTableListInitialized(): LiveData<Boolean> {
         return Transformations.map(state) {
-            it.tableInfoUiModels.any { tableRegisteringForm ->
-                tableRegisteringForm.languageFromUi == SelectableLanguage.AddNewLanguage ||
-                        tableRegisteringForm.languageToUi == SelectableLanguage.AddNewLanguage
-            }
+            it.registerDictionaryUiModels.isNotEmpty()
         }
-    }
-
-    fun getTables(): List<ExternalTableUiInfo> {
-        return state.value?.tableInfoUiModels.orEmpty()
     }
 
     fun getSelectableLanguages(): List<SelectableLanguage.LanguageUi> {
@@ -101,12 +96,18 @@ class DictionaryRegistryViewModel(
             val currentState = state.value
             postUiState(
                 currentState?.copy(
-                    tableInfoUiModels = currentState.tableInfoUiModels.map {
-                        if (it.originalTableName == newTableInfoUiModel.originalTableName) {
-                            newTableInfoUiModel
-                        } else {
-                            it
-                        }
+                    registerDictionaryUiModels =
+                    currentState.registerDictionaryUiModels.map {
+                        it.copy(
+                            tableUiInfo = if (
+                                it.tableUiInfo.originalTableName
+                                == newTableInfoUiModel.originalTableName
+                            ) {
+                                newTableInfoUiModel
+                            } else {
+                                it.tableUiInfo
+                            }
+                        )
                     }
                 )
             )
@@ -129,7 +130,8 @@ class DictionaryRegistryViewModel(
     }
 
     private suspend fun importTables(): List<ImportTableResult> {
-        val tableInfoUiModels = state.value?.tableInfoUiModels.orEmpty()
+        val tableInfoUiModels =
+            state.value?.registerDictionaryUiModels?.map { it.tableUiInfo }.orEmpty()
         return tableInfoUiModels.filter { it.isSelected }.map {
             ImportTableResult(
                 originalName = it.originalTableName,
@@ -224,12 +226,17 @@ class DictionaryRegistryViewModel(
 
     private suspend fun updateAvailableLanguages() {
         state.value?.let { state ->
+            val availableLanguages = listAvailableLanguages().map {
+                languageMapper.toUiModel(it)
+            }
             postUiState(
                 state = state.copy(
-                    availableLanguages = listAvailableLanguages().map {
-                        languageMapper.toUiModel(it)
-                    },
-                    languageUpdated = LiveUiNotification()
+                    availableLanguages = availableLanguages,
+                    registerDictionaryUiModels = state.registerDictionaryUiModels.map {
+                        it.copy(
+                            availableLanguages = availableLanguages
+                        )
+                    }
                 )
             )
         }

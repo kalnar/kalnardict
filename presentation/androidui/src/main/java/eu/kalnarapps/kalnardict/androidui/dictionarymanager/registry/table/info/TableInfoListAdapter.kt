@@ -6,32 +6,33 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 
 class TableInfoListAdapter(
-    list: List<ExternalTableUiInfo>,
-    private var languageList: List<SelectableLanguage.LanguageUi>,
-    private val onRegisterTablesListener: OnRegisterTablesListener
+    list: List<RegisterDictionaryUi>,
+    private val onRegisterInfoUpdateListener: OnRegisterInfoUpdateListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val diffCallBack =
-        object : DiffUtil.ItemCallback<ExternalTableUiInfo>() {
+        object : DiffUtil.ItemCallback<RegisterDictionaryUi>() {
             override fun areItemsTheSame(
-                oldItem: ExternalTableUiInfo,
-                newItem: ExternalTableUiInfo
+                oldItem: RegisterDictionaryUi,
+                newItem: RegisterDictionaryUi
             ): Boolean {
-                return oldItem.originalTableName == newItem.originalTableName
+                return oldItem.tableUiInfo.originalTableName ==
+                        newItem.tableUiInfo.originalTableName
             }
 
             override fun areContentsTheSame(
-                oldItem: ExternalTableUiInfo,
-                newItem: ExternalTableUiInfo
+                oldItem: RegisterDictionaryUi,
+                newItem: RegisterDictionaryUi
             ): Boolean {
                 return oldItem == newItem
             }
         }
 
-    private val differ: AsyncListDiffer<ExternalTableUiInfo> = AsyncListDiffer(
+    private val differ: AsyncListDiffer<RegisterDictionaryUi> = AsyncListDiffer(
         this,
         diffCallBack
     )
@@ -47,31 +48,34 @@ class TableInfoListAdapter(
         return TableInfoViewHolder(
             LayoutInflater.from(parent.context),
             parent,
-            onRegisterTablesListener
+            onRegisterInfoUpdateListener
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val manageableDictionaryViewHolder = holder as TableInfoViewHolder
-        manageableDictionaryViewHolder.bind(differ.currentList[position], languageList)
+        manageableDictionaryViewHolder.bind(differ.currentList[position])
     }
 
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    fun updateLanguageList(
-        it: List<SelectableLanguage.LanguageUi>,
-        tables: List<ExternalTableUiInfo>
+    fun updateList(
+        newList: List<RegisterDictionaryUi>
     ) {
-        if (languageList.size != it.size) {
-            languageList = it
-            differ.submitList(tables)
-        }
+        if (newList.isNotEmpty() &&
+            differ.currentList.availableLanguages.size !=
+            newList.availableLanguages.size
+        )
+            differ.submitList(newList)
     }
 
 }
 
-interface OnRegisterTablesListener {
+private val List<RegisterDictionaryUi>.availableLanguages: List<SelectableLanguage.LanguageUi>
+    get() = flatMap { it.availableLanguages }.distinctBy { it.code }
+
+interface OnRegisterInfoUpdateListener {
     fun onChanged(newTableInfoUiModel: ExternalTableUiInfo)
 }
 

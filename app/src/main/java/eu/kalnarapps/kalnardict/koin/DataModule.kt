@@ -24,7 +24,7 @@ import org.koin.dsl.module
 val dataModule: Module = module {
 
     single { DefaultDbInitializer as AppDbDataInitializer }
-    // TODO: check why some use + Job() for dispatcher
+    // TODO: check why some use + Job() for scope
     factory { CoroutineScope(Dispatchers.IO) }
     single {
         AppDatabase.getInstance(androidContext(), get()) as AppDatabase

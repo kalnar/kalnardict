@@ -1,14 +1,12 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model
 
-import eu.kalnarapps.kalnardict.androidui.common.model.UiNotification
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 
 data class DictionaryRegistryState(
     val dbPath: String,
-    val tableInfoUiModels: List<ExternalTableUiInfo>,
+    val registerDictionaryUiModels: List<RegisterDictionaryUi>,
     val availableLanguages: List<SelectableLanguage.LanguageUi> = emptyList(),
-    val importResults: List<ImportTableResult> = emptyList(),
-    val languageUpdated: UiNotification
+    val importResults: List<ImportTableResult> = emptyList()
 )
 
 data class ExternalTableUiInfo(
@@ -19,6 +17,11 @@ data class ExternalTableUiInfo(
     val originalLanguageTo: String,
     val languageToUi: SelectableLanguage = SelectableLanguage.NotSet,
     val isSelected: Boolean = false
+)
+
+data class RegisterDictionaryUi(
+    val tableUiInfo: ExternalTableUiInfo,
+    val availableLanguages: List<SelectableLanguage.LanguageUi>
 )
 
 sealed class SelectableLanguage {

@@ -12,12 +12,13 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageSelectorSpinnerAdapter
 
 class TableInfoViewHolder(
     inflater: LayoutInflater, parent: ViewGroup,
-    private val onTableInfoChangeListener: OnRegisterTablesListener
+    private val onTableInfoChangeListener: OnRegisterInfoUpdateListener
 ) : RecyclerView.ViewHolder(
     inflater.inflate(
         R.layout.dictionary_registry_table_info_item_view,
@@ -36,9 +37,9 @@ class TableInfoViewHolder(
         itemView.findViewById(R.id.table_registering_switch)
 
     fun bind(
-        tableInfoUi: ExternalTableUiInfo,
-        languageItemUiModels: List<SelectableLanguage.LanguageUi>
+        registerDictionaryUi: RegisterDictionaryUi
     ) {
+        val tableInfoUi = registerDictionaryUi.tableUiInfo
         titleView.text = tableInfoUi.dictionaryName
         dictionaryNameEditText.apply {
             hint = context.getString(R.string.table_registration_dialog_dictionary_name_hint)
@@ -57,12 +58,13 @@ class TableInfoViewHolder(
         languageFromSelector.apply {
             adapter = LanguageSelectorSpinnerAdapter(
                 context = languageFromView.context,
-                dictionarySelectorItems = languageItemUiModels
+                dictionarySelectorItems = registerDictionaryUi.availableLanguages
             )
             post {
-                languageItemUiModels.find { it == tableInfoUi.languageFromUi }?.let {
-                    setSelection(languageItemUiModels.indexOf(it))
-                }
+                registerDictionaryUi.availableLanguages.find { it == tableInfoUi.languageFromUi }
+                    ?.let {
+                        setSelection(registerDictionaryUi.availableLanguages.indexOf(it))
+                    }
             }
             adapter.apply {
                 onItemSelectedListener = OnLanguageSelectedListener()
@@ -71,14 +73,15 @@ class TableInfoViewHolder(
         languageToSelector.apply {
             adapter = LanguageSelectorSpinnerAdapter(
                 context = languageToView.context,
-                dictionarySelectorItems = languageItemUiModels
+                dictionarySelectorItems = registerDictionaryUi.availableLanguages
             ).apply {
                 onItemSelectedListener = OnLanguageSelectedListener()
             }
             post {
-                languageItemUiModels.find { it == tableInfoUi.languageToUi }?.let {
-                    setSelection(languageItemUiModels.indexOf(it))
-                }
+                registerDictionaryUi.availableLanguages.find { it == tableInfoUi.languageToUi }
+                    ?.let {
+                        setSelection(registerDictionaryUi.availableLanguages.indexOf(it))
+                    }
             }
         }
         registeringSwitch.setOnCheckedChangeListener { _, _ ->

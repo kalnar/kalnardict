@@ -6,13 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionarySelectorItem
 
 
 class LanguageSelectorSpinnerAdapter(
     private val context: Context,
-    private val dictionarySelectorItems: List<SelectableLanguage.LanguageUi> = emptyList()
+    private var dictionarySelectorItems: List<SelectableLanguage> = emptyList()
 ) : BaseAdapter() {
+
+    init {
+        if (dictionarySelectorItems.isEmpty()) {
+            dictionarySelectorItems = listOf(SelectableLanguage.NotSet)
+        }
+    }
+
+    override fun isEnabled(position: Int): Boolean {
+        return getItem(position) is SelectableLanguage.LanguageUi
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         return if (convertView != null) {
