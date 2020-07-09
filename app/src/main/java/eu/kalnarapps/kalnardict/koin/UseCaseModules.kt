@@ -14,13 +14,14 @@ import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListMetaInfoOnDb
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
 import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
+import eu.kalnarapps.kalnardict.interactors.RegisterNewLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import org.koin.dsl.module
 
 
 val useCaseModule = module {
     single {
-        ListAvailableLanguages(
+        RegisterNewLanguage(
             languageRepository = get()
         ) as RegisterLanguageUseCase
     }
