@@ -21,5 +21,6 @@ interface DictionaryRepository {
 
     suspend fun readRegisteredDictionaries(): List<Dictionary>
     suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary>
+    suspend fun getTranslationById(wordId: Int, dictionaryId: Int): DataOperationResult<String>
 
 }

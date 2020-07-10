@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.interactors
+package eu.kalnarapps.kalnardict.interactors.mock
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
@@ -10,10 +10,28 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+import eu.kalnarapps.kalnardict.interactors.Stubs
 
+class MockDictionaryRepository : DictionaryRepository {
+    data class MockDictEntry(
+        val word: DictWord,
+        val translation: DictTranslation,
+        val dictionary: Dictionary
+    )
 
-class StubDictionaryRepository : DictionaryRepository {
-    private val dictionaries = ArrayList<Dictionary>()
+    private val listOfDictEntries: List<MockDictEntry> = listOf(
+        MockDictEntry(
+            word = Stubs.Words.wordTake,
+            translation = Stubs.Words.wordTakeTranslationInFrench,
+            dictionary = Stubs.Dictionaries.englishToFrenchDictionary
+        ),
+        MockDictEntry(
+            word = Stubs.Words.wordPrendre,
+            translation = Stubs.Words.wordPrendreTranslationInFrench,
+            dictionary = Stubs.Dictionaries.frenchToFrenchDictionary
+        )
+    )
+
     override suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult {
         TODO("Not yet implemented")
     }
@@ -23,43 +41,15 @@ class StubDictionaryRepository : DictionaryRepository {
     }
 
     override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
-        val languageFrom =
-            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageFrom == it.code }
-        val languageTo =
-            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageTo == it.code }
-        return if (languageFrom != null && languageTo != null) {
-            dictionaries.add(
-                Dictionary(
-                    id = dictionaries.size + 1,
-                    languageFrom = languageFrom,
-                    languageTo = languageTo,
-                    description = importJob.displayName
-                )
-            )
-            OperationResult.Success
-        } else {
-            OperationResult.Failure(
-                errorMessage = "invalid language specified"
-            )
-        }
+        TODO("Not yet implemented")
     }
 
     override suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase): DataOperationResult<List<ExternalDatabaseTable>> {
-        return when (externalDatabase.uri) {
-            Stubs.Uris.valid -> DataOperationResult.Success(
-                listOf(
-                    Stubs.MetaInfoOnDb.table1,
-                    Stubs.MetaInfoOnDb.table2
-                )
-            )
-            else -> DataOperationResult.Failure(
-                errorMessage = "${externalDatabase.uri} does not contain valid tables"
-            )
-        }
+        TODO("Not yet implemented")
     }
 
     override suspend fun readRegisteredDictionaries(): List<Dictionary> {
-        return dictionaries
+        TODO("Not yet implemented")
     }
 
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
@@ -70,8 +60,16 @@ class StubDictionaryRepository : DictionaryRepository {
         wordId: Int,
         dictionaryId: Int
     ): DataOperationResult<String> {
-        TODO("Not yet implemented")
+        val translation = listOfDictEntries.find {
+            it.dictionary.id == dictionaryId &&
+                    it.word.id == wordId
+        }?.translation?.translation
+        return if (translation == null) {
+            DataOperationResult.Failure(
+                errorMessage = Stubs.Words.wrongIdTranslationErrorMessage
+            )
+        } else {
+            DataOperationResult.Success(translation)
+        }
     }
-
 }
-
