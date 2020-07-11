@@ -87,7 +87,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             addNewLanguage = MockRegisterLanguageUseCase()
         )
 
-        val listOfTableUi = viewModel.getTables()
+        val listOfTableUi = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
 
         assertThat(
             listOfTableUi,
@@ -108,7 +108,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             addNewLanguage = MockRegisterLanguageUseCase()
         )
 
-        val listOfTableUi = viewModel.getTables()
+        val listOfTableUi = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
 
         assertThat(
             listOfTableUi,
@@ -134,7 +134,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             addNewLanguage = MockRegisterLanguageUseCase()
         )
 
-        val listOfTableUi = viewModel.getTables()
+        val listOfTableUi = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
 
         assertThat(
             listOfTableUi,
@@ -154,10 +154,11 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             firstTable.copy(dictionaryName = firstTableNewDictionaryName)
         )
 
-        val firstTableFromNewFetch = viewModel.getUiState().value?.tableInfoUiModels?.first()
+        val listOfTableUiModels = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
+        val firstTableFromNewFetch = listOfTableUiModels.first()
 
         assertThat(
-            firstTableFromNewFetch?.dictionaryName,
+            firstTableFromNewFetch.dictionaryName,
             equalTo(firstTableNewDictionaryName)
         )
 
@@ -176,7 +177,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             addNewLanguage = MockRegisterLanguageUseCase()
         )
 
-        val tables = viewModel.getTables()
+        val tables = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
 
         assertThat(
             viewModel.error.value,
@@ -214,7 +215,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             UiStubs.TableUiInfo.externalTable2
         )
 
-        val tables = viewModel.getUiState().value?.tableInfoUiModels
+        val tables = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
 
         assertThat(
             viewModel.error.value,
@@ -264,15 +265,13 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             IsIterableContainingInAnyOrder(
                 Stubs.Domain.Languages.frenchAndEnglishLanguage.map {
                     equalTo<SelectableLanguage>(LanguageMapper().toUiModel(it))
-                }.plus(
-                    equalTo<SelectableLanguage>(SelectableLanguage.AddNewLanguage)
-                )
+                }
             )
         )
     }
 
     @Test
-    fun get_add_new_language_when_none_unavailable() {
+    fun get_empty_language_list_when_none_unavailable() {
 
         val viewModel = DictionaryRegistryViewModel(
             UiStubs.Uris.validUri,
@@ -286,9 +285,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
 
         assertThat(
             viewModel.getSelectableLanguages(),
-            IsCollectionContaining(
-                equalTo(SelectableLanguage.AddNewLanguage)
-            )
+            IsEmptyCollection()
         )
     }
 
@@ -359,7 +356,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             not(IsNull())
         )
         assertThat(
-            viewModel.registryError.value,
+            viewModel.registryError.value?.pureContent(),
             IsInstanceOf(RegistryError.LanguageIdDuplicate::class.java)
         )
     }

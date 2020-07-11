@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.androidui.common.model
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 
 /**
@@ -8,6 +9,12 @@ import androidx.lifecycle.Observer
 class UiEvent<T : Any>(
     private val mContent: T
 ) {
+
+    @VisibleForTesting
+    fun pureContent(): T {
+        return mContent
+    }
+
 
     fun content(): T {
         hasBeenHandled = true
