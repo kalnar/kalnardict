@@ -32,7 +32,6 @@ class LanguageListItemViewHolder(
                 displayTitle.text =
                     displayTitle.context.getString(R.string.add_new_language_text)
             }
-            SelectableLanguage.AddNewLanguage -> Unit
         }.exhaustive
 
     }

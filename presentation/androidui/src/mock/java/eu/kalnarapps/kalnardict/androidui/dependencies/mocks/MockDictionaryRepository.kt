@@ -59,4 +59,11 @@ class MockDictionaryRepository : DictionaryRepository {
             errorMessage = "no dictionaries found with given id: $dictionaryId"
         )
     }
+
+    override suspend fun getTranslationById(
+        wordId: Int,
+        dictionaryId: Int
+    ): DataOperationResult<String> {
+        TODO("Not yet implemented")
+    }
 }

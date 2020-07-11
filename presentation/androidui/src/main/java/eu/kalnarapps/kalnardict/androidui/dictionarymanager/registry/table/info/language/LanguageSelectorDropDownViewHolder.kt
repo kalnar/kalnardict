@@ -33,7 +33,6 @@ class LanguageSelectorDropDownViewHolder(
                     R.string.add_new_language_text
                 )
             }
-            SelectableLanguage.AddNewLanguage -> TODO()
         }.exhaustive
     }
 }

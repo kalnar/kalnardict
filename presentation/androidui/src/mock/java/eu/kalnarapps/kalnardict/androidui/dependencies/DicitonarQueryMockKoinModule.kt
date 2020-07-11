@@ -24,7 +24,8 @@ val dictionaryQueryKoinMockModule: Module = module {
             ),
             getCurrentLanguageUseCase = GetCurrentLanguageUseCase(
                 configurationRepository = get()
-            )
+            ),
+            getTranslation = get()
         )
     }
 }

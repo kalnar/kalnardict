@@ -6,6 +6,7 @@ sealed class NavigationCommand {
     class NavigateToDictionaryRegistryDialog(val uri: String) : NavigationCommand()
     object NavigateToDictionaryRegistryNewLanguageDialog : NavigationCommand()
     object NavigateToDictionaryQuery : NavigationCommand()
+    object NavigateToDictionaryTranslation : NavigationCommand()
     object NavigateToDictionaryManager : NavigationCommand()
     object DoNothing : NavigationCommand()
 

@@ -27,6 +27,7 @@ class AndroidScreenNavigator(
                 showLanguageRegistryDialog()
             }
             NavigationCommand.NavigateToDictionaryQuery -> navigateToDictionaryQuery()
+            NavigationCommand.NavigateToDictionaryTranslation -> navigateToDictionaryTranslation()
             NavigationCommand.NavigateToDictionaryManager -> navigateToDictionaryManager()
             is NavigationCommand.ShowDialog -> showDialog(navigationCommand)
             NavigationCommand.DoNothing -> Unit
@@ -94,10 +95,15 @@ class AndroidScreenNavigator(
 //                .setPopUpTo(R.id.navigation_screen, false)
                 .build()
             it.navigate(
-                R.id.dictionaryQueryScreen,
+                R.id.dictionary_query_navigation,
                 null,
                 navOptions
             )
         }
     }
+
+    private fun navigateToDictionaryTranslation() {
+        // TODO
+    }
+
 }
