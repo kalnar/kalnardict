@@ -22,7 +22,9 @@ android {
         }
     }
     productFlavors {
-        mock
+        mock {
+            applicationIdSuffix ".mock"
+        }
         full
     }
     compileOptions {
