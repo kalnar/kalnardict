@@ -15,8 +15,10 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.common.model.ChangeObserver
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_input
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner
@@ -45,7 +47,11 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
 
         query_result_list_view.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = QueryResultListAdapter()
+            adapter = QueryResultListAdapter(object : OnWordClickedListener {
+                override fun onWordClicked(wordView: WordView) {
+                    // viewModel.onWordSelected(wordView)
+                }
+            })
             viewModel.getQueryResult().observe(viewLifecycleOwner, Observer {
                 (adapter as QueryResultListAdapter).updateWords(it)
             })
