@@ -8,12 +8,11 @@ import eu.kalnarapps.kalnardict.data.mock.MockEmptyDictDao
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
 import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
+import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.validExternalResource
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
@@ -22,9 +21,8 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsIterableContaining
 import org.hamcrest.text.IsEqualIgnoringCase
-import org.junit.After
+import org.junit.Rule
 import org.junit.Test
-import java.net.URI
 
 
 @ExperimentalCoroutinesApi
@@ -35,12 +33,14 @@ class RepositoryTest {
             MockDictDao(),
             TestExternalDatabaseHandler()
         )
-    private val testCoroutineScope = TestCoroutineScope()
+
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
     @Test
     fun import_one_tables_from_valid_external_db() {
         // given a correct path of a valid external db
-        testCoroutineScope.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
@@ -103,7 +103,7 @@ class RepositoryTest {
     fun fail_to_import_invalid_external_db() {
         // given a correct path of a valid external db
         val externalDbPath = "mockInvalidDbPath"
-        testCoroutineScope.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
@@ -138,7 +138,7 @@ class RepositoryTest {
             TestExternalDatabaseHandler()
         )
 
-        testCoroutineScope.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             assertThat(
                 repository.readRegisteredDictionaries(),
                 IsEmptyCollection()
@@ -149,7 +149,7 @@ class RepositoryTest {
     @Test
     fun read_registered_dictionaries_and_return_found_ones() {
 
-        testCoroutineScope.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             val dictionaries = repository.readRegisteredDictionaries()
             assertThat(
                 dictionaries,
@@ -172,7 +172,7 @@ class RepositoryTest {
 
     @Test
     fun read_meta_info_of_external_db() {
-        testCoroutineScope.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             val metaInfoFetch = repository.readMetaInfoFromExternalDb(
                 Stubs.Db.validExternalDatabase
             )
@@ -196,7 +196,7 @@ class RepositoryTest {
 
     @Test
     fun attempt_read_meta_info_of_invalid_external_db() {
-        testCoroutineScope.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             val metaInfoFetch = repository.readMetaInfoFromExternalDb(
                 Stubs.Db.invalidExternalDatabase
             )
@@ -208,9 +208,12 @@ class RepositoryTest {
         }
     }
 
-    @After
-    fun tearDown() {
-        testCoroutineScope.cleanupTestCoroutines()
+    @Test
+    fun return_translation_when_called_with_available_word_id() {
+    }
+
+    @Test
+    fun return_operation_failure_when_getting_translation_with_wrong_id() {
     }
 
 }

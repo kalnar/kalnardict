@@ -21,14 +21,6 @@ class AppConfigRepositoryTest {
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
 
-    @Before
-    fun setUp() {
-    }
-
-    @After
-    fun tearDown() {
-    }
-
     @Test
     fun initial_dictionary_is_not_set() {
         testCoroutineRule.runBlockingTest {
