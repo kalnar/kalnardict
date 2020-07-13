@@ -17,13 +17,25 @@ import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import org.koin.core.module.Module
+import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
 
 
 val mapperModule: Module = module {
     factory { WordInfoMapper() as RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry> }
-    factory { TranslatedWordMapper() as LocalDataToRoomEntityMapper<TranslatedWordDataEntry, Word> }
     factory { LanguageMapper() as DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi> }
     factory { LanguageDataMapper() as DomainToLocalDataMapper<DictLanguage, LanguageLogEntryData> }
-    factory { LanguageRoomMapper() as LocalDataToRoomEntityMapper<LanguageLogEntryData, Language> }
+
+    factory(Qualifier.translatedWordMapper) {
+        TranslatedWordMapper() as LocalDataToRoomEntityMapper<TranslatedWordDataEntry, Word>
+    }
+
+    factory(Qualifier.languageRoomMapper) {
+        LanguageRoomMapper() as LocalDataToRoomEntityMapper<LanguageLogEntryData, Language>
+    }
+}
+
+object Qualifier {
+    val translatedWordMapper = StringQualifier("translated_word")
+    val languageRoomMapper = StringQualifier("language_room")
 }

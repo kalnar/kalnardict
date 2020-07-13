@@ -39,13 +39,13 @@ val dataModule: Module = module {
             wordDao = get(),
             dictionaryMetaDao = get(),
             wordInfoMapper = get(),
-            translatedWordMapper = get()
+            translatedWordMapper = get(Qualifier.translatedWordMapper)
         ) as DictDao
     }
     single {
         AuxiliaryDataSource(
             languageDao = get(),
-            languageRoomMapper = get()
+            languageRoomMapper = get(Qualifier.languageRoomMapper)
         ) as LanguageDataDao
     }
 
