@@ -195,13 +195,21 @@ class DictionaryRegistryViewModel(
     }
 
     fun onDialogButtonClicked() {
-        postNavigationCommand(NavigationCommand.NavigateToDictionaryQuery)
+        viewModelScope.launch {
+            withContext(dispatcherProvider.io()) {
+                postNavigationCommand(NavigationCommand.NavigateToDictionaryQuery)
+            }
+        }
     }
 
     fun onLanguageAdditionRequest() {
-        postNavigationCommand(
-            NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog
-        )
+        viewModelScope.launch {
+            withContext(dispatcherProvider.io()) {
+                postNavigationCommand(
+                    NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog
+                )
+            }
+        }
     }
 
     fun onNewLanguageRegistryClicked(languageUi: SelectableLanguage.LanguageUi) {

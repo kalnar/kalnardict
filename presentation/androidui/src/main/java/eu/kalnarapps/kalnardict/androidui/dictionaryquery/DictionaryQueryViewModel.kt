@@ -76,22 +76,22 @@ class DictionaryQueryViewModel(
             }.exhaustive
             currentWord.collect {
                 if (it is CurrentWord.Selected) {
-                    postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
-                    loadTranslation(it.word)
+                    withContext(dispatcherProvider.io()) {
+                        postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
+                        loadTranslation(it.word)
+                    }
                 }
             }
         }
     }
 
     private suspend fun loadTranslation(word: WordView) {
-        withContext(dispatcherProvider.io()) {
-            state.value?.let {
-                postUiState(
-                    it.copy(
-                        translationText = LoadableContent.Completed(getTranslation(word.id))
-                    )
+        state.value?.let {
+            postUiState(
+                it.copy(
+                    translationText = LoadableContent.Completed(getTranslation(word.id))
                 )
-            }
+            )
         }
     }
 
@@ -107,6 +107,7 @@ class DictionaryQueryViewModel(
             it.translationText
         }
     }
+
     fun getDictionary(): LiveData<DictionarySelectorItem> {
         return Transformations.map(state) {
             it.currentDictionaryItemView
@@ -141,6 +142,7 @@ class DictionaryQueryViewModel(
 
     fun onDictionaryChanged(dictionaryItem: DictionarySelectorItem) {
         viewModelScope.launch {
+            // TODO: should use flow instead for current dictionary
             postUiState(
                 state.value?.copy(
                     currentDictionaryItemView = dictionaryItem
@@ -177,7 +179,9 @@ class DictionaryQueryViewModel(
 
     fun onWordSelected(wordView: WordView) {
         viewModelScope.launch {
-            currentWord.value = CurrentWord.Selected(wordView)
+            withContext(dispatcherProvider.io()) {
+                currentWord.value = CurrentWord.Selected(wordView)
+            }
         }
     }
 
