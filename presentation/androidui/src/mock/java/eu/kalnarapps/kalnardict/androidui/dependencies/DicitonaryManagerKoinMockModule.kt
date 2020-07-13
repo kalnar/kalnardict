@@ -13,7 +13,8 @@ val dictionaryManagerKoinMockModule: Module = module {
         DictionaryManagerViewModel(
             listRegisteredDictionariesUseCase = ListRegisteredDictionaries(
                 get()
-            )
+            ),
+            uiLogger = get()
         )
     }
 }

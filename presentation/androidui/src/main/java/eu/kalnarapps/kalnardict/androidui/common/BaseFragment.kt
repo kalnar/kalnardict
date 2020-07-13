@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import eu.kalnarapps.kalnardict.android.utils.Logger
+import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
@@ -18,7 +18,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
 
     protected abstract val viewModel: BaseViewModel<UiModel>
     private val navigator: ScreenNavigator by inject { parametersOf(findNavController()) }
-    protected val logger: Logger by inject()
+    protected val uiLogger: UiLogger by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,7 +29,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
 
     private fun listenToErrors() {
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            logger.logErrorFromUi(it)
+            uiLogger.logErrorFromUi(it)
             when (it.errorFeedback) {
                 is ErrorUiFeedBack.ShowSnackBar -> TODO()
                 ErrorUiFeedBack.OnlyLog -> Unit
@@ -45,7 +45,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
 
     private fun listenToUiStateChanges() {
         viewModel.getUiState().observe(viewLifecycleOwner, Observer {
-            logger.d("ui.state", it.toString())
+            uiLogger.d("ui.state", it.toString())
         })
     }
 

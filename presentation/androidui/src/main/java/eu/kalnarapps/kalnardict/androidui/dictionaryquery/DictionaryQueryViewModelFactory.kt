@@ -15,7 +15,8 @@ class DictionaryQueryViewModelFactory() : ViewModelProvider.Factory, KoinCompone
                 listRegisteredDictionariesUseCase = get(),
                 updateCurrentLanguageUseCase = get(),
                 getCurrentLanguageUseCase = get(),
-                getTranslation = get()
+                getTranslation = get(),
+                uiLogger = get()
             ) as T
         } else {
             throw IllegalArgumentException(

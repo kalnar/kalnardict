@@ -12,7 +12,10 @@ import org.koin.dsl.module
 val viewModuleModule: Module = module {
 
     viewModel {
-        DictionaryManagerViewModel(listRegisteredDictionariesUseCase = get())
+        DictionaryManagerViewModel(
+            listRegisteredDictionariesUseCase = get(),
+            uiLogger = get()
+        )
     }
     viewModel {
         DictionaryQueryViewModel(
@@ -20,7 +23,8 @@ val viewModuleModule: Module = module {
             listRegisteredDictionariesUseCase = get(),
             updateCurrentLanguageUseCase = get(),
             getCurrentLanguageUseCase = get(),
-            getTranslation = get()
+            getTranslation = get(),
+            uiLogger = get()
         )
     }
 }

@@ -15,6 +15,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toWordView
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
+import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.androidui.test.assertThat
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
@@ -34,6 +35,7 @@ class DictionaryQueryViewModelTest {
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
+    private val logger = TestLogger()
 
     @Test
     fun when_a_word_is_selected_navigate_to_translation_and_load_translation() {
@@ -60,7 +62,8 @@ class DictionaryQueryViewModelTest {
                     ),
                     currentDictionary = CurrentDictionary.SetDictionary(translationDictionary)
                 ),
-                dispatcherProvider = TestDispatcherProvider
+                dispatcherProvider = TestDispatcherProvider,
+                uiLogger = logger
             )
             val translationObserver = viewModel.getTranslation().test()
                 .awaitValue()

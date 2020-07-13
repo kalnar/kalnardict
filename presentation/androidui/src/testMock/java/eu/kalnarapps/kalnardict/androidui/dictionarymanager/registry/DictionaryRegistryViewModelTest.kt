@@ -15,6 +15,7 @@ import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
+import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
@@ -45,6 +46,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
+    private val logger = TestLogger()
 
     @Before
     fun setUp() {
@@ -84,7 +86,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
 
         val listOfTableUi = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
@@ -105,7 +108,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
 
         val listOfTableUi = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
@@ -131,7 +135,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
 
         val listOfTableUi = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
@@ -174,7 +179,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
 
         val tables = viewModel.getRegisterDictionaryUiModels().map { it.tableUiInfo }
@@ -206,7 +212,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
         viewModel.onTableRegisteringUpdate(
             UiStubs.TableUiInfo.externalTable1
@@ -222,7 +229,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             IsNull()
         )
         assertThat(
-            tables?.filter { it.isSelected },
+            tables.filter { it.isSelected },
             IsCollectionWithSize(equalTo(2))
         )
 
@@ -257,7 +264,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
 
         assertThat(
@@ -280,7 +288,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = ListLanguagesMock(ArrayList()),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase()
+            addNewLanguage = MockRegisterLanguageUseCase(),
+            uiLogger = logger
         )
 
         assertThat(
@@ -303,7 +312,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = ListLanguagesMock(languages),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase(languages)
+            addNewLanguage = MockRegisterLanguageUseCase(languages),
+            uiLogger = logger
         )
 
         // when we register russian
@@ -342,7 +352,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = ListLanguagesMock(languages),
             languageMapper = LanguageMapper(),
-            addNewLanguage = MockRegisterLanguageUseCase(languages)
+            addNewLanguage = MockRegisterLanguageUseCase(languages),
+            uiLogger = logger
         )
 
         // when we register french

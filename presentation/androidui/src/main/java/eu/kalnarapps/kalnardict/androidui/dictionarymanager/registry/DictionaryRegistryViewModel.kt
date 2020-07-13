@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
-import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
+import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
@@ -37,8 +38,12 @@ class DictionaryRegistryViewModel(
     private val listAvailableLanguages: ListRegisteredLanguagesUseCase,
     private val addNewLanguage: RegisterLanguageUseCase,
     private val languageMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
-) : BaseViewModel<DictionaryRegistryState>(dispatcherProvider = dispatcherProvider) {
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    uiLogger: UiLogger
+) : BaseViewModel<DictionaryRegistryState>(
+    dispatcherProvider = dispatcherProvider,
+    logger = uiLogger
+) {
 
     private val _registryError: MutableLiveData<UiEvent<RegistryError>> = MutableLiveData()
     val registryError: LiveData<UiEvent<RegistryError>>

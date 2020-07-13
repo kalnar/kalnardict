@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
@@ -30,6 +31,7 @@ class DictionaryManagerViewModelTest : KoinComponent {
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
+    private val logger = TestLogger()
 
 
     @Before
@@ -48,7 +50,8 @@ class DictionaryManagerViewModelTest : KoinComponent {
                             DictionaryManagerViewModel(
                                 listRegisteredDictionariesUseCase = ListDictionariesMock(
                                     get()
-                                )
+                                ),
+                                uiLogger = logger
                             )
                         }
                     }

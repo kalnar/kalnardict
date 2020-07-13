@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
@@ -34,8 +35,13 @@ class DictionaryQueryViewModel(
     private val updateCurrentLanguageUseCase: ChangeDictLanguageUseCase,
     private val getCurrentLanguageUseCase: GetLanguageUseCase,
     private val getTranslation: GetTranslationUseCase,
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
-) : BaseViewModel<DictionaryQueryState>(dispatcherProvider = dispatcherProvider) {
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    uiLogger: UiLogger
+) : BaseViewModel<DictionaryQueryState>(
+    dispatcherProvider = dispatcherProvider,
+    logger = uiLogger
+) {
+
 
     @ExperimentalCoroutinesApi
     private val currentWord: MutableStateFlow<CurrentWord> =
@@ -43,6 +49,7 @@ class DictionaryQueryViewModel(
 
     init {
         viewModelScope.launch {
+
             when (val currentDictionary = getCurrentLanguageUseCase()) {
                 is CurrentDictionary.SetDictionary -> {
                     setUiState(

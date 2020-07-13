@@ -15,7 +15,8 @@ class DictionaryRegistryViewModelFactory(
                 registerNewDictionary = getKoin().get(),
                 listAvailableLanguages = getKoin().get(),
                 languageMapper = getKoin().get(),
-                addNewLanguage = getKoin().get()
+                addNewLanguage = getKoin().get(),
+                uiLogger = getKoin().get()
             ) as T
         } else {
             throw IllegalArgumentException(
