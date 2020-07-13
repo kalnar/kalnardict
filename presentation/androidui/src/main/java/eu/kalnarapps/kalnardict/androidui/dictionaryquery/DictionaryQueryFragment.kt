@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
@@ -22,12 +23,15 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listen
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_input
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
+@ExperimentalCoroutinesApi
 class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
 
-    override val viewModel: DictionaryQueryViewModel by viewModel()
+    override val viewModel: DictionaryQueryViewModel by navGraphViewModels(
+        R.id.dictionary_query_navigation
+    ) { DictionaryQueryViewModelFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +53,7 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
             layoutManager = LinearLayoutManager(context)
             adapter = QueryResultListAdapter(object : OnWordClickedListener {
                 override fun onWordClicked(wordView: WordView) {
-                    // viewModel.onWordSelected(wordView)
+                    viewModel.onWordSelected(wordView)
                 }
             })
             viewModel.getQueryResult().observe(viewLifecycleOwner, Observer {
@@ -63,7 +67,6 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
         viewModel.getDictionary().observe(viewLifecycleOwner, ChangeObserver {
             viewModel.refreshQueryResults()
         })
-
     }
 
     private fun setUpSpinner() {

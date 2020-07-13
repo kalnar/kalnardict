@@ -60,6 +60,13 @@ class Repository(
             )
         )
     }
+
+    override suspend fun getTranslationById(
+        wordId: Int,
+        dictionaryId: Int
+    ): DataOperationResult<String> {
+        TODO("Not yet implemented")
+    }
 //    externalDbHandler.checkDatabaseStructure(localDbFile).run {
 //        if (this == DatabaseValidity.INVALID) {
 //            return OperationResult.Failure

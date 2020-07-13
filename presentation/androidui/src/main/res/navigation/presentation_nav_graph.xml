@@ -20,11 +20,6 @@
         android:name="eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerFragment"
         android:label="Dictionary Manager" />
 
-    <fragment
-        android:id="@+id/dictionaryQueryScreen"
-        android:name="eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryFragment"
-        android:label="Dictionary Query" />
-
     <dialog
         android:id="@+id/simpleDialog"
         android:name="eu.kalnarapps.kalnardict.androidui.dialogs.SimpleDialog"
@@ -40,20 +35,6 @@
 
     </dialog>
 
-    <dialog
-        android:id="@+id/failedTableRegistrationDialog"
-        android:name="eu.kalnarapps.kalnardict.androidui.dialogs.FailedTableRegistrationDialog"
-        android:label="Failed Table Registration">
-
-        <argument
-            android:name="originalTableName"
-            app:argType="string" />
-
-        <argument
-            android:name="errorMessage"
-            app:argType="string" />
-
-    </dialog>
     <navigation
         android:id="@+id/dictionary_registration_navigation"
         app:startDestination="@id/dictionaryRegistry">
@@ -80,6 +61,17 @@
                 android:name="dbPath"
                 app:argType="string" />
         </fragment>
+    </navigation>
+    <navigation android:id="@+id/dictionary_query_navigation"
+        app:startDestination="@id/dictionaryQueryScreen">
+        <fragment
+            android:id="@+id/dictionaryTranslationScreen"
+            android:name="eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryTranslationFragment"
+            android:label="Dictionary Translation" />
+        <fragment
+            android:id="@+id/dictionaryQueryScreen"
+            android:name="eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryQueryFragment"
+            android:label="Dictionary Query" />
     </navigation>
 
 </navigation>

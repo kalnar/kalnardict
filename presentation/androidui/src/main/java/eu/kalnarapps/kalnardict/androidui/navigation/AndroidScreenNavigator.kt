@@ -69,7 +69,7 @@ class AndroidScreenNavigator(
 //                .setPopUpTo(R.id.navigation_screen, false)
                 .build()
             it.navigate(
-                R.id.dictionaryQueryScreen,
+                R.id.dictionary_query_navigation,
                 null,
                 navOptions
             )
@@ -77,7 +77,17 @@ class AndroidScreenNavigator(
     }
 
     private fun navigateToDictionaryTranslation() {
-        // TODO
+        val navigationOccurred = navController.popBackStack(
+            R.id.dictionaryTranslationScreen,
+            false
+        )
+
+        if (!navigationOccurred) {
+            navController.navigate(
+                R.id.dictionaryTranslationScreen,
+                null
+            )
+        }
     }
 
 }
