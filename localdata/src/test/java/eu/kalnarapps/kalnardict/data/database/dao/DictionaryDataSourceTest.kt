@@ -61,7 +61,7 @@ class DictionaryDataSourceTest {
             IsEmptyCollection()
         )
 
-        dataSource.insertDictEntry(SampleEyeDictEntry)
+        dataSource.insertDictEntry(SampleEyeWordDataEntry)
 
         assertThat(
             dataSource.queryWithMatchAnyWhere("szem"),

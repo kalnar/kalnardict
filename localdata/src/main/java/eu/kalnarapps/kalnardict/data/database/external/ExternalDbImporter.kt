@@ -7,8 +7,8 @@ import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
-import eu.kalnarapps.kalnardict.data.mapper.DictEntry
-import eu.kalnarapps.kalnardict.data.mapper.DictEntryToData
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordEntry
 
 
 class ExternalDbImporter(
@@ -83,7 +83,7 @@ class ExternalDbImporter(
 
     override fun readTableEntriesFrom(
         importJob: ImportEntry
-    ): DataOperationResult<List<DictEntry>> {
+    ): DataOperationResult<List<WordDataEntry>> {
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
@@ -97,7 +97,7 @@ class ExternalDbImporter(
             cursorOnDictTable.close()
             return DataOperationResult.Success(emptyList())
         }
-        val entriesBeingImported = ArrayList<DictEntry>()
+        val entriesBeingImported = ArrayList<WordDataEntry>()
         while (cursorOnDictTable.moveToNext()) {
             val id = cursorOnDictTable.getInt(
                 cursorOnDictTable.getColumnIndex(
@@ -115,7 +115,7 @@ class ExternalDbImporter(
                 )
             )
             entriesBeingImported.add(
-                DictEntryToData(
+                WordEntry(
                     id = id,
                     baseForm = baseForm,
                     alternativeBaseForm = cursorOnDictTable.getString(

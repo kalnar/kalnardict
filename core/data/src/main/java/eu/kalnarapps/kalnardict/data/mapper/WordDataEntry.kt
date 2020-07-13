@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.data.mapper
 
-interface DictEntry {
+interface WordDataEntry {
     val id: Int
     val baseForm: String
     val alternativeBaseForm: String

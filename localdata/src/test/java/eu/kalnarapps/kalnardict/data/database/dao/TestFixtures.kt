@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.data.database.dao
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
-import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.LanguageEntryToData
 
 
@@ -44,21 +44,21 @@ val newSampleDictionaryLogEntry = DictionaryLogEntry(
     version = "0.01"
 )
 
-object SampleEyeDictEntry : DictEntry {
+object SampleEyeWordDataEntry : WordDataEntry {
     override val id: Int = 2
     override val baseForm: String = "szem"
     override val alternativeBaseForm: String = "szem"
     override val translation: String = "eye"
 }
 
-object SampleBoxDictEntry : DictEntry {
+object SampleBoxWordDataEntry : WordDataEntry {
     override val id: Int = 3
     override val baseForm: String = "doboz"
     override val alternativeBaseForm: String = "doboz"
     override val translation: String = "box"
 }
 
-val sampleDictEntries = listOf(SampleEyeDictEntry, SampleBoxDictEntry)
+val sampleDictEntries = listOf(SampleEyeWordDataEntry, SampleBoxWordDataEntry)
 
 object Languages {
     val english = Language("en", "English")

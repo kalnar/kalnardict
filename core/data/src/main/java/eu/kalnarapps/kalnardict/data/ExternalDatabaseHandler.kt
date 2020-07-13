@@ -1,13 +1,13 @@
 package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 
 interface ExternalDatabaseHandler {
 
     fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity
     fun readTableInfosFrom(resource: ExternalDictionaryResource): DataOperationResult<List<ImportEntry.TableInfo>>
-    fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>>
+    fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<WordDataEntry>>
 
 }
 

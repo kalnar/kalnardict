@@ -1,13 +1,6 @@
 package eu.kalnarapps.kalnardict.data.mapper
 
 
-data class DictEntryToData(
-    override val id: Int,
-    override val baseForm: String,
-    override val alternativeBaseForm: String,
-    override val translation: String
-) : DictEntry
-
 data class DictionaryInfo(
     override val id: Int,
     override val name: String,
@@ -25,5 +18,5 @@ data class WordEntry(
     override val baseForm: String,
     override val alternativeBaseForm: String,
     override val translation: String
-) : DictEntry
+) : WordDataEntry
 

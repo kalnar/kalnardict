@@ -13,7 +13,7 @@ fun DictionaryLogEntry.toDictionaryLogEntryData(): DictionaryLogEntryData {
     )
 }
 
-fun Word.toDictEntry(): DictEntry {
+fun Word.toDictEntry(): WordDataEntry {
 //    return object : DictEntry {
 //        override fun getId(): Int = id
 //        override fun getBaseForm(): String = baseForm
@@ -29,7 +29,7 @@ fun Word.toDictEntry(): DictEntry {
     )
 }
 
-fun DictEntry.toWord(): Word {
+fun WordDataEntry.toWord(): Word {
     return Word(
         id = id,
         baseForm = baseForm,

@@ -7,7 +7,7 @@ import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.dao.DictDao
-import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
@@ -16,7 +16,7 @@ import eu.kalnarapps.kalnardict.data.newWordsInFrench
 import eu.kalnarapps.kalnardict.data.validExternalResource
 
 open class MockDictDao : DictDao {
-    private val mockDb = ArrayList<DictEntry>()
+    private val mockDb = ArrayList<WordDataEntry>()
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
         addAll(
             listOf(
@@ -36,15 +36,15 @@ open class MockDictDao : DictDao {
         )
     }
 
-    override suspend fun insertDictEntry(dictEntry: DictEntry) {
-        mockDb.add(dictEntry)
+    override suspend fun insertDictEntry(wordDataEntry: WordDataEntry) {
+        mockDb.add(wordDataEntry)
     }
 
-    override suspend fun insertDictEntries(dictEntries: List<DictEntry>) {
-        mockDb.addAll(dictEntries)
+    override suspend fun insertDictEntries(wordDataEntries: List<WordDataEntry>) {
+        mockDb.addAll(wordDataEntries)
     }
 
-    override suspend fun queryWithMatchAnyWhere(query: String): List<DictEntry> {
+    override suspend fun queryWithMatchAnyWhere(query: String): List<WordDataEntry> {
         return mockDb.filter { it.baseForm.contains(query) }
     }
 
@@ -111,7 +111,7 @@ class TestExternalDatabaseHandler :
         }
     }
 
-    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<DictEntry>> {
+    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<WordDataEntry>> {
         val resource = importJob.externalDictionaryResource().sdCardPath()
         return if (resource == validExternalResource.localPath) {
             DataOperationResult.Success(data = newWordsInFrench)

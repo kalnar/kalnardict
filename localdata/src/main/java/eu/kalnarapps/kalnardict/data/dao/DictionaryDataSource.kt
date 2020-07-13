@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.data.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
-import eu.kalnarapps.kalnardict.data.mapper.DictEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictEntry
@@ -13,17 +13,17 @@ class DictionaryDataSource(
     private val wordDao: WordDao,
     private val dictionaryMetaDao: DictionaryLogDao
 ) : DictDao {
-    override suspend fun insertDictEntry(dictEntry: DictEntry) {
+    override suspend fun insertDictEntry(wordDataEntry: WordDataEntry) {
         wordDao.insertWord(
-            dictEntry.toWord()
+            wordDataEntry.toWord()
         )
     }
 
-    override suspend fun insertDictEntries(dictEntries: List<DictEntry>) {
-        wordDao.insertWords(dictEntries.map { it.toWord() })
+    override suspend fun insertDictEntries(wordDataEntries: List<WordDataEntry>) {
+        wordDao.insertWords(wordDataEntries.map { it.toWord() })
     }
 
-    override suspend fun queryWithMatchAnyWhere(query: String): List<DictEntry> {
+    override suspend fun queryWithMatchAnyWhere(query: String): List<WordDataEntry> {
         return wordDao.getByQuery("%${query}%").map { it.toDictEntry() }
     }
 
