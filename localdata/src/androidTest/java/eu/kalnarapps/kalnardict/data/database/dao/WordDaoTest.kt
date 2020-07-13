@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.core.IsNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -61,7 +62,6 @@ class WordDaoTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun readEntryFromDatabase() {
         testCoroutineDispatcher.runBlockingTest {
             // given there is an entry of table from hungarian to english
@@ -130,6 +130,60 @@ class WordDaoTest {
         }
     }
 
+    @Test
+    fun get_translation_from_word_that_is_in_the_table() {
+        testCoroutineDispatcher.runBlockingTest {
+            // given there is an entry of table from hungarian to english
+            insertTableInHungarian()
+
+            val translationInfo =
+                wordDao.getTranslationByIds(
+                    sampleTableInHungarian.id,
+                    sampleTableInHungarian.dictionaryId
+                )
+            assertThat(
+                translationInfo?.dictionaryId,
+                equalTo(sampleTableInHungarian.dictionaryId)
+            )
+            assertThat(
+                translationInfo?.id,
+                equalTo(sampleTableInHungarian.id)
+            )
+            assertThat(
+                translationInfo?.translation,
+                equalTo(sampleTableInHungarian.translation)
+            )
+
+        }
+    }
+
+    @Test
+    fun get_null_translation_from_invalid_id() {
+        testCoroutineDispatcher.runBlockingTest {
+            // given there is an entry of table from hungarian to english
+            insertTableInHungarian()
+
+            val translationInfo =
+                wordDao.getTranslationByIds(
+                    -1,
+                    sampleTableInHungarian.dictionaryId
+                )
+            assertThat(
+                translationInfo,
+                IsNull()
+            )
+
+            assertThat(
+                wordDao.getTranslationByIds(
+                    sampleTableInHungarian.id,
+                    -1
+                ),
+                IsNull()
+            )
+
+
+        }
+    }
 
     @After
     fun tearDown() {
