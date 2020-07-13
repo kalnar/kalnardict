@@ -3,8 +3,6 @@ package eu.kalnarapps.kalnardict.androidui.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dialogs.FailedTableRegistrationDialogArgs
-import eu.kalnarapps.kalnardict.androidui.dialogs.SuccessTableRegistrationDialogArgs
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryFragmentArgs
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog.DictionaryRegistrationStatusDialogArgs
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
@@ -29,7 +27,6 @@ class AndroidScreenNavigator(
             NavigationCommand.NavigateToDictionaryQuery -> navigateToDictionaryQuery()
             NavigationCommand.NavigateToDictionaryTranslation -> navigateToDictionaryTranslation()
             NavigationCommand.NavigateToDictionaryManager -> navigateToDictionaryManager()
-            is NavigationCommand.ShowDialog -> showDialog(navigationCommand)
             NavigationCommand.DoNothing -> Unit
         }.exhaustive
     }
@@ -60,29 +57,6 @@ class AndroidScreenNavigator(
         )
     }
 
-    private fun showDialog(navigationCommand: NavigationCommand.ShowDialog) {
-        when (navigationCommand) {
-            is NavigationCommand.ShowDialog.SuccessTableRegistration -> {
-                navController.navigate(
-                    R.id.successTableRegistrationDialog,
-                    SuccessTableRegistrationDialogArgs(
-                        originalTableName = navigationCommand.table,
-                        dictionaryName = navigationCommand.dictionaryName
-                    ).toBundle()
-                )
-            }
-            is NavigationCommand.ShowDialog.FailureTableRegistration -> {
-                navController.navigate(
-                    R.id.failedTableRegistrationDialog,
-                    FailedTableRegistrationDialogArgs(
-                        originalTableName = navigationCommand.table,
-                        errorMessage = navigationCommand.errorMessage
-                    ).toBundle()
-                )
-            }
-        }.exhaustive
-    }
-
     private fun navigateBack() {
         navController.popBackStack()
         return
@@ -95,7 +69,7 @@ class AndroidScreenNavigator(
 //                .setPopUpTo(R.id.navigation_screen, false)
                 .build()
             it.navigate(
-                R.id.dictionary_query_navigation,
+                R.id.dictionaryQueryScreen,
                 null,
                 navOptions
             )

@@ -81,19 +81,5 @@
                 app:argType="string" />
         </fragment>
     </navigation>
-    <dialog
-        android:id="@+id/successTableRegistrationDialog"
-        android:name="eu.kalnarapps.kalnardict.androidui.dialogs.SuccessTableRegistrationDialog"
-        android:label="Successful Table Registration">
-
-        <argument
-            android:name="originalTableName"
-            app:argType="string" />
-
-        <argument
-            android:name="dictionaryName"
-            app:argType="string" />
-
-    </dialog>
 
 </navigation>

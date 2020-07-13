@@ -39,20 +39,6 @@ class NavigationViewModel : ViewModel() {
                 navCommand = NavigationCommand.NavigateToDictionaryRegistry(
                     uri = UiStubs.Uris.invalidUri
                 )
-            ),
-            NavigationItemView(
-                name = "dialog - table registration - ok",
-                navCommand = NavigationCommand.ShowDialog.SuccessTableRegistration(
-                    table = "original mock table",
-                    dictionaryName = "saving name for mock table"
-                )
-            ),
-            NavigationItemView(
-                name = "dialog - table registration - fail",
-                navCommand = NavigationCommand.ShowDialog.FailureTableRegistration(
-                    table = "original mock table",
-                    errorMessage = "import failed due to conflicting names"
-                )
             )
         )
     }

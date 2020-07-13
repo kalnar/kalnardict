@@ -9,9 +9,4 @@ sealed class NavigationCommand {
     object NavigateToDictionaryTranslation : NavigationCommand()
     object NavigateToDictionaryManager : NavigationCommand()
     object DoNothing : NavigationCommand()
-
-    sealed class ShowDialog : NavigationCommand() {
-        class SuccessTableRegistration(val table: String, val dictionaryName: String) : ShowDialog()
-        class FailureTableRegistration(val table: String, val errorMessage: String) : ShowDialog()
-    }
 }
