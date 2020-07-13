@@ -7,16 +7,17 @@ import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.dao.DictDao
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toTableInfo
 import eu.kalnarapps.kalnardict.data.newWordsInFrench
 import eu.kalnarapps.kalnardict.data.validExternalResource
 
 open class MockDictDao : DictDao {
-    private val mockDb = ArrayList<WordDataEntry>()
+    private val mockDb = ArrayList<TranslatedWordDataEntry>()
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
         addAll(
             listOf(
@@ -36,11 +37,11 @@ open class MockDictDao : DictDao {
         )
     }
 
-    override suspend fun insertDictEntry(wordDataEntry: WordDataEntry) {
+    override suspend fun insertDictEntry(wordDataEntry: TranslatedWordDataEntry) {
         mockDb.add(wordDataEntry)
     }
 
-    override suspend fun insertDictEntries(wordDataEntries: List<WordDataEntry>) {
+    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordDataEntry>) {
         mockDb.addAll(wordDataEntries)
     }
 
@@ -111,7 +112,7 @@ class TestExternalDatabaseHandler :
         }
     }
 
-    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<WordDataEntry>> {
+    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<TranslatedWordDataEntry>> {
         val resource = importJob.externalDictionaryResource().sdCardPath()
         return if (resource == validExternalResource.localPath) {
             DataOperationResult.Success(data = newWordsInFrench)

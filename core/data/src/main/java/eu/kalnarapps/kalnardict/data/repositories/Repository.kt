@@ -7,9 +7,9 @@ import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.dao.DictDao
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.toExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
@@ -178,12 +178,13 @@ private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryR
 //    )
 //}
 
-private fun DictTranslation.toDictEntry(): WordDataEntry {
+private fun DictTranslation.toDictEntry(): TranslatedWordDataEntry {
     return NewWordDataEntry(
         id = id,
         baseForm = word.baseForm,
         alternativeBaseForm = word.alternativeForm,
-        translation = translation
+        translation = this.translation,
+        dictionaryId = this.dictionary.id
     )
 }
 
@@ -191,8 +192,9 @@ data class NewWordDataEntry(
     override val id: Int,
     override val baseForm: String,
     override val alternativeBaseForm: String,
+    override val dictionaryId: Int,
     override val translation: String
-) : WordDataEntry
+) : TranslatedWordDataEntry
 
 
 data class NewDictionary(

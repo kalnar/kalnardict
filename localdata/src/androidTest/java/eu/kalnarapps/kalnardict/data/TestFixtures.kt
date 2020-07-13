@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
+import eu.kalnarapps.kalnardict.data.entities.Word
 
 object TestFixtures {
     const val testDictionaryLanguageTo: String = "English"
@@ -47,6 +48,18 @@ object TestFixtures {
             description = "French"
         )
         const val nonAvailableLanguageId = "N/A"
+    }
+
+    object Words {
+        // look in localdata/tools/test_external_db.sql for test db info
+        // ("le", "le", "(det.) the; (pron.) him, her, it, them"),
+        val firstWordInTestDb = Word(
+            id = 1,
+            baseForm = "le",
+            alternativeBaseForm = "le",
+            translation = "(det.) the; (pron.) him, her, it, them",
+            dictionaryId = 1
+        )
     }
 
 }

@@ -14,7 +14,7 @@ class WordDaoMock : WordDao {
         add(sampleDictionaryLogEntry)
     }
 
-    override suspend fun getByQuery(queryString: String): List<Word> {
+    override suspend fun getByQuery(queryString: String): List<Word.WordInfo> {
         return words.filter {
             it.baseForm.contains(
                 queryString.run {
@@ -31,6 +31,17 @@ class WordDaoMock : WordDao {
                     searchText
                 }
             )
+        }.map {
+            Word.WordInfo(it.id, it.baseForm, it.alternativeBaseForm, it.dictionaryId)
+        }
+    }
+
+    override suspend fun getTranslationByIds(
+        wordId: Int,
+        dictionaryId: Int
+    ): Word.TranslationInfo? {
+        return words.find { it.dictionaryId == dictionaryId && it.id == wordId }?.run {
+            Word.TranslationInfo(this.id, this.translation, this.dictionaryId)
         }
     }
 

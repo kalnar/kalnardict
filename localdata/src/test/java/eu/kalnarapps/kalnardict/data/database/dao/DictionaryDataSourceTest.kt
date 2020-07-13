@@ -1,6 +1,8 @@
 package eu.kalnarapps.kalnardict.data.database.dao
 
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
+import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
+import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -19,7 +21,12 @@ class DictionaryDataSourceTest {
 
     private val dictLogDaoMock = DictionaryLogDaoMock()
     private val wordDaoMock = WordDaoMock()
-    private val dataSource = DictionaryDataSource(wordDaoMock, dictLogDaoMock)
+    private val dataSource = DictionaryDataSource(
+        wordDaoMock,
+        dictLogDaoMock,
+        wordInfoMapper = WordInfoMapper(),
+        translatedWordMapper = TranslatedWordMapper()
+    )
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     @Before
@@ -43,8 +50,8 @@ class DictionaryDataSourceTest {
         )
 
         assertThat(
-            queryResult.firstOrNull()?.translation,
-            equalTo("table")
+            queryResult.firstOrNull()?.baseForm,
+            equalTo(sampleTableInHungarian.baseForm)
         )
 
         assertThat(
@@ -68,8 +75,8 @@ class DictionaryDataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.translation,
-            equalTo("eye")
+            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.id,
+            equalTo(SampleEyeWordDataEntry.id)
         )
 
     }
@@ -92,16 +99,16 @@ class DictionaryDataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.translation,
-            equalTo("eye")
+            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.id,
+            equalTo(SampleEyeWordDataEntry.id)
         )
         assertThat(
             dataSource.queryWithMatchAnyWhere("doboz"),
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.queryWithMatchAnyWhere("doboz").firstOrNull()?.translation,
-            equalTo("box")
+            dataSource.queryWithMatchAnyWhere("doboz").firstOrNull()?.id,
+            equalTo(SampleBoxWordDataEntry.id)
         )
     }
 

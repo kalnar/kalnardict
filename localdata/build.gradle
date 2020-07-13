@@ -33,6 +33,16 @@ android {
         full
     }
 
+    android {
+        // this is needed because including
+        // androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.6'
+        // leaves duplicate files in same path as other libraries, it was not a problem at 1.3.5
+        packagingOptions {
+            exclude 'META-INF/AL2.0'
+            exclude 'META-INF/LGPL2.1'
+        }
+    }
+
 }
 
 dependencies {

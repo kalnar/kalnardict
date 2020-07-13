@@ -14,7 +14,21 @@ data class Word(
     @ColumnInfo(name = "base_form_alt") val alternativeBaseForm: String,
     @ColumnInfo(name = "translation") val translation: String,
     @ColumnInfo(name = "dictionary_id") val dictionaryId: Int = 0
-)
+) {
+    data class WordInfo(
+        @ColumnInfo(name = "id") val id: Int,
+        @ColumnInfo(name = "base_form") val baseForm: String,
+        @ColumnInfo(name = "base_form_alt") val alternativeBaseForm: String,
+        @ColumnInfo(name = "dictionary_id") val dictionaryId: Int = 0
+    )
+
+    data class TranslationInfo(
+        @ColumnInfo(name = "id") val id: Int,
+        @ColumnInfo(name = "translation") val translation: String,
+        @ColumnInfo(name = "dictionary_id") val dictionaryId: Int = 0
+    )
+}
+
 
 @Entity
 data class Language(

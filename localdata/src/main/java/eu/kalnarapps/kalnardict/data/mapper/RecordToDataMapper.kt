@@ -25,24 +25,17 @@ fun Word.toDictEntry(): WordDataEntry {
         id = id,
         baseForm = baseForm,
         alternativeBaseForm = alternativeBaseForm,
-        translation = translation
+        dictionaryId = dictionaryId
     )
 }
 
-fun WordDataEntry.toWord(): Word {
-    return Word(
+fun WordDataEntry.toWordInfo(): Word.WordInfo {
+    return Word.WordInfo(
         id = id,
         baseForm = baseForm,
         alternativeBaseForm = alternativeBaseForm,
-        translation = translation
+        dictionaryId = dictionaryId
     )
-//    return Word(
-//        id = getId(),
-//        baseForm = getBaseForm(),
-//        alternativeBaseForm = getAlternativeBaseForm(),
-//        translation = getTranslation(),
-//        dictionaryId = getDictionaryId()
-//    )
 }
 
 fun Language.toLanguageToData(): LanguageEntryToData {

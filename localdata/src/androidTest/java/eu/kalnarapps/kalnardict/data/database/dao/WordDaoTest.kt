@@ -11,6 +11,7 @@ import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.newWordToInsert
 import eu.kalnarapps.kalnardict.data.database.sampleDictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.database.sampleTableInHungarian
+import eu.kalnarapps.kalnardict.data.entities.Word
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -66,8 +67,21 @@ class WordDaoTest {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
-            val tableInHungarian = wordDao.getByQuery("asztal").firstOrNull()
-            assertThat(tableInHungarian?.translation, equalTo("table"))
+            val firstWord =
+                wordDao.getByQuery(sampleTableInHungarian.baseForm)
+                    .firstOrNull()
+            assertThat(
+                firstWord?.dictionaryId,
+                equalTo(sampleTableInHungarian.dictionaryId)
+            )
+            assertThat(
+                firstWord?.id,
+                equalTo(sampleTableInHungarian.id)
+            )
+            assertThat(
+                firstWord?.alternativeBaseForm,
+                equalTo(sampleTableInHungarian.alternativeBaseForm)
+            )
 
             val resultList = wordDao.getByQuery("asztalok")
             assertThat(resultList, IsEmptyCollection())
@@ -90,8 +104,8 @@ class WordDaoTest {
             )
             val newSearchResultForEye = wordDao.getByQuery("szem").firstOrNull()
             assertThat(
-                newSearchResultForEye?.translation,
-                equalTo("eye")
+                newSearchResultForEye,
+                equalTo(newWordToInsert.toWordInfo())
             )
         }
     }
@@ -122,4 +136,13 @@ class WordDaoTest {
         Dispatchers.resetMain()
         testCoroutineDispatcher.cleanupTestCoroutines()
     }
+}
+
+private fun Word.toWordInfo(): Word.WordInfo {
+    return Word.WordInfo(
+        id,
+        baseForm,
+        alternativeBaseForm,
+        dictionaryId
+    )
 }

@@ -37,7 +37,9 @@ val dataModule: Module = module {
     single {
         DictionaryDataSource(
             wordDao = get(),
-            dictionaryMetaDao = get()
+            dictionaryMetaDao = get(),
+            wordInfoMapper = get(),
+            translatedWordMapper = get()
         ) as DictDao
     }
     single {

@@ -10,8 +10,28 @@ import eu.kalnarapps.kalnardict.data.entities.Word
 @Dao
 interface WordDao {
 
-    @Query("SELECT * FROM word WHERE base_form LIKE :queryString LIMIT 100")
-    suspend fun getByQuery(queryString: String): List<Word>
+    @Query(
+        """SELECT 
+        id, base_form, base_form_alt, dictionary_id
+            FROM 
+        word 
+            WHERE 
+        base_form LIKE :queryString LIMIT 100"""
+    )
+    suspend fun getByQuery(queryString: String): List<Word.WordInfo>
+
+    @Query(
+        """SELECT 
+        id, translation, dictionary_id 
+            FROM 
+        word 
+            WHERE 
+        id = :wordId 
+            and 
+        dictionary_id = :dictionaryId LIMIT 1
+        """
+    )
+    suspend fun getTranslationByIds(wordId: Int, dictionaryId: Int): Word.TranslationInfo?
 
     @Insert
     suspend fun insertWord(word: Word)
@@ -28,7 +48,10 @@ interface WordDao {
                 " FROM Word join dictionary_log ON dictionary_log.id = dictionary_id " +
                 "WHERE base_form LIKE :queryString and dictionary_id = :dictId LIMIT 100;"
     )
-    suspend fun getWordsByQueryInDictionary(queryString: String, dictId: Int): List<DictionaryLogWithWords>
+    suspend fun getWordsByQueryInDictionary(
+        queryString: String,
+        dictId: Int
+    ): List<DictionaryLogWithWords>
 
 }
 

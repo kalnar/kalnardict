@@ -2,29 +2,37 @@ package eu.kalnarapps.kalnardict.data.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
+import eu.kalnarapps.kalnardict.data.entities.Word
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
+import eu.kalnarapps.kalnardict.data.mapper.LocalDataToRoomEntityMapper
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.toDictEntry
+import eu.kalnarapps.kalnardict.data.mapper.RoomEntityToLocalDataMapper
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.toWord
 
 class DictionaryDataSource(
     private val wordDao: WordDao,
-    private val dictionaryMetaDao: DictionaryLogDao
+    private val dictionaryMetaDao: DictionaryLogDao,
+    private val wordInfoMapper: RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry>,
+    private val translatedWordMapper: LocalDataToRoomEntityMapper<TranslatedWordDataEntry, Word>
 ) : DictDao {
-    override suspend fun insertDictEntry(wordDataEntry: WordDataEntry) {
+    override suspend fun insertDictEntry(wordDataEntry: TranslatedWordDataEntry) {
         wordDao.insertWord(
-            wordDataEntry.toWord()
+            translatedWordMapper.toRoomEntityModel(wordDataEntry)
         )
     }
 
-    override suspend fun insertDictEntries(wordDataEntries: List<WordDataEntry>) {
-        wordDao.insertWords(wordDataEntries.map { it.toWord() })
+    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordDataEntry>) {
+        wordDao.insertWords(wordDataEntries.map {
+            translatedWordMapper.toRoomEntityModel(it)
+        })
     }
 
     override suspend fun queryWithMatchAnyWhere(query: String): List<WordDataEntry> {
-        return wordDao.getByQuery("%${query}%").map { it.toDictEntry() }
+        return wordDao.getByQuery("%${query}%").map {
+            wordInfoMapper.toLocalData(it)
+        }
     }
 
     override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData) {

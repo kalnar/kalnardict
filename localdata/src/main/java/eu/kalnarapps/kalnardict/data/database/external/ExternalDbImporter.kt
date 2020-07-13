@@ -7,8 +7,8 @@ import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
-import eu.kalnarapps.kalnardict.data.mapper.WordEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordEntry
 
 
 class ExternalDbImporter(
@@ -83,7 +83,7 @@ class ExternalDbImporter(
 
     override fun readTableEntriesFrom(
         importJob: ImportEntry
-    ): DataOperationResult<List<WordDataEntry>> {
+    ): DataOperationResult<List<TranslatedWordDataEntry>> {
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
@@ -97,7 +97,7 @@ class ExternalDbImporter(
             cursorOnDictTable.close()
             return DataOperationResult.Success(emptyList())
         }
-        val entriesBeingImported = ArrayList<WordDataEntry>()
+        val entriesBeingImported = ArrayList<TranslatedWordDataEntry>()
         while (cursorOnDictTable.moveToNext()) {
             val id = cursorOnDictTable.getInt(
                 cursorOnDictTable.getColumnIndex(
@@ -115,7 +115,7 @@ class ExternalDbImporter(
                 )
             )
             entriesBeingImported.add(
-                WordEntry(
+                TranslatedWordEntry(
                     id = id,
                     baseForm = baseForm,
                     alternativeBaseForm = cursorOnDictTable.getString(
@@ -123,7 +123,10 @@ class ExternalDbImporter(
                             DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE_FORM_ALT
                         )
                     ),
-                    translation = translation
+                    translation = translation,
+                    // TODO: find a solution to get id here or even better,
+                    //  create another interface without dict id
+                    dictionaryId = 1
                 )
             )
         }

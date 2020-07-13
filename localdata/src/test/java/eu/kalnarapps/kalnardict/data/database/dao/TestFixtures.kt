@@ -3,8 +3,8 @@ package eu.kalnarapps.kalnardict.data.database.dao
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.LanguageEntryToData
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 
 
 val newWordToInsert = Word(
@@ -44,17 +44,19 @@ val newSampleDictionaryLogEntry = DictionaryLogEntry(
     version = "0.01"
 )
 
-object SampleEyeWordDataEntry : WordDataEntry {
+object SampleEyeWordDataEntry : TranslatedWordDataEntry {
     override val id: Int = 2
     override val baseForm: String = "szem"
     override val alternativeBaseForm: String = "szem"
+    override val dictionaryId: Int = 1
     override val translation: String = "eye"
 }
 
-object SampleBoxWordDataEntry : WordDataEntry {
+object SampleBoxWordDataEntry : TranslatedWordDataEntry {
     override val id: Int = 3
     override val baseForm: String = "doboz"
     override val alternativeBaseForm: String = "doboz"
+    override val dictionaryId: Int = 2
     override val translation: String = "box"
 }
 

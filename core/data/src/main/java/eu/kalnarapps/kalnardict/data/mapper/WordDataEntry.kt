@@ -4,8 +4,16 @@ interface WordDataEntry {
     val id: Int
     val baseForm: String
     val alternativeBaseForm: String
+    val dictionaryId: Int
+}
+
+interface TranslationDataEntry {
+    val id: Int
+    val dictionaryId: Int
     val translation: String
 }
+
+interface TranslatedWordDataEntry : WordDataEntry, TranslationDataEntry
 
 interface DictionaryLogEntryData {
     val id: Int
