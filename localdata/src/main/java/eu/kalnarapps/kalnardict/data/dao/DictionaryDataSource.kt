@@ -59,5 +59,12 @@ class DictionaryDataSource(
             errorMessage = "no dictionary in data source with id $id"
         )
     }
+
+    override suspend fun getTranslationByWordAndDictionaryId(
+        wordId: Int,
+        dictionaryId: Int
+    ): DataOperationResult<String> {
+        TODO("Not yet implemented")
+    }
 }
 

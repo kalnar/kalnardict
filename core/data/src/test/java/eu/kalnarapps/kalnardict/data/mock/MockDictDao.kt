@@ -16,8 +16,9 @@ import eu.kalnarapps.kalnardict.data.mapper.toTableInfo
 import eu.kalnarapps.kalnardict.data.newWordsInFrench
 import eu.kalnarapps.kalnardict.data.validExternalResource
 
-open class MockDictDao : DictDao {
-    private val mockDb = ArrayList<TranslatedWordDataEntry>()
+open class MockDictDao(
+    private val mockDb: ArrayList<TranslatedWordDataEntry> = ArrayList<TranslatedWordDataEntry>()
+) : DictDao {
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
         addAll(
             listOf(
@@ -66,6 +67,18 @@ open class MockDictDao : DictDao {
             )
         } ?: DataOperationResult.Failure(
             errorMessage = "no dictionary found by the id: $id"
+        )
+    }
+
+    override suspend fun getTranslationByWordAndDictionaryId(
+        wordId: Int,
+        dictionaryId: Int
+    ): DataOperationResult<String> {
+        return mockDb.find { it.dictionaryId == dictionaryId && it.id == wordId }?.let {
+            DataOperationResult.Success(it.translation)
+        } ?: DataOperationResult.Failure<String>(
+            errorMessage = "(wordId: $wordId; dictionaryId: $dictionaryId) combination " +
+                    "isn't correct, there is no such word in given dictionary"
         )
     }
 }

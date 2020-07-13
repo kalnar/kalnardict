@@ -28,3 +28,4 @@ data class TestDictionaryInfo(
     override val languageFrom: String,
     override val languageTo: String
 ) : DictionaryLogEntryData
+

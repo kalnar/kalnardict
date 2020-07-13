@@ -2,7 +2,9 @@ package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mock.MockDictDao
 import eu.kalnarapps.kalnardict.data.mock.MockEmptyDictDao
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
@@ -210,10 +212,82 @@ class RepositoryTest {
 
     @Test
     fun return_translation_when_called_with_available_word_id() {
+        testCoroutineRule.runBlockingTest {
+            test_translation_when_called_with_available_word_id(
+                givenWordList = listOf(
+                    Stubs.Words.translatedWordPrendre,
+                    Stubs.Words.translatedWordTake
+                ),
+                wordId = Stubs.Words.wordTakeId,
+                currentDictionary = CurrentDictionary.SetDictionary(
+                    Stubs.Dictionaries.englishToFrenchDictionary
+                ),
+                expectedTranslation = Stubs.Words.wordTakeFrenchTranslationText
+            )
+            test_translation_when_called_with_available_word_id(
+                givenWordList = listOf(
+                    Stubs.Words.translatedWordPrendre,
+                    Stubs.Words.translatedWordTake
+                ),
+                wordId = Stubs.Words.wordPrendreId,
+                currentDictionary = CurrentDictionary.SetDictionary(
+                    Stubs.Dictionaries.frenchToFrenchDictionary
+                ),
+                expectedTranslation = Stubs.Words.wordPrendreFrenchTranslationText
+            )
+        }
     }
 
     @Test
     fun return_operation_failure_when_getting_translation_with_wrong_id() {
+        testCoroutineRule.runBlockingTest {
+            val repository = Repository(
+                MockDictDao(
+                    ArrayList(
+                        listOf(
+                            Stubs.Words.translatedWordPrendre,
+                            Stubs.Words.translatedWordTake
+                        )
+                    )
+                ),
+                TestExternalDatabaseHandler()
+            )
+            // when
+            val result = repository.getTranslationById(
+                Stubs.Words.wordTakeId,
+                Stubs.Dictionaries.frenchToFrenchDictionary.id
+            )
+
+            // then
+            assertThat(
+                result,
+                IsInstanceOf(DataOperationResult.Failure::class.java)
+            )
+        }
     }
 
+    private suspend fun test_translation_when_called_with_available_word_id(
+        givenWordList: List<TranslatedWordDataEntry>,
+        wordId: Int,
+        currentDictionary: CurrentDictionary.SetDictionary,
+        expectedTranslation: String
+    ) {
+        val repository = Repository(
+            MockDictDao(ArrayList(givenWordList)),
+            TestExternalDatabaseHandler()
+        )
+        // when
+        val result = repository.getTranslationById(wordId, currentDictionary.dictionary.id)
+
+        // then
+        assertThat(
+            result,
+            IsInstanceOf(DataOperationResult.Success::class.java)
+        )
+        check(result is DataOperationResult.Success<String>)
+        assertThat(
+            result.data,
+            equalTo(expectedTranslation)
+        )
+    }
 }

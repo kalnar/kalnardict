@@ -65,14 +65,8 @@ class Repository(
         wordId: Int,
         dictionaryId: Int
     ): DataOperationResult<String> {
-        TODO("Not yet implemented")
+        return dictDao.getTranslationByWordAndDictionaryId(wordId, dictionaryId)
     }
-//    externalDbHandler.checkDatabaseStructure(localDbFile).run {
-//        if (this == DatabaseValidity.INVALID) {
-//            return OperationResult.Failure
-//        }
-//
-//    }
 
     override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
         return when (

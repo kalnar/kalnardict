@@ -13,4 +13,8 @@ interface DictDao {
     suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData)
     suspend fun getDictionaries(): List<DictionaryLogEntryData>
     suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData>
+    suspend fun getTranslationByWordAndDictionaryId(
+        wordId: Int,
+        dictionaryId: Int
+    ): DataOperationResult<String>
 }
