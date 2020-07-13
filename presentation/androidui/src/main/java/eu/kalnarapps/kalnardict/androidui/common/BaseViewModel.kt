@@ -47,7 +47,7 @@ abstract class BaseViewModel<UiModel>(
     }
 
     fun resetNavigation() {
-        _navigationCommand.postValue(NavigationCommand.DoNothing)
+        _navigationCommand.value = NavigationCommand.DoNothing
     }
 
     fun getUiState(): LiveData<UiModel> {
