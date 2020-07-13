@@ -64,7 +64,13 @@ class DictionaryDataSource(
         wordId: Int,
         dictionaryId: Int
     ): DataOperationResult<String> {
-        TODO("Not yet implemented")
+        return wordDao.getTranslationByIds(wordId, dictionaryId)?.let {
+            DataOperationResult.Success(it.translation)
+        } ?: DataOperationResult.Failure(
+            errorMessage = "There is no word with id $wordId in dictionary $dictionaryId. " +
+                    "Possible reasons: dictionary or word does not exists or wrong " +
+                    "dictionary is used."
+        )
     }
 }
 
