@@ -23,7 +23,6 @@ object TestFixtures {
         version = "0.01"
     )
     val newSampleDictionaryLogEntry = DictionaryLogEntry(
-        id = DICTIONARY_ID_SECOND,
         dictionaryName = "en_hu_dictionary",
         languageFrom = "en",
         languageTo = "hu",

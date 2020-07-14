@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
@@ -24,12 +25,10 @@ val sampleExternalDbTable = ExternalDatabaseTable(
     languageTo = DictLanguage("french", "fr").code
 )
 
-val newWordsInFrench = listOf<TranslatedWordDataEntry>(
+val newWordsInFrench = listOf<TranslatedWordImportEntry>(
     MockWordDataEntry(
-        id = 1,
         baseForm = "nouveau",
         alternativeBaseForm = "nouveau",
-        dictionaryId = 1,
         translation = "new"
     )
 //    object : DictEntry {
@@ -43,12 +42,10 @@ val newWordsInFrench = listOf<TranslatedWordDataEntry>(
 )
 
 data class MockWordDataEntry(
-    override val id: Int,
     override val baseForm: String,
     override val alternativeBaseForm: String,
-    override val dictionaryId: Int,
     override val translation: String
-) : TranslatedWordDataEntry
+) : TranslatedWordImportEntry
 
 val validExternalResource = ExternalDatabase.LocalFile(
     localPath = "mockDbPath"

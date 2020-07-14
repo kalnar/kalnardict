@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -16,6 +17,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.collection.IsEmptyCollection
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -23,6 +25,7 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class DictionaryLogDaoTest {
     private lateinit var dictionaryLogDao: DictionaryLogDao
@@ -86,21 +89,30 @@ class DictionaryLogDaoTest {
 
     @Test
     fun insert_entry_into_table() {
+        // TODO: use test rule as in other modules
         testCoroutineDispatcher.runBlockingTest {
+            assertThat(
+                dictionaryLogDao.getDictionaries(),
+                IsEmptyCollection()
+            )
             val dictionaryYetToBeInserted = dictionaryLogDao.getDictionaryById(
-                TestFixtures.DICTIONARY_ID_SECOND
+                TestFixtures.DICTIONARY_ID_FIRST
             )
             assertThat(dictionaryYetToBeInserted, nullValue())
-            dictionaryLogDao.insertDictionary(
+            val firstId = dictionaryLogDao.insertDictionary(
                 TestFixtures.newSampleDictionaryLogEntry
             )
             val insertedDictionary = dictionaryLogDao.getDictionaryById(
-                TestFixtures.DICTIONARY_ID_SECOND
+                TestFixtures.DICTIONARY_ID_FIRST
+            )
+            assertThat(
+                firstId,
+                equalTo(1L)
             )
             assertThat(
                 insertedDictionary,
                 equalTo(
-                    TestFixtures.newSampleDictionaryLogEntry
+                    TestFixtures.newSampleDictionaryLogEntry.copy(id = TestFixtures.DICTIONARY_ID_FIRST)
                 )
             )
         }

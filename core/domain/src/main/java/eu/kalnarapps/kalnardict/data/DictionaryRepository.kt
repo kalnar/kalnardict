@@ -12,7 +12,6 @@ import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
 interface DictionaryRepository {
 
-    suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult
     suspend fun getEntriesByQuery(query: DictQuery): List<DictWord>
     suspend fun importTableFromDb(importJob: ImportJob): OperationResult
 

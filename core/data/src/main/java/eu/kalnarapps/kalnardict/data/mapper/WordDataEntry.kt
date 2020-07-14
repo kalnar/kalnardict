@@ -13,6 +13,16 @@ interface TranslationDataEntry {
     val translation: String
 }
 
+interface TranslatedWordImportEntry {
+    val baseForm: String
+    val alternativeBaseForm: String
+    val translation: String
+}
+
+interface TranslatedWordInsertEntry : TranslatedWordImportEntry {
+    val dictionaryId: Int
+}
+
 interface TranslatedWordDataEntry : WordDataEntry, TranslationDataEntry
 
 interface DictionaryLogEntryData {

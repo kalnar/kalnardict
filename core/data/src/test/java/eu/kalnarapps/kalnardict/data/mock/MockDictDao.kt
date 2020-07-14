@@ -10,6 +10,8 @@ import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toTableInfo
@@ -38,22 +40,42 @@ open class MockDictDao(
         )
     }
 
-    override suspend fun insertDictEntry(wordDataEntry: TranslatedWordDataEntry) {
-        mockDb.add(wordDataEntry)
+    override suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry) {
+        mockDb.add(
+            MockTranslatedWordEntry(
+                id = mockDb.size,
+                baseForm = wordDataEntry.baseForm,
+                alternativeBaseForm = wordDataEntry.alternativeBaseForm,
+                translation = wordDataEntry.translation,
+                dictionaryId = wordDataEntry.dictionaryId
+            )
+        )
     }
 
-    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordDataEntry>) {
-        mockDb.addAll(wordDataEntries)
+    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>) {
+        mockDb.addAll(
+            wordDataEntries.map { wordDataEntry ->
+                MockTranslatedWordEntry(
+                    id = mockDb.size,
+                    baseForm = wordDataEntry.baseForm,
+                    alternativeBaseForm = wordDataEntry.alternativeBaseForm,
+                    translation = wordDataEntry.translation,
+                    dictionaryId = wordDataEntry.dictionaryId
+                )
+
+            }
+        )
     }
 
     override suspend fun queryWithMatchAnyWhere(query: String): List<WordDataEntry> {
         return mockDb.filter { it.baseForm.contains(query) }
     }
 
-    override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData) {
+    override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long {
         mockDictionaries.add(
             newDictionary.toDictionaryLogEntryData(id = mockDictionaries.size + 1)
         )
+        return (mockDictionaries.size + 1).toLong()
     }
 
     override suspend fun getDictionaries(): List<DictionaryLogEntryData> {
@@ -99,6 +121,14 @@ data class NewLogEntry(
     override val languageTo: String
 ) : DictionaryLogEntryData
 
+data class MockTranslatedWordEntry(
+    override val id: Int,
+    override val baseForm: String,
+    override val alternativeBaseForm: String,
+    override val dictionaryId: Int,
+    override val translation: String
+) : TranslatedWordDataEntry
+
 class MockEmptyDictDao : MockDictDao() {
     init {
         mockDictionaries.clear()
@@ -125,7 +155,7 @@ class TestExternalDatabaseHandler :
         }
     }
 
-    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<TranslatedWordDataEntry>> {
+    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<TranslatedWordImportEntry>> {
         val resource = importJob.externalDictionaryResource().sdCardPath()
         return if (resource == validExternalResource.localPath) {
             DataOperationResult.Success(data = newWordsInFrench)

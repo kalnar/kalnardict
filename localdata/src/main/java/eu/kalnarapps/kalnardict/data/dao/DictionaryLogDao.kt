@@ -8,7 +8,7 @@ import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 @Dao
 interface DictionaryLogDao {
     @Insert
-    suspend fun insertDictionary(sampleDictionaryLogEntry: DictionaryLogEntry)
+    suspend fun insertDictionary(sampleDictionaryLogEntry: DictionaryLogEntry): Long
 
     @Query("SELECT * FROM dictionary_log WHERE id = :id LIMIT 1")
     suspend fun getDictionaryById(id: Int): DictionaryLogEntry?

@@ -7,9 +7,9 @@ import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
-import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
-import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
 import eu.kalnarapps.kalnardict.data.model.TableImportInfo
+import eu.kalnarapps.kalnardict.data.model.TranslatedWordImportInfo
 
 
 class ExternalDbImporter(
@@ -87,7 +87,7 @@ class ExternalDbImporter(
 
     override fun readTableEntriesFrom(
         importJob: ImportEntry
-    ): DataOperationResult<List<TranslatedWordDataEntry>> {
+    ): DataOperationResult<List<TranslatedWordImportEntry>> {
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
@@ -101,7 +101,7 @@ class ExternalDbImporter(
             cursorOnDictTable.close()
             return DataOperationResult.Success(emptyList())
         }
-        val entriesBeingImported = ArrayList<TranslatedWordDataEntry>()
+        val entriesBeingImported = ArrayList<TranslatedWordImportEntry>()
         while (cursorOnDictTable.moveToNext()) {
             val id = cursorOnDictTable.getInt(
                 cursorOnDictTable.getColumnIndex(
@@ -119,18 +119,14 @@ class ExternalDbImporter(
                 )
             )
             entriesBeingImported.add(
-                TranslatedWordEntry(
-                    id = id,
+                TranslatedWordImportInfo(
                     baseForm = baseForm,
                     alternativeBaseForm = cursorOnDictTable.getString(
                         cursorOnDictTable.getColumnIndex(
                             DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE_FORM_ALT
                         )
                     ),
-                    translation = translation,
-                    // TODO: find a solution to get id here or even better,
-                    //  create another interface without dict id
-                    dictionaryId = 1
+                    translation = translation
                 )
             )
         }

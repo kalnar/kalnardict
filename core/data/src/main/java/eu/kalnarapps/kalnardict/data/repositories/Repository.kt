@@ -9,11 +9,11 @@ import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.toExternalDatabaseTable
+import eu.kalnarapps.kalnardict.data.model.TableInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
@@ -26,14 +26,6 @@ class Repository(
     private val dictDao: DictDao,
     private val externalDbHandler: ExternalDatabaseHandler
 ) : DictionaryRepository {
-
-    override suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult {
-        // TODO return failure if dictionary id is not correct in translation
-        dictDao.insertDictEntry(
-            dictTranslation.toDictEntry()
-        )
-        return OperationResult.Success
-    }
 
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         return when (query.queryMode) {
@@ -74,14 +66,23 @@ class Repository(
             ) {
             is DataOperationResult.Success -> {
                 if (readResult.data.isNotEmpty()) {
-                    dictDao.insertDictionary(
+                    val dictionaryId = dictDao.insertDictionary(
                         NewDictionary(
                             name = importJob.table.name,
                             languageFrom = importJob.table.languageFrom,
                             languageTo = importJob.table.languageTo
                         )
                     )
-                    dictDao.insertDictEntries(readResult.data)
+                    dictDao.insertDictEntries(
+                        readResult.data.map {
+                            NewTranslatedWord(
+                                baseForm = it.baseForm,
+                                alternativeBaseForm = it.alternativeBaseForm,
+                                translation = it.translation,
+                                dictionaryId = dictionaryId.toInt()
+                            )
+                        }
+                    )
                 }
                 OperationResult.Success
             }
@@ -150,11 +151,11 @@ private fun ImportJob.toImportEntry(): ImportEntry {
 }
 
 private fun ExternalDatabaseTable.toTableInfo(): ImportEntry.TableInfo {
-    return object : ImportEntry.TableInfo {
-        override fun name(): String = name
-        override fun languageFrom(): String = languageFrom
-        override fun languageTo(): String = languageTo
-    }
+    return TableInfo(
+        name = name,
+        languageFrom = languageFrom,
+        languageTo = languageTo
+    )
 }
 
 private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryResource {
@@ -163,36 +164,15 @@ private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryR
     }
 }
 
-//private fun DictEntry.toDictTranslation(dictionary: Dictionary): DictTranslation {
-//    return DictTranslation(
-//        id = getId(),
-//        dictionary = dictionary,
-//        word =,
-//        translation = getTranslation()
-//    )
-//}
-
-private fun DictTranslation.toDictEntry(): TranslatedWordDataEntry {
-    return NewWordDataEntry(
-        id = id,
-        baseForm = word.baseForm,
-        alternativeBaseForm = word.alternativeForm,
-        translation = this.translation,
-        dictionaryId = this.dictionary.id
-    )
-}
-
-data class NewWordDataEntry(
-    override val id: Int,
-    override val baseForm: String,
-    override val alternativeBaseForm: String,
-    override val dictionaryId: Int,
-    override val translation: String
-) : TranslatedWordDataEntry
-
-
 data class NewDictionary(
     override val name: String,
     override val languageFrom: String,
     override val languageTo: String
 ) : NewDictionaryLogEntryData
+
+data class NewTranslatedWord(
+    override val baseForm: String,
+    override val alternativeBaseForm: String,
+    override val dictionaryId: Int,
+    override val translation: String
+) : TranslatedWordInsertEntry

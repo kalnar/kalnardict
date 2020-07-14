@@ -7,7 +7,7 @@ import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.LocalDataToRoomEntityMapper
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.RoomEntityToLocalDataMapper
-import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
+import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 
@@ -15,15 +15,15 @@ class DictionaryDataSource(
     private val wordDao: WordDao,
     private val dictionaryMetaDao: DictionaryLogDao,
     private val wordInfoMapper: RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry>,
-    private val translatedWordMapper: LocalDataToRoomEntityMapper<TranslatedWordDataEntry, Word>
+    private val translatedWordMapper: LocalDataToRoomEntityMapper<TranslatedWordInsertEntry, Word>
 ) : DictDao {
-    override suspend fun insertDictEntry(wordDataEntry: TranslatedWordDataEntry) {
+    override suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry) {
         wordDao.insertWord(
             translatedWordMapper.toRoomEntityModel(wordDataEntry)
         )
     }
 
-    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordDataEntry>) {
+    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>) {
         wordDao.insertWords(wordDataEntries.map {
             translatedWordMapper.toRoomEntityModel(it)
         })
@@ -35,8 +35,8 @@ class DictionaryDataSource(
         }
     }
 
-    override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData) {
-        dictionaryMetaDao.insertDictionary(
+    override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long {
+        return dictionaryMetaDao.insertDictionary(
             DictionaryLogEntry(
                 dictionaryName = newDictionary.name,
                 languageFrom = newDictionary.languageFrom,

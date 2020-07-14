@@ -4,6 +4,7 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
+import eu.kalnarapps.kalnardict.data.model.toNewDictionaryEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -79,8 +80,8 @@ class DictionaryDataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.id,
-            equalTo(SampleEyeWordDataEntry.id)
+            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.baseForm,
+            equalTo(SampleEyeWordDataEntry.baseForm)
         )
 
     }
@@ -103,16 +104,16 @@ class DictionaryDataSourceTest {
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.id,
-            equalTo(SampleEyeWordDataEntry.id)
+            dataSource.queryWithMatchAnyWhere("szem").firstOrNull()?.baseForm,
+            equalTo(SampleEyeWordDataEntry.baseForm)
         )
         assertThat(
             dataSource.queryWithMatchAnyWhere("doboz"),
             not(IsEmptyCollection())
         )
         assertThat(
-            dataSource.queryWithMatchAnyWhere("doboz").firstOrNull()?.id,
-            equalTo(SampleBoxWordDataEntry.id)
+            dataSource.queryWithMatchAnyWhere("doboz").firstOrNull()?.baseForm,
+            equalTo(SampleBoxWordDataEntry.baseForm)
         )
     }
 
@@ -197,6 +198,27 @@ class DictionaryDataSourceTest {
             assertThat(
                 translationInfo,
                 IsInstanceOf(DataOperationResult.Failure::class.java)
+            )
+        }
+    }
+
+    @Test
+    fun when_inserting_new_dictionary_return_new_id() {
+        testCoroutineDispatcher.runBlockingTest {
+
+            val result =
+                dataSource.insertDictionary(sampleDictionaryLogEntry.toNewDictionaryEntry())
+
+            assertThat(
+                result,
+                equalTo(1L)
+            )
+            val nextResult =
+                dataSource.insertDictionary(newSampleDictionaryLogEntry.toNewDictionaryEntry())
+
+            assertThat(
+                nextResult,
+                equalTo(2L)
             )
         }
     }
