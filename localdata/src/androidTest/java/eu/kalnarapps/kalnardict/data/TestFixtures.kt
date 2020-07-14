@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
+import eu.kalnarapps.kalnardict.data.model.TableImportInfo
 
 object TestFixtures {
     const val testDictionaryLanguageTo: String = "English"
@@ -71,6 +72,15 @@ object TestFixtures {
             languageTo = frenchEnglishTableToLanguage,
             languageFrom = frenchEnglishTableFromLanguage
         )
+        const val englishRussianTableName = "test_en_ru_dictionary"
+        const val englishRussianTableFromLanguage = "English"
+        const val englishRussianTableToLanguage = "Russian"
+        val englishRussianTable = TableImportInfo(
+            name = englishRussianTableName,
+            languageTo = englishRussianTableToLanguage,
+            languageFrom = englishRussianTableFromLanguage
+        )
+        val tablesInTestDb = listOf(frenchEnglishTable, englishRussianTable)
     }
 
 }

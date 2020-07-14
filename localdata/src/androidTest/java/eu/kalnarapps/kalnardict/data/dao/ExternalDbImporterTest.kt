@@ -20,6 +20,7 @@ import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
+import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThat
@@ -143,7 +144,7 @@ class ExternalDbImporterTest {
     }
 
     @Test
-    fun read_table_info_from_valid_import_job_with_one_table() {
+    fun read_table_info_from_valid_import_job_with_test_tables() {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
@@ -161,21 +162,17 @@ class ExternalDbImporterTest {
 
         assertThat(
             tableList.data,
-            IsCollectionWithSize(equalTo(1))
+            IsCollectionWithSize(equalTo(TestFixtures.Import.tablesInTestDb.size))
+        )
+        assertThat(
+            tableList.data,
+            IsIterableContainingInAnyOrder(
+                TestFixtures.Import.tablesInTestDb.map {
+                    equalTo<ImportEntry.TableInfo>(it)
+                }
+            )
         )
 
-        assertThat(
-            tableList.data[0].name,
-            equalTo("test_fr_dictionary")
-        )
-        assertThat(
-            tableList.data[0].languageFrom,
-            equalTo(TestFixtures.testDictionaryLanguageFrom)
-        )
-        assertThat(
-            tableList.data[0].languageTo,
-            equalTo(TestFixtures.testDictionaryLanguageTo)
-        )
     }
 
     @Test

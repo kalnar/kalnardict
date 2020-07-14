@@ -54,32 +54,35 @@ class ExternalDbImporter(
             )
         val cursorOnMetaInfo =
             dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
-        cursorOnMetaInfo.moveToFirst()
         if (cursorOnMetaInfo.count == 0) {
             return DataOperationResult.Success(emptyList())
         }
-        val dictionaryName = cursorOnMetaInfo.getString(
-            cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
-        )
-        val languageFrom = cursorOnMetaInfo.getString(
-            cursorOnMetaInfo.getColumnIndex(
-                DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_FROM
+        val entriesBeingRead = ArrayList<TableImportInfo>()
+        while (cursorOnMetaInfo.moveToNext()) {
+            val dictionaryName = cursorOnMetaInfo.getString(
+                cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
             )
-        )
-        val languageTo = cursorOnMetaInfo.getString(
-            cursorOnMetaInfo.getColumnIndex(
-                DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_TO
+            val languageFrom = cursorOnMetaInfo.getString(
+                cursorOnMetaInfo.getColumnIndex(
+                    DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_FROM
+                )
             )
-        )
+            val languageTo = cursorOnMetaInfo.getString(
+                cursorOnMetaInfo.getColumnIndex(
+                    DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_TO
+                )
+            )
+            entriesBeingRead.add(
+                TableImportInfo(
+                    name = dictionaryName,
+                    languageFrom = languageFrom,
+                    languageTo = languageTo
+                )
+            )
+        }
         cursorOnMetaInfo.close()
         dbHelper.close()
-        return DataOperationResult.Success(listOf(
-            TableImportInfo(
-                name = dictionaryName,
-                languageFrom = languageFrom,
-                languageTo = languageTo
-            )
-        ))
+        return DataOperationResult.Success(entriesBeingRead)
     }
 
     override fun readTableEntriesFrom(
