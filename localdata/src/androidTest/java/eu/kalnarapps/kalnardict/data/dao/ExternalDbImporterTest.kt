@@ -165,15 +165,15 @@ class ExternalDbImporterTest {
         )
 
         assertThat(
-            tableList.data[0].name(),
+            tableList.data[0].name,
             equalTo("test_fr_dictionary")
         )
         assertThat(
-            tableList.data[0].languageFrom(),
+            tableList.data[0].languageFrom,
             equalTo(TestFixtures.testDictionaryLanguageFrom)
         )
         assertThat(
-            tableList.data[0].languageTo(),
+            tableList.data[0].languageTo,
             equalTo(TestFixtures.testDictionaryLanguageTo)
         )
     }
@@ -191,12 +191,8 @@ class ExternalDbImporterTest {
                 override fun externalDictionaryResource(): ExternalDictionaryResource =
                     validExternalResource
 
-                override fun tableInfo(): ImportEntry.TableInfo = object : ImportEntry.TableInfo {
-                    override fun name(): String = "test_fr_dictionary"
-                    override fun languageFrom(): String = ""
-                    override fun languageTo(): String = ""
-                }
-
+                override fun tableInfo(): ImportEntry.TableInfo =
+                    TestFixtures.Import.frenchEnglishTable
 
             }
         )

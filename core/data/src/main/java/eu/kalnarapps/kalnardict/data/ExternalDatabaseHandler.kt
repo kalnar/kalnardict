@@ -25,8 +25,8 @@ interface ImportEntry {
     fun tableInfo(): TableInfo
 
     interface TableInfo {
-        fun name(): String
-        fun languageFrom(): String
-        fun languageTo(): String
+        val name: String
+        val languageFrom: String
+        val languageTo: String
     }
 }

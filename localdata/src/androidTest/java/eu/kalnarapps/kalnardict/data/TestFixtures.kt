@@ -62,4 +62,15 @@ object TestFixtures {
         )
     }
 
+    object Import {
+        const val frenchEnglishTableName = "test_fr_dictionary"
+        const val frenchEnglishTableFromLanguage = "French"
+        const val frenchEnglishTableToLanguage = "English"
+        val frenchEnglishTable = TableImportInfo(
+            name = frenchEnglishTableName,
+            languageTo = frenchEnglishTableToLanguage,
+            languageFrom = frenchEnglishTableFromLanguage
+        )
+    }
+
 }

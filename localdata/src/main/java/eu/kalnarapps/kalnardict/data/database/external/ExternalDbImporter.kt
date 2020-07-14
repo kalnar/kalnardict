@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordEntry
+import eu.kalnarapps.kalnardict.data.model.TableImportInfo
 
 
 class ExternalDbImporter(
@@ -27,7 +28,7 @@ class ExternalDbImporter(
                 val tableInfos = readingResultOfMetaInfo.data
                 val missingColumnsInDictionaryTables = tableInfos.mapNotNull {
                     MissingColumns(
-                        it.name(),
+                        it.name,
                         dbHelper.getMissingColumnsInDictionaryTable(it).ifEmpty {
                             return@mapNotNull null
                         }
@@ -73,11 +74,11 @@ class ExternalDbImporter(
         cursorOnMetaInfo.close()
         dbHelper.close()
         return DataOperationResult.Success(listOf(
-            object : ImportEntry.TableInfo {
-                override fun name(): String = dictionaryName
-                override fun languageFrom(): String = languageFrom
-                override fun languageTo(): String = languageTo
-            }
+            TableImportInfo(
+                name = dictionaryName,
+                languageFrom = languageFrom,
+                languageTo = languageTo
+            )
         ))
     }
 
@@ -90,7 +91,7 @@ class ExternalDbImporter(
                 "${context.getStorageRootPath()}/${importJob.externalDictionaryResource()
                     .sdCardPath()}"
             )
-        val tableName = importJob.tableInfo().name()
+        val tableName = importJob.tableInfo().name
         val cursorOnDictTable =
             dbHelper.readableDatabase.rawQuery("select * from $tableName", emptyArray())
         if (cursorOnDictTable.count == 0) {
@@ -142,7 +143,7 @@ private fun SQLiteDbReaderHelper.getMissingColumnsInDictionaryTable(
     tableInfo: ImportEntry.TableInfo
 ): List<ColumnName> {
     val cursorOnDictionaryTable =
-        readableDatabase.rawQuery("select * from ${tableInfo.name()} LIMIT 1", emptyArray())
+        readableDatabase.rawQuery("select * from ${tableInfo.name} LIMIT 1", emptyArray())
     val requiredColumns = listOf<ColumnName>(
         DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE,
         DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE_FORM_ALT,

@@ -13,8 +13,8 @@ fun LanguageLogEntryData.toDictLanguage(): DictLanguage {
 
 fun ImportEntry.TableInfo.toExternalDatabaseTable(): ExternalDatabaseTable {
     return ExternalDatabaseTable(
-        name = name(),
-        languageFrom = languageFrom(),
-        languageTo = languageTo()
+        name = name,
+        languageFrom = languageFrom,
+        languageTo = languageTo
     )
 }
