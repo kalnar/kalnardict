@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
-import com.google.android.material.card.MaterialCardView
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
@@ -19,7 +19,7 @@ class QueryResultItemViewHolder(
     )
 ) {
     private val baseFormView: TextView = itemView.findViewById(R.id.word_item_view)
-    private val container: MaterialCardView =
+    private val container: LinearLayout =
         itemView.findViewById(R.id.query_result_item_container)
 
     override fun bind(wordView: WordView) {

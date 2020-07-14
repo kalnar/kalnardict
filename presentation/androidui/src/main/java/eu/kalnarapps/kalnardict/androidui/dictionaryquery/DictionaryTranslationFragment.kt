@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import eu.kalnarapps.kalnardict.androidui.R
@@ -45,7 +46,11 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
                             translation_view.text = it.content.data
                         }
                         is DataOperationResult.Failure -> {
-
+                            Toast.makeText(
+                                requireContext(),
+                                it.content.errorMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }

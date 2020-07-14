@@ -12,6 +12,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySel
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
@@ -55,7 +56,7 @@ class DictionaryQueryViewModel(
                     setUiState(
                         DictionaryQueryState(
                             typedQueryString = "",
-                            queryResults = listQueryResultsUseCase.invokeWith("").map {
+                            queryResultsWords = listQueryResultsUseCase.invokeWith("").map {
                                 WordView(
                                     id = it.id,
                                     baseForm = it.baseForm
@@ -95,10 +96,12 @@ class DictionaryQueryViewModel(
         }
     }
 
-
-    fun getQueryResult(): LiveData<List<WordView>> {
+    fun getQueryResult(): LiveData<QueryResult> {
         return Transformations.map(state) {
-            it.queryResults
+            QueryResult(
+                wordList = it.queryResultsWords,
+                dictionary = it.currentDictionaryItemView
+            )
         }
     }
 
@@ -126,17 +129,19 @@ class DictionaryQueryViewModel(
 
     fun onQueryChanged(newQuery: String) {
         viewModelScope.launch {
-            postUiState(
-                state.value?.copy(
-                    typedQueryString = newQuery,
-                    queryResults = listQueryResultsUseCase.invokeWith(newQuery).map {
-                        WordView(
-                            id = it.id,
-                            baseForm = it.baseForm
-                        )
-                    }
+            withContext(dispatcherProvider.io()) {
+                postUiStateOnMainThread(
+                    state.value?.copy(
+                        typedQueryString = newQuery,
+                        queryResultsWords = listQueryResultsUseCase.invokeWith(newQuery).map {
+                            WordView(
+                                id = it.id,
+                                baseForm = it.baseForm
+                            )
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -154,18 +159,20 @@ class DictionaryQueryViewModel(
 
     fun refreshQueryResults() {
         viewModelScope.launch {
-            postUiState(
-                state.value?.copy(
-                    queryResults = listQueryResultsUseCase.invokeWith(
-                        state.value?.typedQueryString.orEmpty()
-                    ).map {
-                        WordView(
-                            id = it.id,
-                            baseForm = it.baseForm
-                        )
-                    }
+            withContext(dispatcherProvider.io()) {
+                postUiStateOnMainThread(
+                    state.value?.copy(
+                        queryResultsWords = listQueryResultsUseCase.invokeWith(
+                            state.value?.typedQueryString.orEmpty()
+                        ).map {
+                            WordView(
+                                id = it.id,
+                                baseForm = it.baseForm
+                            )
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package eu.kalnarapps.kalnardict.androidui.common
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,6 +24,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        uiLogger.d(FRAGMENT_CYCLE, "onViewCreated")
         listenToNavigationCommands()
         listenToUiStateChanges()
         listenToErrors()
@@ -56,5 +59,29 @@ abstract class BaseFragment<UiModel> : Fragment() {
                 navigator.execute(navCommand)
             }
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        uiLogger.d(FRAGMENT_CYCLE, "onCreate")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        uiLogger.d(FRAGMENT_CYCLE, "onResume")
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        uiLogger.d(FRAGMENT_CYCLE, "onCreateView")
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+
+    companion object {
+        const val FRAGMENT_CYCLE = "fragment_cycle"
     }
 }

@@ -3,13 +3,11 @@ package eu.kalnarapps.kalnardict.androidui.common
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 
@@ -27,23 +25,24 @@ abstract class BaseViewModel<UiModel>(
     internal val error: LiveData<ErrorFromUi>
         get() = _error
 
-    protected fun postUiState(state: UiModel?) {
-        if (state != null) {
-            viewModelScope.launch {
-                withContext(dispatcherProvider.io()) {
-                    logger.log("posting ui-state")
-                    _state.postValue(state)
-                }
+    protected suspend fun postUiState(state: UiModel?) {
+        withContext(dispatcherProvider.io()) {
+            if (state != null) {
+                _state.postValue(state)
+            }
+        }
+    }
+
+    protected suspend fun postUiStateOnMainThread(state: UiModel?) {
+        withContext(dispatcherProvider.main()) {
+            if (state != null) {
+                _state.value = state
             }
         }
     }
 
     protected fun postError(errorFromUi: ErrorFromUi) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                _error.postValue(errorFromUi)
-            }
-        }
+        _error.postValue(errorFromUi)
     }
 
     protected fun setUiState(state: UiModel) {
@@ -58,8 +57,8 @@ abstract class BaseViewModel<UiModel>(
         return state
     }
 
-    protected suspend fun postNavigationCommand(navCommand: NavigationCommand) {
-        logger.log("posting navCommand: $navCommand")
+    protected fun postNavigationCommand(navCommand: NavigationCommand) {
+        logger.d("vm", "posting navCommand: $navCommand")
         _navigationCommand.postValue(navCommand)
     }
 }
