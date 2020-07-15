@@ -43,7 +43,7 @@ open class MockDictDao(
     override suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry) {
         mockDb.add(
             MockTranslatedWordEntry(
-                id = mockDb.size,
+                id = mockDb.size + 1,
                 baseForm = wordDataEntry.baseForm,
                 alternativeBaseForm = wordDataEntry.alternativeBaseForm,
                 translation = wordDataEntry.translation,
@@ -56,7 +56,7 @@ open class MockDictDao(
         mockDb.addAll(
             wordDataEntries.map { wordDataEntry ->
                 MockTranslatedWordEntry(
-                    id = mockDb.size,
+                    id = mockDb.size + 1,
                     baseForm = wordDataEntry.baseForm,
                     alternativeBaseForm = wordDataEntry.alternativeBaseForm,
                     translation = wordDataEntry.translation,
@@ -67,15 +67,19 @@ open class MockDictDao(
         )
     }
 
-    override suspend fun queryWithMatchAnyWhere(query: String): List<WordDataEntry> {
-        return mockDb.filter { it.baseForm.contains(query) }
+    override suspend fun queryWithMatchAnyWhereInDictionary(
+        query: String,
+        dictionaryId: Int
+    ): List<WordDataEntry> {
+        return mockDb.filter { it.dictionaryId == dictionaryId && it.baseForm.contains(query) }
     }
 
     override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long {
+        val newId = mockDictionaries.size + 1
         mockDictionaries.add(
-            newDictionary.toDictionaryLogEntryData(id = mockDictionaries.size + 1)
+            newDictionary.toDictionaryLogEntryData(id = newId)
         )
-        return (mockDictionaries.size + 1).toLong()
+        return (newId).toLong()
     }
 
     override suspend fun getDictionaries(): List<DictionaryLogEntryData> {

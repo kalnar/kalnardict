@@ -29,8 +29,11 @@ class DictionaryDataSource(
         })
     }
 
-    override suspend fun queryWithMatchAnyWhere(query: String): List<WordDataEntry> {
-        return wordDao.getByQuery("%${query}%").map {
+    override suspend fun queryWithMatchAnyWhereInDictionary(
+        query: String,
+        dictionaryId: Int
+    ): List<WordDataEntry> {
+        return wordDao.getByQuery("%${query}%", dictionaryId).map {
             wordInfoMapper.toLocalData(it)
         }
     }

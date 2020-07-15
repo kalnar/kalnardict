@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
+import eu.kalnarapps.kalnardict.data.database.HUNGARIAN_ENGLISH_DICT_ID
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.newWordToInsert
 import eu.kalnarapps.kalnardict.data.database.sampleDictionaryLogEntry
@@ -68,7 +69,10 @@ class WordDaoTest {
             insertTableInHungarian()
 
             val firstWord =
-                wordDao.getByQuery(sampleTableInHungarian.baseForm)
+                wordDao.getByQuery(
+                    sampleTableInHungarian.baseForm,
+                    sampleTableInHungarian.dictionaryId
+                )
                     .firstOrNull()
             assertThat(
                 firstWord?.dictionaryId,
@@ -83,7 +87,10 @@ class WordDaoTest {
                 equalTo(sampleTableInHungarian.alternativeBaseForm)
             )
 
-            val resultList = wordDao.getByQuery("asztalok")
+            val resultList = wordDao.getByQuery(
+                "asztalok",
+                HUNGARIAN_ENGLISH_DICT_ID
+            )
             assertThat(resultList, IsEmptyCollection())
         }
     }
@@ -97,12 +104,16 @@ class WordDaoTest {
     @Test
     fun insert_entry_into_table() {
         testCoroutineDispatcher.runBlockingTest {
-            val searchResultForEye = wordDao.getByQuery("szem")
+            val searchResultForEye = wordDao.getByQuery(
+                "szem",
+                newWordToInsert.dictionaryId
+            )
             assertThat(searchResultForEye, IsEmptyCollection())
             wordDao.insertWord(
                 newWordToInsert
             )
-            val newSearchResultForEye = wordDao.getByQuery("szem").firstOrNull()
+            val newSearchResultForEye =
+                wordDao.getByQuery("szem", newWordToInsert.dictionaryId).firstOrNull()
             assertThat(
                 newSearchResultForEye,
                 equalTo(newWordToInsert.toWordInfo())
@@ -117,7 +128,8 @@ class WordDaoTest {
             dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
 
             val dictionaryLogWithWords =
-                wordDao.getWordsByQueryInDictionary("asztal", 1).firstOrNull()
+                wordDao.getWordsByQueryInDictionary("asztal", sampleDictionaryLogEntry.id)
+                    .firstOrNull()
             assertThat(
                 dictionaryLogWithWords?.words?.firstOrNull()?.translation,
                 equalTo("table")

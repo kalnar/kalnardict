@@ -7,6 +7,7 @@ import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
@@ -24,33 +25,43 @@ import java.util.Locale
 
 class Repository(
     private val dictDao: DictDao,
-    private val externalDbHandler: ExternalDatabaseHandler
+    private val externalDbHandler: ExternalDatabaseHandler,
+    private val dictionaryMapper: DataToDomainOperationalMapper<DictionaryLogEntryData, Dictionary>
 ) : DictionaryRepository {
 
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         return when (query.queryMode) {
             QueryMode.MATCH_ANYWHERE -> {
-                dictDao.queryWithMatchAnyWhere(query.queryString).map {
-                    DictWord(
-                        it.id,
-                        query.dictionary.languageFrom,
-                        baseForm = it.baseForm,
-                        alternativeForm = it.alternativeBaseForm
-                    )
-                }
+                dictDao.queryWithMatchAnyWhereInDictionary(
+                    query.queryString,
+                    query.dictionary.id
+                )
+                    .map {
+                        DictWord(
+                            it.id,
+                            query.dictionary.languageFrom,
+                            baseForm = it.baseForm,
+                            alternativeForm = it.alternativeBaseForm
+                        )
+                    }
             }
         }
     }
 
+    // TODO: test getDictionaryById
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
-        return DataOperationResult.Success(
-            Dictionary(
-                1,
-                DictLanguage("name", "code"),
-                DictLanguage("name", "code"),
-                description = "description"
-            )
-        )
+        return when (val fetchDictionary = dictDao.getDictionaryById(dictionaryId)) {
+            is DataOperationResult.Success -> {
+                dictionaryMapper.toDomainModel(fetchDictionary.data)
+            }
+            is DataOperationResult.Failure -> {
+                DataOperationResult.Failure(
+                    errorMessage = "no dictionary found with id $dictionaryId in data source",
+                    cause = fetchDictionary
+                )
+            }
+        }
+
     }
 
     override suspend fun getTranslationById(

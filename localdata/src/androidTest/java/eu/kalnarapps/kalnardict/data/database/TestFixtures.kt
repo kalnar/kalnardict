@@ -12,12 +12,14 @@ val newWordToInsert = Word(
     dictionaryId = 1
 )
 
+const val HUNGARIAN_ENGLISH_DICT_ID = 1
+
 val sampleTableInHungarian = Word(
     id = 1,
     baseForm = "asztal",
     alternativeBaseForm = "asztal",
     translation = "table",
-    dictionaryId = 1
+    dictionaryId = HUNGARIAN_ENGLISH_DICT_ID
 )
 
 //import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage

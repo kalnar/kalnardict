@@ -18,19 +18,6 @@ class MockDictionaryRepository : DictionaryRepository {
         Stubs.Domain.Dictionaries.englishFrenchDict to Stubs.Domain.Dictionaries.Translations.englishFrenchTranslations
     )
 
-    override suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult {
-        return if (dictTranslation.dictionary in dictDao.keys) {
-            val translations = dictDao[dictTranslation.dictionary]
-            check(translations != null)
-            dictDao[dictTranslation.dictionary] = translations.plus(dictTranslation)
-            OperationResult.Success
-        } else {
-            OperationResult.Failure(
-                errorMessage = "dictionary tables are not set up for dictionary: ${dictTranslation.dictionary}"
-            )
-        }
-    }
-
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         return dictDao[query.dictionary].orEmpty().map { it.word }
             .filter {

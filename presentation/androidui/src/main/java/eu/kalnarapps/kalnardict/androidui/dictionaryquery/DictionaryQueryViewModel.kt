@@ -17,6 +17,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
@@ -37,7 +38,7 @@ class DictionaryQueryViewModel(
     private val getCurrentLanguageUseCase: GetLanguageUseCase,
     private val getTranslation: GetTranslationUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    uiLogger: UiLogger
+    private val uiLogger: UiLogger
 ) : BaseViewModel<DictionaryQueryState>(
     dispatcherProvider = dispatcherProvider,
     logger = uiLogger
@@ -148,30 +149,37 @@ class DictionaryQueryViewModel(
     fun onDictionaryChanged(dictionaryItem: DictionarySelectorItem) {
         viewModelScope.launch {
             // TODO: should use flow instead for current dictionary
-            postUiState(
-                state.value?.copy(
-                    currentDictionaryItemView = dictionaryItem
-                )
-            )
-            updateCurrentLanguageUseCase(dictionaryItem.id)
-        }
-    }
-
-    fun refreshQueryResults() {
-        viewModelScope.launch {
             withContext(dispatcherProvider.io()) {
-                postUiStateOnMainThread(
-                    state.value?.copy(
-                        queryResultsWords = listQueryResultsUseCase.invokeWith(
-                            state.value?.typedQueryString.orEmpty()
-                        ).map {
-                            WordView(
-                                id = it.id,
-                                baseForm = it.baseForm
-                            )
-                        }
-                    )
-                )
+                val res = updateCurrentLanguageUseCase(dictionaryItem.id)
+                when (res) {
+                    OperationResult.Success -> {
+                        when (val currentDictionary = getCurrentLanguageUseCase()) {
+                            is CurrentDictionary.SetDictionary -> {
+                                val updatedQueryResultWords = listQueryResultsUseCase.invokeWith(
+                                    state.value?.typedQueryString.orEmpty()
+                                ).map {
+                                    WordView(
+                                        id = it.id,
+                                        baseForm = it.baseForm
+                                    )
+                                }
+                                postUiState(
+                                    state.value?.copy(
+                                        currentDictionaryItemView =
+                                        currentDictionary.dictionary.toDictionarySelectorItem(),
+                                        queryResultsWords = updatedQueryResultWords
+                                    )
+                                )
+                            }
+                            CurrentDictionary.DictionaryNotSet -> {
+                                postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
+                            }
+                        }.exhaustive
+                    }
+                    is OperationResult.Failure -> {
+                        uiLogger.log("error for language update: ${res.errorMessage()}")
+                    }
+                }.exhaustive
             }
         }
     }

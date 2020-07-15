@@ -9,25 +9,25 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.collection.IsIterableWithSize
-import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsInstanceOf
-import org.hamcrest.core.IsIterableContaining
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Test
-import kotlin.math.exp
 
 @ExperimentalCoroutinesApi
 class KalnarLanguageRepositoryTest {
 
+    private val languageMapper = LanguageDataMapper()
     private val repository =
         KalnarLanguageRepository(
             MockLanguageDataDao(),
-            LanguageDataMapper()
+            languageMapper,
+            languageMapper
         )
     private val testCoroutineScope = TestCoroutineScope()
 
@@ -69,7 +69,8 @@ class KalnarLanguageRepositoryTest {
             val expectedLanguages = Stubs.Languages.frenchAndEnglish
             val repository = KalnarLanguageRepository(
                 MockLanguageDataDao(ArrayList(expectedLanguages)),
-                LanguageDataMapper()
+                languageMapper,
+                languageMapper
             )
             assertThat(
                 repository.getLanguages(),
@@ -86,7 +87,8 @@ class KalnarLanguageRepositoryTest {
             val expectedLanguages = emptyList<DictLanguage>()
             val repository = KalnarLanguageRepository(
                 MockLanguageDataDao(ArrayList(expectedLanguages)),
-                LanguageDataMapper()
+                languageMapper,
+                languageMapper
             )
             assertThat(
                 repository.getLanguages(),
@@ -101,7 +103,8 @@ class KalnarLanguageRepositoryTest {
             val expectedLanguages = Stubs.Languages.frenchAndEnglish.plus(Stubs.Languages.russian)
             val repository = KalnarLanguageRepository(
                 MockLanguageDataDao(ArrayList(Stubs.Languages.frenchAndEnglish)),
-                LanguageDataMapper()
+                languageMapper,
+                languageMapper
             )
 
             val result = repository.addNewLanguage(Stubs.Languages.russian)
@@ -126,7 +129,8 @@ class KalnarLanguageRepositoryTest {
             val expectedLanguages = Stubs.Languages.frenchAndEnglish
             val repository = KalnarLanguageRepository(
                 MockLanguageDataDao(ArrayList(expectedLanguages)),
-                LanguageDataMapper()
+                languageMapper,
+                languageMapper
             )
 
             val result = repository.addNewLanguage(Stubs.Languages.french)

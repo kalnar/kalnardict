@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 
 import eu.kalnarapps.kalnardict.androidui.UiUnitTestStubs
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.model.MockDictEntry
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.DictionaryWrapper
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
@@ -87,16 +88,32 @@ class RegisterNewDictionaryMockWithFailures(
     }
 }
 
-class MockSearchQueryUseCase : SearchQueryUseCase {
+class MockSearchQueryUseCase(
+    private val mockEntries: List<MockDictEntry> = emptyList(),
+    private val currentDictionary: DictionaryWrapper? = null
+) : SearchQueryUseCase {
     override suspend fun invokeWith(query: String): List<DictWord> {
-        return emptyList()
+        return mockEntries.filter {
+            it.dictionary.id == currentDictionary?.currentDictionary?.dictionary?.id &&
+                    it.word.baseForm.contains(query)
+        }.map {
+            it.word
+        }
     }
 
 }
 
-class MockChangeDictLanguageUseCase : ChangeDictLanguageUseCase {
+class MockChangeDictLanguageUseCase(
+    private var currentDictionary: DictionaryWrapper? = null,
+    private val listOfDictionaries: List<Dictionary> = emptyList()
+) : ChangeDictLanguageUseCase {
     override suspend fun invoke(dictionaryId: Int): OperationResult {
-        return OperationResult.Success
+        return listOfDictionaries.find { it.id == dictionaryId }?.let {
+            currentDictionary?.currentDictionary = CurrentDictionary.SetDictionary(it)
+            OperationResult.Success
+        } ?: OperationResult.Failure(
+            errorMessage = "no dictionary found with id: $dictionaryId"
+        )
     }
 }
 
@@ -105,6 +122,14 @@ class MockGetLanguageUseCase(
 ) : GetLanguageUseCase {
     override suspend fun invoke(): CurrentDictionary {
         return currentDictionary
+    }
+}
+
+class MockGetDictionaryUseCase(
+    private val currentDictionary: DictionaryWrapper
+) : GetLanguageUseCase {
+    override suspend fun invoke(): CurrentDictionary {
+        return currentDictionary.currentDictionary
     }
 }
 

@@ -28,6 +28,7 @@ abstract class BaseViewModel<UiModel>(
     protected suspend fun postUiState(state: UiModel?) {
         withContext(dispatcherProvider.io()) {
             if (state != null) {
+                logger.d("vm", "new state: $state")
                 _state.postValue(state)
             }
         }

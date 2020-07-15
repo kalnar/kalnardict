@@ -48,14 +48,16 @@ object Stubs {
     }
 
     object Dictionaries {
+        const val frenchEnglishDictionaryId = 2
         val frenchEnglishDictionary = Dictionary(
-            id = 2,
+            id = frenchEnglishDictionaryId,
             languageFrom = french,
             languageTo = english,
             description = "French to English dictionary"
         )
+        const val newDictionaryId = 3
         val newDictionary = Dictionary(
-            id = 3,
+            id = newDictionaryId,
             languageFrom = french,
             languageTo = english,
             description = "French to English dictionary"

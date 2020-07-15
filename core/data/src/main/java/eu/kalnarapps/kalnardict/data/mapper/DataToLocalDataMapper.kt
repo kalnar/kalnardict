@@ -1,8 +1,20 @@
 package eu.kalnarapps.kalnardict.data.mapper
 
-interface DomainToLocalDataMapper<DomainModel, LocalData> {
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 
-    fun toLocalData(domainModel: DomainModel): LocalData
-    fun toDomainModel(localData: LocalData): DomainModel
+interface DomainToDataMapper<DomainModel, DataModel> {
+
+    fun toData(domainModel: DomainModel): DataModel
+
+}
+
+interface DataToDomainMapper<DataModel, DomainModel> {
+
+    fun toDomainModel(localData: DataModel): DomainModel
+}
+
+interface DataToDomainOperationalMapper<DataModel, DomainModel> {
+
+    suspend fun toDomainModel(localData: DataModel): DataOperationResult<DomainModel>
 
 }

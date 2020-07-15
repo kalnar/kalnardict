@@ -4,13 +4,15 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
-import eu.kalnarapps.kalnardict.data.mapper.DomainToLocalDataMapper
+import eu.kalnarapps.kalnardict.data.mapper.DataToDomainMapper
+import eu.kalnarapps.kalnardict.data.mapper.DomainToDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 
 class KalnarLanguageRepository(
     private val languageDataDao: LanguageDataDao,
-    private val languageDataMapper: DomainToLocalDataMapper<DictLanguage, LanguageLogEntryData>
+    private val languageDomainMapper: DomainToDataMapper<DictLanguage, LanguageLogEntryData>,
+    private val languageDataMapper: DataToDomainMapper<LanguageLogEntryData, DictLanguage>
 ) : LanguageRepository {
     override suspend fun getLanguageById(id: String): DataOperationResult<DictLanguage> {
         return when (
@@ -31,7 +33,7 @@ class KalnarLanguageRepository(
     }
 
     override suspend fun addNewLanguage(language: DictLanguage): OperationResult {
-        return languageDataDao.addLanguage(languageDataMapper.toLocalData(language))
+        return languageDataDao.addLanguage(languageDomainMapper.toData(language))
     }
 
 }

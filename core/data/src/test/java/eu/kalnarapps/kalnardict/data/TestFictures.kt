@@ -1,8 +1,6 @@
 package eu.kalnarapps.kalnardict.data
 
-import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
@@ -12,7 +10,7 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabas
 val sampleQueryNewWord = DictQuery(
     "nouveau",
     dictionary = Dictionary(
-        id = 3,
+        id = Stubs.Dictionaries.newDictionaryId,
         languageFrom = DictLanguage("French", "fr"),
         languageTo = DictLanguage("English", "en"),
         description = "French to English dictionary"

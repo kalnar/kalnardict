@@ -4,9 +4,13 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
+import eu.kalnarapps.kalnardict.data.mapper.DictionaryMapper
+import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mock.MockDictDao
+import eu.kalnarapps.kalnardict.data.mock.MockDictionaryMapper
 import eu.kalnarapps.kalnardict.data.mock.MockEmptyDictDao
+import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataDao
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
 import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
@@ -18,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
+import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
@@ -30,10 +35,18 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class RepositoryTest {
 
+    private val languageMapper = LanguageDataMapper()
     private val repository =
         Repository(
             MockDictDao(),
-            TestExternalDatabaseHandler()
+            TestExternalDatabaseHandler(),
+            DictionaryMapper(
+                KalnarLanguageRepository(
+                    MockLanguageDataDao(),
+                    languageMapper,
+                    languageMapper
+                )
+            )
         )
 
     @get:Rule
@@ -46,6 +59,14 @@ class RepositoryTest {
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
+            )
+            assertThat(
+                repository.readRegisteredDictionaries(),
+                IsCollectionWithSize(
+                    equalTo(
+                        Stubs.Dictionaries.newDictionary.id - 1
+                    )
+                )
             )
             assertThat(
                 repository.readRegisteredDictionaries(),
@@ -83,10 +104,6 @@ class RepositoryTest {
 
             // then
             assertThat(
-                repository.getEntriesByQuery(sampleQueryNewWord),
-                not(IsEmptyCollection())
-            )
-            assertThat(
                 repository.readRegisteredDictionaries(),
                 IsIterableContaining(
                     HasPropertyWithValue<String>(
@@ -96,6 +113,10 @@ class RepositoryTest {
                         )
                     )
                 )
+            )
+            assertThat(
+                repository.getEntriesByQuery(sampleQueryNewWord),
+                not(IsEmptyCollection())
             )
 
         }
@@ -137,7 +158,8 @@ class RepositoryTest {
 
         val repository = Repository(
             MockEmptyDictDao(),
-            TestExternalDatabaseHandler()
+            TestExternalDatabaseHandler(),
+            MockDictionaryMapper()
         )
 
         testCoroutineRule.runBlockingTest {
@@ -250,7 +272,8 @@ class RepositoryTest {
                         )
                     )
                 ),
-                TestExternalDatabaseHandler()
+                TestExternalDatabaseHandler(),
+                MockDictionaryMapper()
             )
             // when
             val result = repository.getTranslationById(
@@ -274,7 +297,8 @@ class RepositoryTest {
     ) {
         val repository = Repository(
             MockDictDao(ArrayList(givenWordList)),
-            TestExternalDatabaseHandler()
+            TestExternalDatabaseHandler(),
+            MockDictionaryMapper()
         )
         // when
         val result = repository.getTranslationById(wordId, currentDictionary.dictionary.id)

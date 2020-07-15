@@ -78,10 +78,6 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                 .observe(viewLifecycleOwner, ChangeObserver {
                     setUpSpinner()
                 })
-            viewModel.getDictionary().observe(viewLifecycleOwner, ChangeObserver {
-                uiLogger.log("dictionary change")
-                viewModel.refreshQueryResults()
-            })
         }
     }
 

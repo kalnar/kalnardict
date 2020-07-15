@@ -16,9 +16,11 @@ interface WordDao {
             FROM 
         word 
             WHERE 
-        base_form LIKE :queryString LIMIT 100"""
+        base_form LIKE :queryString 
+            AND
+        dictionary_id = :dictionaryId LIMIT 100"""
     )
-    suspend fun getByQuery(queryString: String): List<Word.WordInfo>
+    suspend fun getByQuery(queryString: String, dictionaryId: Int): List<Word.WordInfo>
 
     @Query(
         """SELECT 
