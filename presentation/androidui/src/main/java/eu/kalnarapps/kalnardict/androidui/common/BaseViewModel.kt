@@ -34,10 +34,11 @@ abstract class BaseViewModel<UiModel>(
         }
     }
 
-    protected suspend fun postUiStateOnMainThread(state: UiModel?) {
+    protected suspend fun postUiStateOnMainThread(stateMapper: (UiModel).() -> UiModel) {
         withContext(dispatcherProvider.main()) {
-            if (state != null) {
-                _state.value = state
+            val currentState = state.value
+            currentState?.let {
+                _state.value = stateMapper(it)
             }
         }
     }

@@ -14,7 +14,8 @@ import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableProgress
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableStatus
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
@@ -28,6 +29,7 @@ import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -121,51 +123,67 @@ class DictionaryRegistryViewModel(
 
     fun registerDictionaries() {
         viewModelScope.launch {
-            postUiState(
-                state = state.value?.copy(
-                    importResults = importTables()
-                )
-            )
             postNavigationCommand(
                 NavigationCommand.NavigateToDictionaryRegistryDialog(
                     uri = state.value?.dbPath.orEmpty()
                 )
             )
+            importTables()
         }
     }
 
-    private suspend fun importTables(): List<ImportTableResult> {
+    private suspend fun importTables() {
         val tableInfoUiModels =
             state.value?.registerDictionaryUiModels?.map { it.tableUiInfo }.orEmpty()
-        return tableInfoUiModels.filter { it.isSelected }.map {
-            ImportTableResult(
-                originalName = it.originalTableName,
-                registeringName = it.dictionaryName,
-                result = registerDictionary(it)
-            )
+        tableInfoUiModels.filter { it.isSelected }.forEach {
+            registerDictionary(it)
         }
     }
 
-    private suspend fun registerDictionary(externalTableUiInfo: ExternalTableUiInfo): OperationResult {
+    private suspend fun registerDictionary(externalTableUiInfo: ExternalTableUiInfo) {
         // TODO: this check should happen in registerDictionaries or onRegisterDictionariesClicked
         if (externalTableUiInfo.languageFromUi is SelectableLanguage.LanguageUi &&
             externalTableUiInfo.languageToUi is SelectableLanguage.LanguageUi
         ) {
-            return registerNewDictionary(
+            registerNewDictionary(
                 dbUri = state.value?.dbPath.orEmpty(),
                 originalName = externalTableUiInfo.originalTableName,
                 savingName = externalTableUiInfo.dictionaryName,
                 languageFrom = externalTableUiInfo.languageFromUi.code,
                 languageTo = externalTableUiInfo.languageToUi.code
-            ).also {
-                if (it is OperationResult.Failure) {
-                    postError(
-                        ErrorFromUi(logMessage = it.errorMessage)
-                    )
-                }
+            ).collect {
+                when (it) {
+                    is DataOperationResult.Success -> {
+                        postUiStateOnMainThread {
+                            this.copy(
+                                importProgress = this.importProgress.toMutableMap().apply {
+                                    this[externalTableUiInfo] = DataOperationResult.Success(
+                                        ImportTableProgress(
+                                            totalRows = it.data.totalRowCount,
+                                            registeredRows = it.data.registeredCount
+                                        )
+                                    )
+                                }
+                            )
+                        }
+                    }
+                    is DataOperationResult.Failure -> {
+                        postUiStateOnMainThread {
+                            this.copy(
+                                importProgress = this.importProgress.toMutableMap().apply {
+                                    this[externalTableUiInfo] =
+                                        DataOperationResult.Failure(
+                                            errorMessage = "error occurred while importing" +
+                                                    " ${externalTableUiInfo.originalTableName}"
+                                        )
+                                }
+                            )
+                        }
+                    }
+                }.exhaustive
             }
         } else {
-            return handleLanguageNotSetError(externalTableUiInfo)
+            handleLanguageNotSetError(externalTableUiInfo)
         }
     }
 
@@ -189,9 +207,24 @@ class DictionaryRegistryViewModel(
         return OperationResult.Failure(errorMsg)
     }
 
+    fun getLiveRegistrationStatus(): LiveData<List<ImportTableStatus>> {
+        return Transformations.map(state) {
+            it.importProgress.map { entry ->
+                ImportTableStatus(
+                    table = entry.key,
+                    progress = entry.value
+                )
+            }
+        }
+    }
 
-    fun getRegistrationStatus(): List<ImportTableResult> {
-        return state.value?.importResults.orEmpty()
+    fun getRegistrationStatus(): List<ImportTableStatus> {
+        return state.value?.importProgress?.map {
+            ImportTableStatus(
+                table = it.key,
+                progress = it.value
+            )
+        }.orEmpty()
     }
 
     fun onDialogButtonClicked() {

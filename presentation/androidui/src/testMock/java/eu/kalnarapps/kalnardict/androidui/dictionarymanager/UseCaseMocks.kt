@@ -8,6 +8,7 @@ import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
@@ -15,6 +16,9 @@ import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.util.Locale
 
 
@@ -27,7 +31,7 @@ class RegisterNewDictionaryMock(
         savingName: String,
         languageFrom: String,
         languageTo: String
-    ): OperationResult {
+    ): Flow<DataOperationResult<ImportProgress>> = flow {
         dictionaryListMock.add(
             Dictionary(
                 id = dictionaryListMock.size + 1,
@@ -42,7 +46,20 @@ class RegisterNewDictionaryMock(
                 description = savingName
             )
         )
-        return OperationResult.Success
+        val total = 100
+        var progressIndicator = 0
+        while (progressIndicator != total) {
+            progressIndicator += 5
+            emit(
+                DataOperationResult.Success(
+                    ImportProgress(
+                        total,
+                        progressIndicator
+                    )
+                )
+            )
+            delay(500L)
+        }
     }
 }
 
@@ -63,7 +80,13 @@ class RegisterNewDictionarySuccessfullyMock : RegisterNewDictionaryUseCase {
         savingName: String,
         languageFrom: String,
         languageTo: String
-    ): OperationResult = OperationResult.Success
+    ): Flow<DataOperationResult<ImportProgress>> {
+        return flow {
+            emit(
+                DataOperationResult.Success(ImportProgress(100, 100))
+            )
+        }
+    }
 }
 
 class RegisterNewDictionaryMockWithFailures(
@@ -76,15 +99,19 @@ class RegisterNewDictionaryMockWithFailures(
         savingName: String,
         languageFrom: String,
         languageTo: String
-    ): OperationResult {
+    ): Flow<DataOperationResult<ImportProgress>> = flow {
         counter++
-        return if (listOfFailureOccasions.contains(counter)) {
-            OperationResult.Failure(
-                errorMessage = UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG
-            )
-        } else {
-            OperationResult.Success
-        }
+        emit(
+            if (listOfFailureOccasions.contains(counter)) {
+                DataOperationResult.Failure<ImportProgress>(
+                    errorMessage = UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG
+                )
+            } else {
+                DataOperationResult.Success(
+                    ImportProgress(100, 100)
+                )
+            }
+        )
     }
 }
 

@@ -7,12 +7,18 @@ data class ExternalDatabaseTable(
     val languageTo: String
 )
 
-data class ImportJob(
+data class ImportBatch(
     val table: ExternalDatabaseTable,
     val resource: ExternalDatabase,
-    val displayName: String = table.name
+    val displayName: String = table.name,
+    val batchSize: Int
 )
 
 sealed class ExternalDatabase(val uri: String) {
     class LocalFile(val localPath: String) : ExternalDatabase(localPath)
 }
+
+data class ImportProgress(
+    val totalRowCount: Int,
+    val registeredCount: Int
+)

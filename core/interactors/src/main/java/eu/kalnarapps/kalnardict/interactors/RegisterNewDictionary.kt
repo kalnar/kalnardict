@@ -6,8 +6,11 @@ import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class RegisterNewDictionary(
     private val dictionaryRepository: DictionaryRepository,
@@ -20,21 +23,22 @@ class RegisterNewDictionary(
         savingName: String,
         languageFrom: String,
         languageTo: String
-    ): OperationResult {
+    ): Flow<DataOperationResult<ImportProgress>> = flow {
         val sourceLanguageFetch = languageRepository.getLanguageById(languageFrom)
         val destinationLanguageFetch = languageRepository.getLanguageById(languageTo)
-        return if (sourceLanguageFetch is DataOperationResult.Success &&
+        if (sourceLanguageFetch is DataOperationResult.Success &&
             destinationLanguageFetch is DataOperationResult.Success
         ) {
             dictionaryRepository.importTableFromDb(
-                ImportJob(
+                ImportBatch(
                     table = ExternalDatabaseTable(
                         name = originalName,
                         languageFrom = sourceLanguageFetch.data.code,
                         languageTo = destinationLanguageFetch.data.code
                     ),
                     resource = ExternalDatabase.LocalFile(dbUri),
-                    displayName = savingName
+                    displayName = savingName,
+                    batchSize = 2000
                 )
             )
         } else {
@@ -47,5 +51,14 @@ class RegisterNewDictionary(
                 }
             )
         }
+        // this is temporary, only so that the app can be compiled
+        emit(
+            DataOperationResult.Success(
+                ImportProgress(
+                    totalRowCount = 1,
+                    registeredCount = 1
+                )
+            )
+        )
     }
 }

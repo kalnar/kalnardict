@@ -1,12 +1,14 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model
 
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 
 data class DictionaryRegistryState(
     val dbPath: String,
     val registerDictionaryUiModels: List<RegisterDictionaryUi>,
     val availableLanguages: List<SelectableLanguage.LanguageUi> = emptyList(),
-    val importResults: List<ImportTableResult> = emptyList()
+    val importResults: List<ImportTableResult> = emptyList(),
+    val importProgress: Map<ExternalTableUiInfo, DataOperationResult<ImportTableProgress>> = emptyMap()
 )
 
 data class ExternalTableUiInfo(
@@ -37,6 +39,16 @@ data class ImportTableResult(
     val originalName: String,
     val registeringName: String,
     val result: OperationResult
+)
+
+data class ImportTableProgress(
+    val totalRows: Int,
+    val registeredRows: Int
+)
+
+data class ImportTableStatus(
+    val table: ExternalTableUiInfo,
+    val progress: DataOperationResult<ImportTableProgress>
 )
 
 sealed class RegistryError() {

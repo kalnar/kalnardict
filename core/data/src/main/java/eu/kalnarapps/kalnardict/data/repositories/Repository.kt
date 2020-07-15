@@ -19,7 +19,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import java.util.Locale
 
@@ -71,17 +71,17 @@ class Repository(
         return dictDao.getTranslationByWordAndDictionaryId(wordId, dictionaryId)
     }
 
-    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+    override suspend fun importTableFromDb(importBatch: ImportBatch): OperationResult {
         return when (
-            val readResult = externalDbHandler.readTableEntriesFrom(importJob.toImportEntry())
+            val readResult = externalDbHandler.readTableEntriesFrom(importBatch.toImportEntry())
             ) {
             is DataOperationResult.Success -> {
                 if (readResult.data.isNotEmpty()) {
                     val dictionaryId = dictDao.insertDictionary(
                         NewDictionary(
-                            name = importJob.table.name,
-                            languageFrom = importJob.table.languageFrom,
-                            languageTo = importJob.table.languageTo
+                            name = importBatch.table.name,
+                            languageFrom = importBatch.table.languageFrom,
+                            languageTo = importBatch.table.languageTo
                         )
                     )
                     dictDao.insertDictEntries(
@@ -99,7 +99,7 @@ class Repository(
             }
             is DataOperationResult.Failure -> {
                 OperationResult.Failure(
-                    errorMessage = "an error has occurred while reading table in importJob: $importJob",
+                    errorMessage = "an error has occurred while reading table in importJob: $importBatch",
                     cause = readResult
                 )
             }
@@ -151,7 +151,7 @@ private fun DictionaryLogEntryData.toDictionary(): Dictionary {
     )
 }
 
-private fun ImportJob.toImportEntry(): ImportEntry {
+private fun ImportBatch.toImportEntry(): ImportEntry {
     return object : ImportEntry {
         override fun externalDictionaryResource(): ExternalDictionaryResource =
             resource.toExternalDictionaryResource()

@@ -125,17 +125,18 @@ class DictionaryQueryViewModel(
     fun onQueryChanged(newQuery: String) {
         viewModelScope.launch {
             withContext(dispatcherProvider.io()) {
-                postUiStateOnMainThread(
-                    state.value?.copy(
-                        typedQueryString = newQuery,
-                        queryResultsWords = listQueryResultsUseCase.invokeWith(newQuery).map {
-                            WordView(
-                                id = it.id,
-                                baseForm = it.baseForm
-                            )
-                        }
+                val updatedResult = listQueryResultsUseCase.invokeWith(newQuery).map {
+                    WordView(
+                        id = it.id,
+                        baseForm = it.baseForm
                     )
-                )
+                }
+                postUiStateOnMainThread {
+                    this.copy(
+                        typedQueryString = newQuery,
+                        queryResultsWords = updatedResult
+                    )
+                }
             }
         }
     }

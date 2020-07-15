@@ -17,7 +17,7 @@ import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.validExternalResource
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
@@ -82,10 +82,11 @@ class RepositoryTest {
 
             // when
             val importResult = repository.importTableFromDb(
-                ImportJob(
+                ImportBatch(
                     sampleExternalDbTable,
                     validExternalResource,
-                    "sampleExternalDbTable"
+                    "sampleExternalDbTable",
+                    2000
                 )
             )
             assertThat(
@@ -134,9 +135,10 @@ class RepositoryTest {
 
             // when
             val importResult = repository.importTableFromDb(
-                ImportJob(
+                ImportBatch(
                     sampleExternalDbTable,
-                    ExternalDatabase.LocalFile(localPath = externalDbPath)
+                    ExternalDatabase.LocalFile(localPath = externalDbPath),
+                    batchSize = 2000
                 )
             )
             assertThat(

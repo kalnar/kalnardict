@@ -4,11 +4,11 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableResult
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableStatus
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 
 class ImportResultListAdapter(
-    private val list: List<ImportTableResult>
+    private var list: List<ImportTableStatus>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -18,6 +18,10 @@ class ImportResultListAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             StatusViewType.SUCCESS_STATUS_VIEW.id -> SuccessfulImportResultViewHolder(
+                inflater,
+                parent
+            )
+            StatusViewType.LOADING_STATUS_VIEW.id -> ProcessingImportViewHolder(
                 inflater,
                 parent
             )
@@ -31,21 +35,33 @@ class ImportResultListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (list[position].result) {
-            OperationResult.Success -> StatusViewType.SUCCESS_STATUS_VIEW.id
-            is OperationResult.Failure -> StatusViewType.FAILURE_STATUS_VIEW.id
+        return when (val progressStatus = list[position].progress) {
+            is DataOperationResult.Success -> {
+                if (progressStatus.data.totalRows == progressStatus.data.registeredRows) {
+                    StatusViewType.SUCCESS_STATUS_VIEW.id
+                } else {
+                    StatusViewType.LOADING_STATUS_VIEW.id
+                }
+            }
+            is DataOperationResult.Failure -> StatusViewType.FAILURE_STATUS_VIEW.id
         }
     }
 
     override fun getItemCount(): Int = list.size
 
+    fun update(it: List<ImportTableStatus>) {
+        list = it
+        notifyDataSetChanged()
+    }
+
 }
 
 enum class StatusViewType(val id: Int) {
     SUCCESS_STATUS_VIEW(0),
-    FAILURE_STATUS_VIEW(1)
+    LOADING_STATUS_VIEW(1),
+    FAILURE_STATUS_VIEW(2)
 }
 
 interface ImportResultViewHolder {
-    fun bind(importTableResult: ImportTableResult)
+    fun bind(importTableResult: ImportTableStatus)
 }

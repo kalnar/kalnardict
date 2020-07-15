@@ -4,36 +4,32 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
 
 class StubDictionaryRepository : DictionaryRepository {
     private val dictionaries = ArrayList<Dictionary>()
-    override suspend fun insertDictEntry(dictTranslation: DictTranslation): OperationResult {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+    override suspend fun importTableFromDb(importBatch: ImportBatch): OperationResult {
         val languageFrom =
-            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageFrom == it.code }
+            Stubs.Languages.frenchAndEnglish.find { importBatch.table.languageFrom == it.code }
         val languageTo =
-            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageTo == it.code }
+            Stubs.Languages.frenchAndEnglish.find { importBatch.table.languageTo == it.code }
         return if (languageFrom != null && languageTo != null) {
             dictionaries.add(
                 Dictionary(
                     id = dictionaries.size + 1,
                     languageFrom = languageFrom,
                     languageTo = languageTo,
-                    description = importJob.displayName
+                    description = importBatch.displayName
                 )
             )
             OperationResult.Success
