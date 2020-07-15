@@ -112,12 +112,6 @@ class DictionaryQueryViewModel(
         }
     }
 
-    fun getDictionary(): LiveData<DictionarySelectorItem> {
-        return Transformations.map(state) {
-            it.currentDictionaryItemView
-        }
-    }
-
     fun getLiveIsDictionaryListInitialized(): LiveData<Boolean> {
         return Transformations.map(state) {
             it.dictionarySelectorItems.isNotEmpty()

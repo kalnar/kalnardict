@@ -83,14 +83,14 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
 
     private fun setUpSpinner() {
         query_screen_spinner.apply {
+            val dictionaries = viewModel.getRegisteredDictionaries()
             adapter = DictionarySelectorSpinnerAdapter(
                 context,
-                viewModel.getRegisteredDictionaries()
+                dictionaries,
+                viewModel.getUiState().value?.currentDictionaryItemView
             ).apply {
                 onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        viewModel.onDictionaryChanged(getItem(0))
-                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
                     override fun onItemSelected(
                         parent: AdapterView<*>?,

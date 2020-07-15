@@ -10,14 +10,25 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelect
 
 class DictionarySelectorSpinnerAdapter(
     private val context: Context,
-    private val dictionarySelectorItems: List<DictionarySelectorItem> = emptyList()
+    private val dictionarySelectorItems: List<DictionarySelectorItem> = emptyList(),
+    private val currentDictionaryItemView: DictionarySelectorItem?
 ) : BaseAdapter() {
+
+    // a spinner will always select the first item no matter what inside setAdapter of AbsSpinner
+    // that's why we move the current item on the top of the list
+    private val dictionaryViewItems: List<DictionarySelectorItem>
+        get() {
+            return currentDictionaryItemView?.let {
+                listOf(currentDictionaryItemView).plus(
+                    dictionarySelectorItems.filterNot { it.id == currentDictionaryItemView.id })
+            } ?: dictionarySelectorItems
+        }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         return if (convertView != null) {
             val viewHolder = convertView.tag
             if (viewHolder is DictionarySelectionViewHolder) {
-                viewHolder.bind(dictionarySelectorItems[position])
+                viewHolder.bind(dictionaryViewItems[position])
             }
             convertView
         } else {
@@ -27,7 +38,7 @@ class DictionarySelectorSpinnerAdapter(
             val convertedView = viewHolder.itemView
 
             convertedView.tag = viewHolder
-            viewHolder.bind(dictionarySelectorItems[position])
+            viewHolder.bind(dictionaryViewItems[position])
 
             convertedView
         }
@@ -37,7 +48,7 @@ class DictionarySelectorSpinnerAdapter(
         return if (convertView != null) {
             val viewHolder = convertView.tag
             if (viewHolder is DictionarySelectorDropDownViewHolder) {
-                viewHolder.bind(dictionarySelectorItems[position])
+                viewHolder.bind(dictionaryViewItems[position])
             }
             convertView
         } else {
@@ -47,14 +58,14 @@ class DictionarySelectorSpinnerAdapter(
             val convertedView = viewHolder.itemView
 
             convertedView.tag = viewHolder
-            viewHolder.bind(dictionarySelectorItems[position])
+            viewHolder.bind(dictionaryViewItems[position])
 
             convertedView
         }
     }
 
     override fun getItem(position: Int): DictionarySelectorItem {
-        return dictionarySelectorItems[position]
+        return dictionaryViewItems[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -62,10 +73,7 @@ class DictionarySelectorSpinnerAdapter(
     }
 
     override fun getCount(): Int {
-        return dictionarySelectorItems.size
+        return dictionaryViewItems.size
     }
 
-    fun setOnDictionarySelected(onSelectedAction: (DictionarySelectorItem) -> Unit) {
-
-    }
 }
