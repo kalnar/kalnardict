@@ -1,17 +1,21 @@
 package eu.kalnarapps.kalnardict.data.repositories
 
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.ImportEntryBatch
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.toExternalDatabaseTable
+import eu.kalnarapps.kalnardict.data.model.ImportEntryBatchData
+import eu.kalnarapps.kalnardict.data.model.ImportEntryData
 import eu.kalnarapps.kalnardict.data.model.TableInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
@@ -19,8 +23,11 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.util.Locale
 
 class Repository(
@@ -71,37 +78,103 @@ class Repository(
         return dictDao.getTranslationByWordAndDictionaryId(wordId, dictionaryId)
     }
 
-    override suspend fun importTableFromDb(importBatch: ImportBatch): OperationResult {
-        return when (
-            val readResult = externalDbHandler.readTableEntriesFrom(importBatch.toImportEntry())
+    override suspend fun importTableFromDb(
+        importJob: ImportJob
+    ): Flow<DataOperationResult<ImportProgress>> = flow {
+        when (
+            val readRowCountResult =
+                externalDbHandler.readTableRowCountFrom(importJob.toImportEntry())
             ) {
             is DataOperationResult.Success -> {
-                if (readResult.data.isNotEmpty()) {
+                if (readRowCountResult.data != 0) {
                     val dictionaryId = dictDao.insertDictionary(
                         NewDictionary(
-                            name = importBatch.table.name,
-                            languageFrom = importBatch.table.languageFrom,
-                            languageTo = importBatch.table.languageTo
+                            name = importJob.displayName,
+                            languageFrom = importJob.table.languageFrom,
+                            languageTo = importJob.table.languageTo
                         )
                     )
-                    dictDao.insertDictEntries(
-                        readResult.data.map {
-                            NewTranslatedWord(
-                                baseForm = it.baseForm,
-                                alternativeBaseForm = it.alternativeBaseForm,
-                                translation = it.translation,
-                                dictionaryId = dictionaryId.toInt()
+                    if (dictionaryId == -1L) {
+                        emit(
+                            DataOperationResult.Failure(
+                                errorMessage = "an error occurred while " +
+                                        "inserting table meta info: " +
+                                        "$${importJob.table.name}"
                             )
-                        }
-                    )
+                        )
+                        return@flow
+                    }
+                    var processedRowNumbers = 0
+                    while (processedRowNumbers < readRowCountResult.data) {
+                        val readResult =
+                            externalDbHandler.readTableEntriesFrom(
+                                importJob.toImportEntry(
+                                    fromId = processedRowNumbers + 1,
+                                    tillId = processedRowNumbers + importJob.batchSize
+                                )
+                            )
+                        when (readResult) {
+                            is DataOperationResult.Success -> {
+                                val insertResult = dictDao.insertDictEntries(
+                                    readResult.data.map {
+                                        NewTranslatedWord(
+                                            baseForm = it.baseForm,
+                                            alternativeBaseForm = it.alternativeBaseForm,
+                                            translation = it.translation,
+                                            dictionaryId = dictionaryId.toInt()
+                                        )
+                                    }
+                                )
+                                when (insertResult) {
+                                    OperationResult.Success -> {
+                                        processedRowNumbers += readResult.data.size
+                                        emit(
+                                            DataOperationResult.Success(
+                                                ImportProgress(
+                                                    totalRowCount = readRowCountResult.data,
+                                                    registeredCount = processedRowNumbers
+                                                )
+                                            )
+                                        )
+                                    }
+                                    is OperationResult.Failure -> {
+                                        emit(
+                                            DataOperationResult.Failure(
+                                                errorMessage = "an error occurred while " +
+                                                        "importing table: " +
+                                                        "$${importJob.table.name}, " +
+                                                        "processed rows: $processedRowNumbers",
+                                                cause = insertResult
+                                            )
+                                        )
+                                        return@flow
+                                    }
+                                }.exhaustive
+                            }
+                            is DataOperationResult.Failure -> {
+                                emit(
+                                    DataOperationResult.Failure(
+                                        errorMessage = "an error occurred while " +
+                                                "reading table: " +
+                                                "$${importJob.table.name}, " +
+                                                "processed rows: $processedRowNumbers",
+                                        cause = readResult
+                                    )
+                                )
+                                return@flow
+                            }
+                        }.exhaustive
+                    }
                 }
-                OperationResult.Success
             }
             is DataOperationResult.Failure -> {
-                OperationResult.Failure(
-                    errorMessage = "an error has occurred while reading table in importJob: $importBatch",
-                    cause = readResult
+                emit(
+                    DataOperationResult.Failure(
+                        errorMessage = "an error has occurred while reading table in importJob: $importJob",
+                        cause = readRowCountResult
+                    )
                 )
+                return@flow
             }
         }
     }
@@ -151,14 +224,20 @@ private fun DictionaryLogEntryData.toDictionary(): Dictionary {
     )
 }
 
-private fun ImportBatch.toImportEntry(): ImportEntry {
-    return object : ImportEntry {
-        override fun externalDictionaryResource(): ExternalDictionaryResource =
-            resource.toExternalDictionaryResource()
+private fun ImportJob.toImportEntry(fromId: Int, tillId: Int): ImportEntryBatch {
+    return ImportEntryBatchData(
+        externalDictionaryResource = resource.toExternalDictionaryResource(),
+        tableInfo = table.toTableInfo(),
+        fromRowId = fromId,
+        tillRowId = tillId
+    )
+}
 
-        override fun tableInfo(): ImportEntry.TableInfo = table.toTableInfo()
-
-    }
+private fun ImportJob.toImportEntry(): ImportEntry {
+    return ImportEntryData(
+        externalDictionaryResource = resource.toExternalDictionaryResource(),
+        tableInfo = table.toTableInfo()
+    )
 }
 
 private fun ExternalDatabaseTable.toTableInfo(): ImportEntry.TableInfo {

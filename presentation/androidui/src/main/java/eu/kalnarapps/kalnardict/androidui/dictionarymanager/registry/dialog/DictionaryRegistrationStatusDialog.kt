@@ -37,6 +37,13 @@ class DictionaryRegistrationStatusDialog : DialogFragment() {
         )
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        dialog?.setOnDismissListener {
+            viewModel.cancelImports()
+        }
+    }
+
     private fun View.setUpView() {
         val statusList: RecyclerView = findViewById(R.id.registration_dialog_status_list)
         val button: AppCompatButton = findViewById(R.id.simple_dialog_cta)

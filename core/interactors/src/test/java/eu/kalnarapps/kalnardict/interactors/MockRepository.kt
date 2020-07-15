@@ -7,7 +7,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
 
@@ -18,18 +18,18 @@ class StubDictionaryRepository : DictionaryRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun importTableFromDb(importBatch: ImportBatch): OperationResult {
+    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
         val languageFrom =
-            Stubs.Languages.frenchAndEnglish.find { importBatch.table.languageFrom == it.code }
+            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageFrom == it.code }
         val languageTo =
-            Stubs.Languages.frenchAndEnglish.find { importBatch.table.languageTo == it.code }
+            Stubs.Languages.frenchAndEnglish.find { importJob.table.languageTo == it.code }
         return if (languageFrom != null && languageTo != null) {
             dictionaries.add(
                 Dictionary(
                     id = dictionaries.size + 1,
                     languageFrom = languageFrom,
                     languageTo = languageTo,
-                    description = importBatch.displayName
+                    description = importJob.displayName
                 )
             )
             OperationResult.Success

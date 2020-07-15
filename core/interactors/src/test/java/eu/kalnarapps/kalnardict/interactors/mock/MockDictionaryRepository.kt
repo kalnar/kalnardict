@@ -8,7 +8,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import eu.kalnarapps.kalnardict.interactors.Stubs
 
@@ -36,7 +36,7 @@ class MockDictionaryRepository : DictionaryRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun importTableFromDb(importBatch: ImportBatch): OperationResult {
+    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
         TODO("Not yet implemented")
     }
 

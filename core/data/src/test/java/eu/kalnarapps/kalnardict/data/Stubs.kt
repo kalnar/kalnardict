@@ -8,6 +8,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
 object Stubs {
@@ -45,6 +46,8 @@ object Stubs {
     object Db {
         val validExternalDatabase = ExternalDatabase.LocalFile("valid")
         val invalidExternalDatabase = ExternalDatabase.LocalFile("invalid")
+        val progressOneItem = ImportProgress(newWordsInFrench.size, 1)
+        val progressTwoItem = ImportProgress(newWordsInFrench.size, 2)
     }
 
     object Dictionaries {

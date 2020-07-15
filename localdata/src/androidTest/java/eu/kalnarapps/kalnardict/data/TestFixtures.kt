@@ -66,6 +66,7 @@ object TestFixtures {
         const val frenchEnglishTableName = "test_fr_dictionary"
         const val frenchEnglishTableFromLanguage = "French"
         const val frenchEnglishTableToLanguage = "English"
+        const val frenchEnglishTableRowCount = 100
         val frenchEnglishTable = TableImportInfo(
             name = frenchEnglishTableName,
             languageTo = frenchEnglishTableToLanguage,

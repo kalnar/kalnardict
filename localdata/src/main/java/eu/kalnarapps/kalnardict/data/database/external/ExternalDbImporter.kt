@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.ImportEntryBatch
 import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
 import eu.kalnarapps.kalnardict.data.model.TableImportInfo
@@ -85,29 +86,50 @@ class ExternalDbImporter(
         return DataOperationResult.Success(entriesBeingRead)
     }
 
+    override fun readTableRowCountFrom(importJob: ImportEntry): DataOperationResult<Int> {
+        val dbHelper =
+            SQLiteDbReaderHelper(
+                context,
+                "${context.getStorageRootPath()}/${importJob.externalDictionaryResource
+                    .sdCardPath()}"
+            )
+        val tableName = importJob.tableInfo.name
+        val cursorOnDictTable =
+            dbHelper.readableDatabase.rawQuery("select * from $tableName", emptyArray())
+        val count = cursorOnDictTable.count
+        cursorOnDictTable.close()
+        dbHelper.close()
+        return DataOperationResult.Success(count)
+    }
+
     override fun readTableEntriesFrom(
-        importJob: ImportEntry
+        importJob: ImportEntryBatch
     ): DataOperationResult<List<TranslatedWordImportEntry>> {
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-                "${context.getStorageRootPath()}/${importJob.externalDictionaryResource()
+                "${context.getStorageRootPath()}/${importJob.externalDictionaryResource
                     .sdCardPath()}"
             )
-        val tableName = importJob.tableInfo().name
+        val tableName = importJob.tableInfo.name
         val cursorOnDictTable =
-            dbHelper.readableDatabase.rawQuery("select * from $tableName", emptyArray())
+            dbHelper.readableDatabase.query(
+                tableName,
+                null,
+                "? <= id AND id <= ?",
+                arrayOf(importJob.fromRowId.toString(), importJob.tillRowId.toString()),
+                null,
+                null,
+                null
+            )
+//        dbHelper.readableDatabase.rawQuery("select * from $tableName", emptyArray())
+
         if (cursorOnDictTable.count == 0) {
             cursorOnDictTable.close()
             return DataOperationResult.Success(emptyList())
         }
         val entriesBeingImported = ArrayList<TranslatedWordImportEntry>()
         while (cursorOnDictTable.moveToNext()) {
-            val id = cursorOnDictTable.getInt(
-                cursorOnDictTable.getColumnIndex(
-                    DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_ID
-                )
-            )
             val baseForm = cursorOnDictTable.getString(
                 cursorOnDictTable.getColumnIndex(
                     DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE

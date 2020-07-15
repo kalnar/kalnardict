@@ -294,6 +294,10 @@ class DictionaryRegistryViewModel(
         }
     }
 
+    fun cancelImports() {
+//        TODO("Not yet implemented")
+    }
+
 }
 
 // TODO: refactor to DomainToUiModel mapper

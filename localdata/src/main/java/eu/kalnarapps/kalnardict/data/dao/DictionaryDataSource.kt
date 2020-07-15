@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Word
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
@@ -23,10 +24,19 @@ class DictionaryDataSource(
         )
     }
 
-    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>) {
-        wordDao.insertWords(wordDataEntries.map {
+    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>): OperationResult {
+        val newIds = wordDao.insertWords(wordDataEntries.map {
             translatedWordMapper.toRoomEntityModel(it)
         })
+        return if (newIds.contains(-1)) {
+            OperationResult.Failure(
+                errorMessage =
+                "insert failed: the following words failed: " +
+                        "${wordDataEntries.filterIndexed { index, _ -> newIds[index] == -1L }}"
+            )
+        } else {
+            OperationResult.Success
+        }
     }
 
     override suspend fun queryWithMatchAnyWhereInDictionary(

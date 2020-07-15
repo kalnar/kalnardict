@@ -17,8 +17,9 @@ import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.validExternalResource
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportBatch
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
@@ -82,17 +83,37 @@ class RepositoryTest {
 
             // when
             val importResult = repository.importTableFromDb(
-                ImportBatch(
+                ImportJob(
                     sampleExternalDbTable,
                     validExternalResource,
                     "sampleExternalDbTable",
-                    2000
+                    1
                 )
-            )
+            ).toList()
+
+            val firstResult = importResult.first()
             assertThat(
-                importResult,
-                instanceOf(OperationResult.Success::class.java)
+                firstResult,
+                instanceOf(DataOperationResult.Success::class.java)
             )
+            check(firstResult is DataOperationResult.Success)
+            assertThat(
+                firstResult.data,
+                equalTo(Stubs.Db.progressOneItem)
+            )
+
+            val secondResult = importResult[1]
+            assertThat(
+                secondResult,
+                instanceOf(DataOperationResult.Success::class.java)
+            )
+            check(secondResult is DataOperationResult.Success)
+            assertThat(
+                secondResult.data,
+                equalTo(Stubs.Db.progressTwoItem)
+            )
+
+
             assertThat(
                 repository.readRegisteredDictionaries(),
                 IsIterableContaining(
@@ -135,15 +156,22 @@ class RepositoryTest {
 
             // when
             val importResult = repository.importTableFromDb(
-                ImportBatch(
+                ImportJob(
                     sampleExternalDbTable,
                     ExternalDatabase.LocalFile(localPath = externalDbPath),
-                    batchSize = 2000
+                    batchSize = 1
                 )
-            )
+            ).toList()
+
             assertThat(
                 importResult,
-                instanceOf(OperationResult.Failure::class.java)
+                IsCollectionWithSize(equalTo(1))
+            )
+
+            val firstResult = importResult.first()
+            assertThat(
+                firstResult,
+                instanceOf(DataOperationResult.Failure::class.java)
             )
 
             // then

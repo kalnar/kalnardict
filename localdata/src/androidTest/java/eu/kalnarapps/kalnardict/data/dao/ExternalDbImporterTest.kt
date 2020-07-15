@@ -17,6 +17,8 @@ import eu.kalnarapps.kalnardict.data.database.copyTestDbFromAssetsToTempTestDir
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
+import eu.kalnarapps.kalnardict.data.model.TestImportEntry
+import eu.kalnarapps.kalnardict.data.model.TestImportEntryBatch
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
@@ -184,14 +186,12 @@ class ExternalDbImporterTest {
         }
 
         val readingDictionaryEntriesResult = externalResourceImporter.readTableEntriesFrom(
-            object : ImportEntry {
-                override fun externalDictionaryResource(): ExternalDictionaryResource =
-                    validExternalResource
-
-                override fun tableInfo(): ImportEntry.TableInfo =
-                    TestFixtures.Import.frenchEnglishTable
-
-            }
+            TestImportEntryBatch(
+                externalDictionaryResource = validExternalResource,
+                tableInfo = TestFixtures.Import.frenchEnglishTable,
+                fromRowId = 1,
+                tillRowId = 1
+            )
         )
         assertThat(
             readingDictionaryEntriesResult,
@@ -204,6 +204,10 @@ class ExternalDbImporterTest {
             not(IsEmptyCollection())
         )
         assertThat(
+            readingDictionaryEntriesResult.data,
+            IsCollectionWithSize(equalTo(1))
+        )
+        assertThat(
             readingDictionaryEntriesResult.data[0].baseForm,
             equalTo("le")
         )
@@ -212,6 +216,32 @@ class ExternalDbImporterTest {
             containsString("the")
         )
 
+    }
+
+    @Test
+    fun read_row_counts_from_valid_table() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val validExternalResource = object : ExternalDictionaryResource {
+            override fun sdCardPath(): String =
+                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
+        }
+
+        val readingDictionaryEntriesResult = externalResourceImporter.readTableRowCountFrom(
+            TestImportEntry(
+                externalDictionaryResource = validExternalResource,
+                tableInfo = TestFixtures.Import.frenchEnglishTable
+            )
+        )
+        assertThat(
+            readingDictionaryEntriesResult,
+            IsInstanceOf(DataOperationResult.Success::class.java)
+        )
+        check(readingDictionaryEntriesResult is DataOperationResult.Success)
+
+        assertThat(
+            readingDictionaryEntriesResult.data,
+            equalTo(TestFixtures.Import.frenchEnglishTableRowCount)
+        )
     }
 
 }

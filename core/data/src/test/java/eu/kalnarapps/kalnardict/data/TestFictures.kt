@@ -28,6 +28,11 @@ val newWordsInFrench = listOf<TranslatedWordImportEntry>(
         baseForm = "nouveau",
         alternativeBaseForm = "nouveau",
         translation = "new"
+    ),
+    MockWordDataEntry(
+        baseForm = "prendre",
+        alternativeBaseForm = "prendre",
+        translation = "take"
     )
 //    object : DictEntry {
 //        override fun getId(): Int = 1

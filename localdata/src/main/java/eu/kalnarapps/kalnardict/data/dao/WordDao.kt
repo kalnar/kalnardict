@@ -39,7 +39,7 @@ interface WordDao {
     suspend fun insertWord(word: Word)
 
     @Insert
-    suspend fun insertWords(wordsToInsert: List<Word>)
+    suspend fun insertWords(wordsToInsert: List<Word>): List<Long>
 
     @Transaction
     @Query(

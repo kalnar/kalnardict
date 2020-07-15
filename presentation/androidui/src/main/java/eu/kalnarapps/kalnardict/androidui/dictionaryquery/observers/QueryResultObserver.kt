@@ -8,11 +8,22 @@ class QueryResultObserver(
 ) : Observer<QueryResult> {
     private var lastDictionaryId: Int? = null
     private var listSize: Int = 0
+    private var lastListSum: Int = 0
     override fun onChanged(t: QueryResult) {
         if (lastDictionaryId != t.dictionary.id || t.wordList.size != listSize) {
             lastDictionaryId = t.dictionary.id
             listSize = t.wordList.size
+            lastListSum = t.wordList.sumBy { it.id }
             onObserve(t)
+            return
+        }
+        val newListSum = t.wordList.sumBy { it.id }
+        if (newListSum != lastListSum) {
+            lastDictionaryId = t.dictionary.id
+            listSize = t.wordList.size
+            lastListSum = t.wordList.sumBy { it.id }
+            onObserve(t)
+            return
         }
     }
 }

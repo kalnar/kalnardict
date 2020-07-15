@@ -7,7 +7,7 @@ data class ExternalDatabaseTable(
     val languageTo: String
 )
 
-data class ImportBatch(
+data class ImportJob(
     val table: ExternalDatabaseTable,
     val resource: ExternalDatabase,
     val displayName: String = table.name,

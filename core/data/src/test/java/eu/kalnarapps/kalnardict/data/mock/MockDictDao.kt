@@ -1,10 +1,12 @@
 package eu.kalnarapps.kalnardict.data.mock
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
+import eu.kalnarapps.kalnardict.data.ImportEntryBatch
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
@@ -52,7 +54,9 @@ open class MockDictDao(
         )
     }
 
-    override suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>) {
+    override suspend fun insertDictEntries(
+        wordDataEntries: List<TranslatedWordInsertEntry>
+    ): OperationResult {
         mockDb.addAll(
             wordDataEntries.map { wordDataEntry ->
                 MockTranslatedWordEntry(
@@ -65,6 +69,7 @@ open class MockDictDao(
 
             }
         )
+        return OperationResult.Success
     }
 
     override suspend fun queryWithMatchAnyWhereInDictionary(
@@ -159,10 +164,26 @@ class TestExternalDatabaseHandler :
         }
     }
 
-    override fun readTableEntriesFrom(importJob: ImportEntry): DataOperationResult<List<TranslatedWordImportEntry>> {
-        val resource = importJob.externalDictionaryResource().sdCardPath()
+    override fun readTableRowCountFrom(importJob: ImportEntry): DataOperationResult<Int> {
+        val resource = importJob.externalDictionaryResource.sdCardPath()
         return if (resource == validExternalResource.localPath) {
-            DataOperationResult.Success(data = newWordsInFrench)
+            DataOperationResult.Success(data = newWordsInFrench.size)
+        } else {
+            DataOperationResult.Failure(
+                errorMessage = "uri path does not correspond to a sqlite database"
+            )
+        }
+    }
+
+    override fun readTableEntriesFrom(importJob: ImportEntryBatch): DataOperationResult<List<TranslatedWordImportEntry>> {
+        val resource = importJob.externalDictionaryResource.sdCardPath()
+        return if (resource == validExternalResource.localPath) {
+            DataOperationResult.Success(
+                data = newWordsInFrench.subList(
+                    importJob.fromRowId - 1,
+                    importJob.tillRowId
+                )
+            )
         } else {
             DataOperationResult.Failure(
                 errorMessage = "uri path does not correspond to a sqlite database"
