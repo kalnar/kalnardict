@@ -50,8 +50,11 @@ class WordDaoMock : WordDao {
         words.add(word)
     }
 
-    override suspend fun insertWords(newWords: List<Word>) {
+    override suspend fun insertWords(newWords: List<Word>): List<Long> {
         this.words.addAll(newWords)
+        return ((words.size - newWords.size)..words.size).map {
+            it.toLong()
+        }
     }
 
     override suspend fun getWordsByQueryInDictionary(
