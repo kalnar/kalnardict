@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDao
+import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
@@ -24,7 +24,7 @@ class AppConfigRepositoryTest {
         testCoroutineRule.runBlockingTest {
 
             val repository = AppConfigRepository(
-                configurationDao = MockConfigurationDao(),
+                configurationDao = MockConfigurationDataSource(),
                 dictionaryDataSource = MockDictionaryDataSource(),
                 languageDataSource = MockLanguageDataSource()
             )
@@ -41,7 +41,7 @@ class AppConfigRepositoryTest {
     fun update_current_dictionary() {
         testCoroutineRule.runBlockingTest {
             val repository = AppConfigRepository(
-                configurationDao = MockConfigurationDao(),
+                configurationDao = MockConfigurationDataSource(),
                 dictionaryDataSource = MockDictionaryDataSource(),
                 languageDataSource = MockLanguageDataSource()
             )

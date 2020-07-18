@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.data.repositories
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
@@ -12,14 +12,14 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 
 class AppConfigRepository(
-    private val configurationDao: ConfigurationDao,
+    private val configurationDataSource: ConfigurationDataSource,
     private val dictionaryDataSource: DictionaryDataSource,
     private val languageDataSource: LanguageDataSource
 ) : ConfigurationRepository {
     override suspend fun getCurrentDictionary(): CurrentDictionary {
         return when (
             val fetchDictionary = dictionaryDataSource.getDictionaryById(
-                configurationDao.getLastDictionaryId()
+                configurationDataSource.getLastDictionaryId()
             )) {
             is DataOperationResult.Success -> {
                 getCurrentDictionaryFromData(fetchDictionary.data)
@@ -72,6 +72,6 @@ class AppConfigRepository(
     }
 
     override suspend fun updateCurrentDictionary(dictionary: Dictionary) {
-        configurationDao.updateLastDictionary(dictionaryId = dictionary.id)
+        configurationDataSource.updateLastDictionary(dictionaryId = dictionary.id)
     }
 }

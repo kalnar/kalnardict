@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.WordDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
@@ -61,8 +61,8 @@ val dataModule: Module = module {
         ) as ExternalDatabaseHandler
     }
     single {
-        ConfigurationDataSource(
+        ConfigurationPropertyDaoAdapter(
             configurationPropertyDao = get()
-        ) as ConfigurationDao
+        ) as ConfigurationDataSource
     }
 }

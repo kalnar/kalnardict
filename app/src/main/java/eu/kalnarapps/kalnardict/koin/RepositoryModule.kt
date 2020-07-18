@@ -38,7 +38,7 @@ val repositoryModule: Module = module {
     }
     single {
         AppConfigRepository(
-            configurationDao = get(),
+            configurationDataSource = get(),
             dictionaryDataSource = get(),
             languageDataSource = get()
         ) as ConfigurationRepository

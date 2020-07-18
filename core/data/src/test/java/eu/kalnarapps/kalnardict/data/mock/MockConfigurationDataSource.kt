@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.data.mock
 
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
+import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
 
-class MockConfigurationDao : ConfigurationDao {
+class MockConfigurationDataSource : ConfigurationDataSource {
     private var lastDictId = 0
     override suspend fun getLastDictionaryId(): Int {
         return lastDictId

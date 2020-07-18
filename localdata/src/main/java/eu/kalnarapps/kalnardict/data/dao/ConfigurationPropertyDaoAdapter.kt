@@ -4,9 +4,9 @@ import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 
 
-class ConfigurationDataSource(
+class ConfigurationPropertyDaoAdapter(
     private val configurationPropertyDao: ConfigurationPropertyDao
-) : ConfigurationDao {
+) : ConfigurationDataSource {
     override suspend fun getLastDictionaryId(): Int {
         return configurationPropertyDao.getPropertyByKey(
             ConfigurationPropertyKey.LAST_DICTIONARY.key

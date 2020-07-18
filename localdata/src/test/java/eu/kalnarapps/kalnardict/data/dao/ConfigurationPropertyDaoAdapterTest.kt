@@ -11,11 +11,11 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ConfigurationDataSourceTest {
+class ConfigurationPropertyDaoAdapterTest {
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
-    private val configurationDataSourceTest = ConfigurationDataSource(
+    private val configurationDataSourceTest = ConfigurationPropertyDaoAdapter(
         configurationPropertyDao = ConfigurationPropertyMockDao()
     )
 
@@ -23,7 +23,7 @@ class ConfigurationDataSourceTest {
     fun get_uninitialized_status_when_no_dictionary_was_used() {
         testCoroutineRule.runBlockingTest {
 
-            val configurationDataSource = ConfigurationDataSource(
+            val configurationDataSource = ConfigurationPropertyDaoAdapter(
                 configurationPropertyDao = ConfigurationPropertyMockDao()
             )
 
@@ -41,7 +41,7 @@ class ConfigurationDataSourceTest {
 
             val lastlyUsedDictionaryId = "2"
 
-            val configurationDataSource = ConfigurationDataSource(
+            val configurationDataSource = ConfigurationPropertyDaoAdapter(
                 configurationPropertyDao = ConfigurationPropertyMockDao(
                     listOf(
                         ConfigurationProperty(
@@ -67,7 +67,7 @@ class ConfigurationDataSourceTest {
             val lastlyUsedDictionaryId = "2"
             val newDictionaryId = "3"
 
-            val configurationDataSource = ConfigurationDataSource(
+            val configurationDataSource = ConfigurationPropertyDaoAdapter(
                 configurationPropertyDao = ConfigurationPropertyMockDao(
                     listOf(
                         ConfigurationProperty(

@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.data.dao
 
-interface ConfigurationDao {
+interface ConfigurationDataSource {
     suspend fun getLastDictionaryId(): Int
     suspend fun updateLastDictionary(dictionaryId: Int)
 }
