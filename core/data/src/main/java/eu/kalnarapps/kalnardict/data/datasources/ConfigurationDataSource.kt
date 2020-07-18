@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.datasources
 
 interface ConfigurationDataSource {
     suspend fun getLastDictionaryId(): Int

@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.data.mock
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.dao.LanguageDataSource
+import eu.kalnarapps.kalnardict.data.datasources.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage

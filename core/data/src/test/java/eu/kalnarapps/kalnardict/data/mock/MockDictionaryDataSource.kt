@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.data.mock
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
+import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData

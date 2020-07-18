@@ -5,8 +5,8 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
-import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
-import eu.kalnarapps.kalnardict.data.dao.WordDataSource
+import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
+import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionary

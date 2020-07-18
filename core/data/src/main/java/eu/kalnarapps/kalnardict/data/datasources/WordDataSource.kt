@@ -1,9 +1,7 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.datasources
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 

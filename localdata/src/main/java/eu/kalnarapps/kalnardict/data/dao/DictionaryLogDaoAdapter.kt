@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData

@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.data.mock
 
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.datasources.ConfigurationDataSource
 
 class MockConfigurationDataSource : ConfigurationDataSource {
     private var lastDictId = 0

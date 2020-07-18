@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.data.dao
 
+import eu.kalnarapps.kalnardict.data.datasources.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 

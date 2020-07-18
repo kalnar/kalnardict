@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.datasources
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
