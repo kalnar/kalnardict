@@ -15,9 +15,6 @@ interface DictDao {
         dictionaryId: Int
     ): List<WordDataEntry>
 
-    suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long
-    suspend fun getDictionaries(): List<DictionaryLogEntryData>
-    suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData>
     suspend fun getTranslationByWordAndDictionaryId(
         wordId: Int,
         dictionaryId: Int

@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.data.database.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.dao.AuxiliaryDataSource
+import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.LanguageRoomMapper
 import eu.kalnarapps.kalnardict.data.mapper.toLanguageToData
@@ -21,11 +21,11 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AuxiliaryDataSourceTest {
+class LanguageDaoAdapterTest {
 
     private val testCoroutineScope = TestCoroutineScope()
     private val auxiliaryDataSourceTest =
-        AuxiliaryDataSource(LanguageDaoMock(), LanguageRoomMapper())
+        LanguageDaoAdapter(LanguageDaoMock(), LanguageRoomMapper())
 
     @After
     fun tearDown() {
@@ -62,7 +62,7 @@ class AuxiliaryDataSourceTest {
     @Test
     fun get_languages_when_available() {
         testCoroutineScope.runBlockingTest {
-            val auxiliaryDataSourceTest = AuxiliaryDataSource(
+            val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(Languages.frenchAndEnglish)),
                 LanguageRoomMapper()
             )
@@ -81,7 +81,7 @@ class AuxiliaryDataSourceTest {
     @Test
     fun get_empty_list_of_languages_when_none_available() {
         testCoroutineScope.runBlockingTest {
-            val auxiliaryDataSourceTest = AuxiliaryDataSource(
+            val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(emptyList())),
                 LanguageRoomMapper()
             )
@@ -97,7 +97,7 @@ class AuxiliaryDataSourceTest {
     @Test
     fun add_new_language_with_unique_id() {
         testCoroutineScope.runBlockingTest {
-            val auxiliaryDataSourceTest = AuxiliaryDataSource(
+            val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(Languages.frenchAndEnglish)),
                 LanguageRoomMapper()
             )
@@ -124,7 +124,7 @@ class AuxiliaryDataSourceTest {
     fun attempt_add_new_language_with_non_unique_id_and_return_fail() {
         testCoroutineScope.runBlockingTest {
             val languages = Languages.frenchAndEnglish
-            val auxiliaryDataSourceTest = AuxiliaryDataSource(
+            val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(languages)),
                 LanguageRoomMapper()
             )

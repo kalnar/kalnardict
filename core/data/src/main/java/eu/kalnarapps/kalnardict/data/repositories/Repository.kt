@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.ImportEntryBatch
 import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
@@ -32,6 +33,7 @@ import java.util.Locale
 
 class Repository(
     private val dictDao: DictDao,
+    private val dictionaryDataSource: DictionaryDataSource,
     private val externalDbHandler: ExternalDatabaseHandler,
     private val dictionaryMapper: DataToDomainOperationalMapper<DictionaryLogEntryData, Dictionary>
 ) : DictionaryRepository {
@@ -57,7 +59,7 @@ class Repository(
 
     // TODO: test getDictionaryById
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
-        return when (val fetchDictionary = dictDao.getDictionaryById(dictionaryId)) {
+        return when (val fetchDictionary = dictionaryDataSource.getDictionaryById(dictionaryId)) {
             is DataOperationResult.Success -> {
                 dictionaryMapper.toDomainModel(fetchDictionary.data)
             }
@@ -87,7 +89,7 @@ class Repository(
             ) {
             is DataOperationResult.Success -> {
                 if (readRowCountResult.data != 0) {
-                    val dictionaryId = dictDao.insertDictionary(
+                    val dictionaryId = dictionaryDataSource.insertDictionary(
                         NewDictionary(
                             name = importJob.displayName,
                             languageFrom = importJob.table.languageFrom,
@@ -202,7 +204,7 @@ class Repository(
     }
 
     override suspend fun readRegisteredDictionaries(): List<Dictionary> {
-        return dictDao.getDictionaries().map {
+        return dictionaryDataSource.getDictionaries().map {
             it.toDictionary()
         }
     }

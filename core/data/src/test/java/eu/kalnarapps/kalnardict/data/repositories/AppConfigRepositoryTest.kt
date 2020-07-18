@@ -2,9 +2,9 @@ package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.mock.MockDictDao
-import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDao
+import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
+import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
@@ -25,7 +25,7 @@ class AppConfigRepositoryTest {
 
             val repository = AppConfigRepository(
                 configurationDao = MockConfigurationDao(),
-                dictDao = MockDictDao(),
+                dictionaryDataSource = MockDictionaryDataSource(),
                 languageDataSource = MockLanguageDataSource()
             )
             val language = repository.getCurrentDictionary()
@@ -42,7 +42,7 @@ class AppConfigRepositoryTest {
         testCoroutineRule.runBlockingTest {
             val repository = AppConfigRepository(
                 configurationDao = MockConfigurationDao(),
-                dictDao = MockDictDao(),
+                dictionaryDataSource = MockDictionaryDataSource(),
                 languageDataSource = MockLanguageDataSource()
             )
 

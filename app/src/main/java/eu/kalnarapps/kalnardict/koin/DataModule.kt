@@ -1,13 +1,15 @@
 package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
-import eu.kalnarapps.kalnardict.data.dao.AuxiliaryDataSource
+import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
+import eu.kalnarapps.kalnardict.data.dao.WordDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
+import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.dao.WordDao
@@ -35,15 +37,19 @@ val dataModule: Module = module {
     single { get<AppDatabase>().configurationPropertyDao() as ConfigurationPropertyDao }
 
     single {
-        DictionaryDataSource(
+        DictionaryLogDaoAdapter(
+            dictionaryMetaDao = get()
+        ) as DictionaryDataSource
+    }
+    single {
+        WordDaoAdapter(
             wordDao = get(),
-            dictionaryMetaDao = get(),
             wordInfoMapper = get(),
             translatedWordMapper = get(Qualifier.translatedWordMapper)
         ) as DictDao
     }
     single {
-        AuxiliaryDataSource(
+        LanguageDaoAdapter(
             languageDao = get(),
             languageRoomMapper = get(Qualifier.languageRoomMapper)
         ) as LanguageDataSource

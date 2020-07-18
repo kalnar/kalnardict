@@ -8,7 +8,7 @@ import eu.kalnarapps.kalnardict.data.mapper.LocalDataToRoomEntityMapper
 import eu.kalnarapps.kalnardict.data.mapper.toLanguageToData
 
 
-class AuxiliaryDataSource(
+class LanguageDaoAdapter(
     private val languageDao: LanguageDao,
     private val languageRoomMapper: LocalDataToRoomEntityMapper<LanguageLogEntryData, Language>
 ) : LanguageDataSource {

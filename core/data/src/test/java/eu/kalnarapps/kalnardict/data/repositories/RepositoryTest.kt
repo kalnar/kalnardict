@@ -7,6 +7,7 @@ import eu.kalnarapps.kalnardict.data.mapper.DictionaryMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mock.MockDictDao
+import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryMapper
 import eu.kalnarapps.kalnardict.data.mock.MockEmptyDictDao
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
@@ -39,6 +40,7 @@ class RepositoryTest {
     private val repository =
         Repository(
             MockDictDao(),
+            MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             DictionaryMapper(
                 KalnarLanguageRepository(
@@ -187,6 +189,7 @@ class RepositoryTest {
 
         val repository = Repository(
             MockEmptyDictDao(),
+            MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             MockDictionaryMapper()
         )
@@ -301,6 +304,7 @@ class RepositoryTest {
                         )
                     )
                 ),
+                MockDictionaryDataSource(),
                 TestExternalDatabaseHandler(),
                 MockDictionaryMapper()
             )
@@ -326,6 +330,7 @@ class RepositoryTest {
     ) {
         val repository = Repository(
             MockDictDao(ArrayList(givenWordList)),
+            MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             MockDictionaryMapper()
         )

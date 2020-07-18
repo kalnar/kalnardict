@@ -17,7 +17,7 @@ val repositoryModule: Module = module {
     // the order of LanguageRepository, DataToDomainOperationalMapper and Repository is be respected
     single {
         KalnarLanguageRepository(
-            languageDataDao = get(),
+            languageDataSource = get(),
             languageDataMapper = get(Qualifier.languageDataDomainMapper),
             languageDomainMapper = get(Qualifier.languageDomainDataMapper)
         ) as LanguageRepository
@@ -31,15 +31,16 @@ val repositoryModule: Module = module {
     single {
         Repository(
             dictDao = get(),
+            dictionaryDataSource = get(),
             externalDbHandler = get(),
             dictionaryMapper = get(Qualifier.dictionaryDataDomainMapper)
         ) as DictionaryRepository
     }
     single {
         AppConfigRepository(
-            dictDao = get(),
             configurationDao = get(),
-            languageDataDao = get()
+            dictionaryDataSource = get(),
+            languageDataSource = get()
         ) as ConfigurationRepository
     }
 }
