@@ -8,7 +8,7 @@ import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.ImportEntryBatch
-import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.dao.WordDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.flow
 import java.util.Locale
 
 class Repository(
-    private val dictDao: DictDao,
+    private val wordDataSource: WordDataSource,
     private val dictionaryDataSource: DictionaryDataSource,
     private val externalDbHandler: ExternalDatabaseHandler,
     private val dictionaryMapper: DataToDomainOperationalMapper<DictionaryLogEntryData, Dictionary>
@@ -41,7 +41,7 @@ class Repository(
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
         return when (query.queryMode) {
             QueryMode.MATCH_ANYWHERE -> {
-                dictDao.queryWithMatchAnyWhereInDictionary(
+                wordDataSource.queryWithMatchAnyWhereInDictionary(
                     query.queryString,
                     query.dictionary.id
                 )
@@ -77,7 +77,7 @@ class Repository(
         wordId: Int,
         dictionaryId: Int
     ): DataOperationResult<String> {
-        return dictDao.getTranslationByWordAndDictionaryId(wordId, dictionaryId)
+        return wordDataSource.getTranslationByWordAndDictionaryId(wordId, dictionaryId)
     }
 
     override suspend fun importTableFromDb(
@@ -117,7 +117,7 @@ class Repository(
                             )
                         when (readResult) {
                             is DataOperationResult.Success -> {
-                                val insertResult = dictDao.insertDictEntries(
+                                val insertResult = wordDataSource.insertDictEntries(
                                     readResult.data.map {
                                         NewTranslatedWord(
                                             baseForm = it.baseForm,

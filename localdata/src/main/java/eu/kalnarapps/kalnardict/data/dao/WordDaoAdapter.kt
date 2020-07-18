@@ -2,21 +2,17 @@ package eu.kalnarapps.kalnardict.data.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Word
-import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.LocalDataToRoomEntityMapper
-import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.RoomEntityToLocalDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
-import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 
 class WordDaoAdapter(
     private val wordDao: WordDao,
     private val wordInfoMapper: RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry>,
     private val translatedWordMapper: LocalDataToRoomEntityMapper<TranslatedWordInsertEntry, Word>
-) : DictDao {
+) : WordDataSource {
     override suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry) {
         wordDao.insertWord(
             translatedWordMapper.toRoomEntityModel(wordDataEntry)

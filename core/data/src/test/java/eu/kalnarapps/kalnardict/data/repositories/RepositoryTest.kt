@@ -6,10 +6,10 @@ import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
-import eu.kalnarapps.kalnardict.data.mock.MockDictDao
+import eu.kalnarapps.kalnardict.data.mock.MockWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryMapper
-import eu.kalnarapps.kalnardict.data.mock.MockEmptyDictDao
+import eu.kalnarapps.kalnardict.data.mock.MockEmptyWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
@@ -39,7 +39,7 @@ class RepositoryTest {
     private val languageMapper = LanguageDataMapper()
     private val repository =
         Repository(
-            MockDictDao(),
+            MockWordDataSource(),
             MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             DictionaryMapper(
@@ -188,7 +188,7 @@ class RepositoryTest {
     fun read_registered_dictionaries_and_find_none() {
 
         val repository = Repository(
-            MockEmptyDictDao(),
+            MockEmptyWordDataSource(),
             MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             MockDictionaryMapper()
@@ -296,7 +296,7 @@ class RepositoryTest {
     fun return_operation_failure_when_getting_translation_with_wrong_id() {
         testCoroutineRule.runBlockingTest {
             val repository = Repository(
-                MockDictDao(
+                MockWordDataSource(
                     ArrayList(
                         listOf(
                             Stubs.Words.translatedWordPrendre,
@@ -329,7 +329,7 @@ class RepositoryTest {
         expectedTranslation: String
     ) {
         val repository = Repository(
-            MockDictDao(ArrayList(givenWordList)),
+            MockWordDataSource(ArrayList(givenWordList)),
             MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             MockDictionaryMapper()

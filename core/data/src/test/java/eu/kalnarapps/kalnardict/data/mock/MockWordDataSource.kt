@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.data.mock
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.dao.WordDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
@@ -11,9 +11,9 @@ import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mock.model.MockTranslatedWordEntry
 
-open class MockDictDao(
+open class MockWordDataSource(
     private val mockDb: ArrayList<TranslatedWordDataEntry> = ArrayList<TranslatedWordDataEntry>()
-) : DictDao {
+) : WordDataSource {
     protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
         addAll(
             listOf(
@@ -83,7 +83,7 @@ open class MockDictDao(
     }
 }
 
-class MockEmptyDictDao : MockDictDao() {
+class MockEmptyWordDataSource : MockWordDataSource() {
     init {
         mockDictionaries.clear()
     }

@@ -30,7 +30,7 @@ val repositoryModule: Module = module {
     }
     single {
         Repository(
-            dictDao = get(),
+            wordDataSource = get(),
             dictionaryDataSource = get(),
             externalDbHandler = get(),
             dictionaryMapper = get(Qualifier.dictionaryDataDomainMapper)

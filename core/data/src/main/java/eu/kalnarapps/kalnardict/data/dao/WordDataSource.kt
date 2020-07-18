@@ -7,7 +7,7 @@ import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 
-interface DictDao {
+interface WordDataSource {
     suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry)
     suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>): OperationResult
     suspend fun queryWithMatchAnyWhereInDictionary(

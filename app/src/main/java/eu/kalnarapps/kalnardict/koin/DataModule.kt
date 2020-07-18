@@ -5,7 +5,7 @@ import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
-import eu.kalnarapps.kalnardict.data.dao.DictDao
+import eu.kalnarapps.kalnardict.data.dao.WordDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.dao.WordDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
@@ -46,7 +46,7 @@ val dataModule: Module = module {
             wordDao = get(),
             wordInfoMapper = get(),
             translatedWordMapper = get(Qualifier.translatedWordMapper)
-        ) as DictDao
+        ) as WordDataSource
     }
     single {
         LanguageDaoAdapter(
