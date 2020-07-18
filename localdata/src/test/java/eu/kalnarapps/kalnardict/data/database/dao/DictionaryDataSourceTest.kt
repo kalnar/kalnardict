@@ -46,9 +46,11 @@ class DictionaryDataSourceTest {
     }
 
     @Test
-    fun get_dict_entry_for_asztal_by_query() = testCoroutineDispatcher.runBlockingTest {
+    fun get_dict_entry_for_asztal_by_query_match_anywhere() = testCoroutineDispatcher.runBlockingTest {
         val queryResult = dataSource.queryWithMatchAnyWhereInDictionary(
-            "asztal",
+            sampleTableInHungarian.baseForm.run {
+                substring(1, length - 1)
+            },
             sampleTableInHungarian.dictionaryId
         )
 
