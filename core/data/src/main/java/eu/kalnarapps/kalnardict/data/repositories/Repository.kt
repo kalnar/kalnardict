@@ -7,6 +7,7 @@ import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
+import eu.kalnarapps.kalnardict.data.datasources.query.QueryExecutorProvider
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionary
@@ -14,9 +15,9 @@ import eu.kalnarapps.kalnardict.data.mapper.toExternalDatabaseTable
 import eu.kalnarapps.kalnardict.data.mapper.toExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.mapper.toImportEntry
 import eu.kalnarapps.kalnardict.data.model.NewDictionary
+import eu.kalnarapps.kalnardict.data.model.NewTranslatedWord
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
@@ -27,33 +28,38 @@ import kotlinx.coroutines.flow.flow
 
 class Repository(
     private val wordDataSource: WordDataSource,
+    private val queryExecutorProvider: QueryExecutorProvider,
     private val dictionaryDataSource: DictionaryDataSource,
     private val externalDbHandler: ExternalDatabaseHandler,
     private val dictionaryMapper: DataToDomainOperationalMapper<DictionaryLogEntryData, Dictionary>
 ) : DictionaryRepository {
 
     override suspend fun getEntriesByQuery(query: DictQuery): List<DictWord> {
-        return when (query.queryMode) {
-            QueryMode.MATCH_ANYWHERE -> {
-                wordDataSource.queryWithMatchAnyWhereInDictionary(
-                    query.queryString,
-                    query.dictionary.id
-                )
-                    .map {
-                        DictWord(
-                            it.id,
-                            query.dictionary.languageFrom,
-                            baseForm = it.baseForm,
-                            alternativeForm = it.alternativeBaseForm
-                        )
-                    }
-            }
+        return with(
+            queryExecutorProvider.provideQueryExecutor(
+                matchType = query.queryMode,
+                accentMode = query.accentMode
+            )
+        ) {
+            query(
+                query.queryString,
+                query.dictionary.id
+            )
+                .map {
+                    DictWord(
+                        it.id,
+                        query.dictionary.languageFrom,
+                        baseForm = it.baseForm,
+                        alternativeForm = it.alternativeBaseForm
+                    )
+                }
         }
     }
 
     // TODO: test getDictionaryById
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
-        return when (val fetchDictionary = dictionaryDataSource.getDictionaryById(dictionaryId)) {
+        return when (val fetchDictionary =
+            dictionaryDataSource.getDictionaryById(dictionaryId)) {
             is DataOperationResult.Success -> {
                 dictionaryMapper.toDomainModel(fetchDictionary.data)
             }
@@ -113,7 +119,7 @@ class Repository(
                             is DataOperationResult.Success -> {
                                 val insertResult = wordDataSource.insertDictEntries(
                                     readResult.data.map {
-                                        _root_ide_package_.eu.kalnarapps.kalnardict.data.model.NewTranslatedWord(
+                                        NewTranslatedWord(
                                             baseForm = it.baseForm,
                                             alternativeBaseForm = it.alternativeBaseForm,
                                             translation = it.translation,

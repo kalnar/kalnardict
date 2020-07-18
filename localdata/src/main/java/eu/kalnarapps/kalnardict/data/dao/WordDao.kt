@@ -16,7 +16,7 @@ interface WordDao {
             FROM 
         word 
             WHERE 
-        base_form LIKE :queryString 
+        base_form LIKE :queryString ESCAPE '\'
             AND
         dictionary_id = :dictionaryId LIMIT 100"""
     )

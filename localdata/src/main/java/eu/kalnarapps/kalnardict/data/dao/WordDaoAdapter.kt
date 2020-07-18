@@ -35,14 +35,14 @@ class WordDaoAdapter(
         }
     }
 
-    override suspend fun queryWithMatchAnyWhereInDictionary(
-        query: String,
-        dictionaryId: Int
-    ): List<WordDataEntry> {
-        return wordDao.getByQuery("%${query}%", dictionaryId).map {
-            wordInfoMapper.toLocalData(it)
-        }
-    }
+//    override suspend fun queryWithMatchAnyWhereInDictionary(
+//        query: String,
+//        dictionaryId: Int
+//    ): List<WordDataEntry> {
+//        return wordDao.getByQuery("%${query}%", dictionaryId).map {
+//            wordInfoMapper.toLocalData(it)
+//        }
+//    }
 
     override suspend fun getTranslationByWordAndDictionaryId(
         wordId: Int,

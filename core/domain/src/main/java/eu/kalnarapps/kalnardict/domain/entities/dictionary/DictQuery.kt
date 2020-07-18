@@ -15,5 +15,9 @@ enum class AccentMode {
 }
 
 enum class QueryMode {
-    MATCH_ANYWHERE
+    MATCH_ANYWHERE,
+    MATCH_BEGINNING,
+    MATCH_END,
+    MATCH_EXACT,
+    MATCH_FUZZY;
 }
