@@ -2,14 +2,17 @@ package eu.kalnarapps.kalnardict.androidui.dependencies.mocks
 
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class MockDictionaryRepository : DictionaryRepository {
     private val dictDao = hashMapOf(
@@ -24,10 +27,22 @@ class MockDictionaryRepository : DictionaryRepository {
             }
     }
 
-    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+    override suspend fun importTableFromDb(
+        importJob: ImportJob
+    ): Flow<DataOperationResult<ImportProgress>> = flow {
         dictDao[Stubs.Domain.Dictionaries.frenchEnglishDict] =
             Stubs.Domain.Dictionaries.Translations.frenchEnglishTranslations
-        return OperationResult.Success
+        for (i in (1..20)) {
+            emit(
+                DataOperationResult.Success(
+                    data = ImportProgress(
+                        totalRowCount = 20,
+                        registeredCount = i
+                    )
+                )
+            )
+            delay(500L)
+        }
     }
 
     override suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase): DataOperationResult<List<ExternalDatabaseTable>> {
