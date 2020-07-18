@@ -3,15 +3,13 @@ package eu.kalnarapps.kalnardict.data.repositories
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.mock.MockDictDao
-import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataDao
+import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDao
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.core.IsInstanceOf
-import org.junit.After
 import org.junit.Assert.assertThat
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,7 +26,7 @@ class AppConfigRepositoryTest {
             val repository = AppConfigRepository(
                 configurationDao = MockConfigurationDao(),
                 dictDao = MockDictDao(),
-                languageDataDao = MockLanguageDataDao()
+                languageDataSource = MockLanguageDataSource()
             )
             val language = repository.getCurrentDictionary()
             assertThat(
@@ -45,7 +43,7 @@ class AppConfigRepositoryTest {
             val repository = AppConfigRepository(
                 configurationDao = MockConfigurationDao(),
                 dictDao = MockDictDao(),
-                languageDataDao = MockLanguageDataDao()
+                languageDataSource = MockLanguageDataSource()
             )
 
             repository.updateCurrentDictionary(

@@ -9,7 +9,7 @@ import eu.kalnarapps.kalnardict.data.dao.DictDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
-import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
+import eu.kalnarapps.kalnardict.data.dao.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
@@ -46,7 +46,7 @@ val dataModule: Module = module {
         AuxiliaryDataSource(
             languageDao = get(),
             languageRoomMapper = get(Qualifier.languageRoomMapper)
-        ) as LanguageDataDao
+        ) as LanguageDataSource
     }
 
     single {

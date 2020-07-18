@@ -5,7 +5,7 @@ import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.dao.ConfigurationDao
 import eu.kalnarapps.kalnardict.data.dao.DictDao
-import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
+import eu.kalnarapps.kalnardict.data.dao.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
@@ -14,7 +14,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 class AppConfigRepository(
     private val configurationDao: ConfigurationDao,
     private val dictDao: DictDao,
-    private val languageDataDao: LanguageDataDao
+    private val languageDataSource: LanguageDataSource
 ) : ConfigurationRepository {
     override suspend fun getCurrentDictionary(): CurrentDictionary {
         return when (
@@ -49,8 +49,8 @@ class AppConfigRepository(
     private suspend fun getDictionaryFromData(
         data: DictionaryLogEntryData
     ): DataOperationResult<Dictionary> {
-        val sourceLanguageFetch = languageDataDao.getLanguageById(data.languageFrom)
-        val destinationLanguageFetch = languageDataDao.getLanguageById(data.languageTo)
+        val sourceLanguageFetch = languageDataSource.getLanguageById(data.languageFrom)
+        val destinationLanguageFetch = languageDataSource.getLanguageById(data.languageTo)
         return if (sourceLanguageFetch is DataOperationResult.Success
             && destinationLanguageFetch is DataOperationResult.Success
         ) {

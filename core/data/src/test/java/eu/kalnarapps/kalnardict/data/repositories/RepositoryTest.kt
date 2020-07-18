@@ -1,7 +1,6 @@
 package eu.kalnarapps.kalnardict.data.repositories
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryMapper
@@ -10,7 +9,7 @@ import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
 import eu.kalnarapps.kalnardict.data.mock.MockDictDao
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryMapper
 import eu.kalnarapps.kalnardict.data.mock.MockEmptyDictDao
-import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataDao
+import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
 import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
@@ -43,7 +42,7 @@ class RepositoryTest {
             TestExternalDatabaseHandler(),
             DictionaryMapper(
                 KalnarLanguageRepository(
-                    MockLanguageDataDao(),
+                    MockLanguageDataSource(),
                     languageMapper,
                     languageMapper
                 )

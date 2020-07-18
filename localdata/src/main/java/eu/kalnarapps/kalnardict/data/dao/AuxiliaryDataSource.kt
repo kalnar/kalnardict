@@ -11,7 +11,7 @@ import eu.kalnarapps.kalnardict.data.mapper.toLanguageToData
 class AuxiliaryDataSource(
     private val languageDao: LanguageDao,
     private val languageRoomMapper: LocalDataToRoomEntityMapper<LanguageLogEntryData, Language>
-) : LanguageDataDao {
+) : LanguageDataSource {
     override suspend fun getLanguageById(id: String): DataOperationResult<LanguageLogEntryData> {
         return languageDao.getLanguageById(id)?.let {
             DataOperationResult.Success<LanguageLogEntryData>(

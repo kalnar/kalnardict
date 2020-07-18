@@ -3,19 +3,19 @@ package eu.kalnarapps.kalnardict.data.mock
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.Stubs
-import eu.kalnarapps.kalnardict.data.dao.LanguageDataDao
+import eu.kalnarapps.kalnardict.data.dao.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 
-class MockLanguageDataDao(
+class MockLanguageDataSource(
     private val languages: ArrayList<DictLanguage> = ArrayList<DictLanguage>(
         listOf(
             Stubs.Languages.english,
             Stubs.Languages.french
         )
     )
-) : LanguageDataDao {
+) : LanguageDataSource {
 
     private val mapper = LanguageDataMapper()
 
