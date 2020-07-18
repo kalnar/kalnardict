@@ -5,20 +5,15 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
-import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
-import eu.kalnarapps.kalnardict.data.ImportEntry
-import eu.kalnarapps.kalnardict.data.ImportEntryBatch
-import eu.kalnarapps.kalnardict.data.dao.WordDataSource
 import eu.kalnarapps.kalnardict.data.dao.DictionaryDataSource
+import eu.kalnarapps.kalnardict.data.dao.WordDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
-import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
+import eu.kalnarapps.kalnardict.data.mapper.toDictionary
 import eu.kalnarapps.kalnardict.data.mapper.toExternalDatabaseTable
-import eu.kalnarapps.kalnardict.data.model.ImportEntryBatchData
-import eu.kalnarapps.kalnardict.data.model.ImportEntryData
-import eu.kalnarapps.kalnardict.data.model.TableInfo
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
+import eu.kalnarapps.kalnardict.data.mapper.toExternalDictionaryResource
+import eu.kalnarapps.kalnardict.data.mapper.toImportEntry
+import eu.kalnarapps.kalnardict.data.model.NewDictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
@@ -29,7 +24,6 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.util.Locale
 
 class Repository(
     private val wordDataSource: WordDataSource,
@@ -119,7 +113,7 @@ class Repository(
                             is DataOperationResult.Success -> {
                                 val insertResult = wordDataSource.insertDictEntries(
                                     readResult.data.map {
-                                        NewTranslatedWord(
+                                        _root_ide_package_.eu.kalnarapps.kalnardict.data.model.NewTranslatedWord(
                                             baseForm = it.baseForm,
                                             alternativeBaseForm = it.alternativeBaseForm,
                                             translation = it.translation,
@@ -211,60 +205,3 @@ class Repository(
 
 }
 
-private fun DictionaryLogEntryData.toDictionary(): Dictionary {
-    return Dictionary(
-        id = id,
-        languageFrom = DictLanguage(
-            name = Locale(languageFrom).getDisplayLanguage(Locale(languageFrom)),
-            code = languageFrom
-        ),
-        languageTo = DictLanguage(
-            name = Locale(languageTo).getDisplayLanguage(Locale(languageTo)),
-            code = languageTo
-        ),
-        description = name
-    )
-}
-
-private fun ImportJob.toImportEntry(fromId: Int, tillId: Int): ImportEntryBatch {
-    return ImportEntryBatchData(
-        externalDictionaryResource = resource.toExternalDictionaryResource(),
-        tableInfo = table.toTableInfo(),
-        fromRowId = fromId,
-        tillRowId = tillId
-    )
-}
-
-private fun ImportJob.toImportEntry(): ImportEntry {
-    return ImportEntryData(
-        externalDictionaryResource = resource.toExternalDictionaryResource(),
-        tableInfo = table.toTableInfo()
-    )
-}
-
-private fun ExternalDatabaseTable.toTableInfo(): ImportEntry.TableInfo {
-    return TableInfo(
-        name = name,
-        languageFrom = languageFrom,
-        languageTo = languageTo
-    )
-}
-
-private fun ExternalDatabase.toExternalDictionaryResource(): ExternalDictionaryResource {
-    return object : ExternalDictionaryResource {
-        override fun sdCardPath(): String = uri
-    }
-}
-
-data class NewDictionary(
-    override val name: String,
-    override val languageFrom: String,
-    override val languageTo: String
-) : NewDictionaryLogEntryData
-
-data class NewTranslatedWord(
-    override val baseForm: String,
-    override val alternativeBaseForm: String,
-    override val dictionaryId: Int,
-    override val translation: String
-) : TranslatedWordInsertEntry
