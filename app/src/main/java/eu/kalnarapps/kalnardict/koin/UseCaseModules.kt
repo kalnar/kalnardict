@@ -57,7 +57,8 @@ val useCaseModule = module {
     single {
         ListDictionaryQueryResults(
             dictionaryRepository = get(),
-            configurationRepository = get()
+            configurationRepository = get(),
+            queryModeConfigurationRepository = get()
         ) as SearchQueryUseCase
     }
     single {

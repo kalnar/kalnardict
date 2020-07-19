@@ -25,7 +25,8 @@ class ConfigurationPropertyDaoAdapter(
 }
 
 enum class ConfigurationPropertyKey(val key: String) {
-    LAST_DICTIONARY("last_dictionary_id");
+    LAST_DICTIONARY("last_dictionary_id"),
+    QUERY_MATCH_MODE("last_query_match_mode_id");
 
     companion object {
         fun fromString(type: String): ConfigurationPropertyKey? {

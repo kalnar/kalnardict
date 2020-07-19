@@ -14,10 +14,16 @@ enum class AccentMode {
     ACCENT_SENSITIVE
 }
 
-enum class QueryMode {
-    MATCH_ANYWHERE,
-    MATCH_BEGINNING,
-    MATCH_END,
-    MATCH_EXACT,
-    MATCH_FUZZY;
+enum class QueryMode(val value: Int) {
+    MATCH_ANYWHERE(0),
+    MATCH_BEGINNING(1),
+    MATCH_END(2),
+    MATCH_EXACT(3),
+    MATCH_FUZZY(4);
+
+    companion object {
+        fun fromId(id: Int): QueryMode {
+            return values().associateBy(QueryMode::value)[id] ?: MATCH_BEGINNING
+        }
+    }
 }

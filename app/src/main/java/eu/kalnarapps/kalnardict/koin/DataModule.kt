@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.dao.WordDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.configuration.QueryModeDaoAdapter
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDbDataInitializer
@@ -17,6 +18,7 @@ import eu.kalnarapps.kalnardict.data.datasources.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.datasources.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
+import eu.kalnarapps.kalnardict.data.datasources.configuration.QueryModeConfigurationDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -44,7 +46,6 @@ val dataModule: Module = module {
     single {
         WordDaoAdapter(
             wordDao = get(),
-            wordInfoMapper = get(),
             translatedWordMapper = get(Qualifier.translatedWordMapper)
         ) as WordDataSource
     }
@@ -64,5 +65,10 @@ val dataModule: Module = module {
         ConfigurationPropertyDaoAdapter(
             configurationPropertyDao = get()
         ) as ConfigurationDataSource
+    }
+    single {
+        QueryModeDaoAdapter(
+            configurationPropertyDao = get()
+        ) as QueryModeConfigurationDataSource
     }
 }

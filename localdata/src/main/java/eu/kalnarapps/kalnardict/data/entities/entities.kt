@@ -73,6 +73,7 @@ data class ConfigurationProperty(
 
 object DataBaseConstants {
     const val UNINITIALIZED_PROPERTY: String = "uninitialized"
+    const val DEFAULT_QUERY_MODE_ID: String = "0"
     const val UNINITIALIZED_INT_PROPERTY: Int = -1
     const val CONFIGURATION_PROPERTY_TABLE_NAME = "configuration_property"
 }
