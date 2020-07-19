@@ -7,7 +7,7 @@ import eu.kalnarapps.kalnardict.data.QueryModeConfigurationRepository
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainOperationalMapper
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryMapper
-import eu.kalnarapps.kalnardict.data.repositories.AppConfigRepository
+import eu.kalnarapps.kalnardict.data.repositories.configuration.AppConfigRepository
 import eu.kalnarapps.kalnardict.data.repositories.KalnarLanguageRepository
 import eu.kalnarapps.kalnardict.data.repositories.Repository
 import eu.kalnarapps.kalnardict.data.repositories.configuration.QueryModeRepository

@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.repositories
+package eu.kalnarapps.kalnardict.data.repositories.configuration
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.ConfigurationRepository

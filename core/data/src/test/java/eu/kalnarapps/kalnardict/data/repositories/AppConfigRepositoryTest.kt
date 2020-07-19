@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
+import eu.kalnarapps.kalnardict.data.repositories.configuration.AppConfigRepository
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
@@ -23,11 +24,12 @@ class AppConfigRepositoryTest {
     fun initial_dictionary_is_not_set() {
         testCoroutineRule.runBlockingTest {
 
-            val repository = AppConfigRepository(
-                configurationDataSource = MockConfigurationDataSource(),
-                dictionaryDataSource = MockDictionaryDataSource(),
-                languageDataSource = MockLanguageDataSource()
-            )
+            val repository =
+                AppConfigRepository(
+                    configurationDataSource = MockConfigurationDataSource(),
+                    dictionaryDataSource = MockDictionaryDataSource(),
+                    languageDataSource = MockLanguageDataSource()
+                )
             val language = repository.getCurrentDictionary()
             assertThat(
                 language,
@@ -40,11 +42,12 @@ class AppConfigRepositoryTest {
     @Test
     fun update_current_dictionary() {
         testCoroutineRule.runBlockingTest {
-            val repository = AppConfigRepository(
-                configurationDataSource = MockConfigurationDataSource(),
-                dictionaryDataSource = MockDictionaryDataSource(),
-                languageDataSource = MockLanguageDataSource()
-            )
+            val repository =
+                AppConfigRepository(
+                    configurationDataSource = MockConfigurationDataSource(),
+                    dictionaryDataSource = MockDictionaryDataSource(),
+                    languageDataSource = MockLanguageDataSource()
+                )
 
             repository.updateCurrentDictionary(
                 Stubs.Dictionaries.frenchEnglishDictionary
