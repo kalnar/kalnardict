@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.data.repositories
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
-import eu.kalnarapps.kalnardict.data.datasources.ConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.datasources.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData

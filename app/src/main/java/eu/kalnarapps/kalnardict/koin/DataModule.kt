@@ -14,7 +14,7 @@ import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDbDataInitializer
 import eu.kalnarapps.kalnardict.data.database.inapp.DefaultDbInitializer
-import eu.kalnarapps.kalnardict.data.datasources.ConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.datasources.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
