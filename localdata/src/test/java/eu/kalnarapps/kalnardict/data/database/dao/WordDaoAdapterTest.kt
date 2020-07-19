@@ -2,6 +2,8 @@ package eu.kalnarapps.kalnardict.data.database.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.dao.WordDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.query.RoomQueryExecutor
+import eu.kalnarapps.kalnardict.data.dao.query.formatter.ExactMatchQueryFormatter
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,11 @@ class WordDaoAdapterTest {
         wordDaoMock,
         translatedWordMapper = TranslatedWordMapper()
     )
+    private val roomQueryExecutor = RoomQueryExecutor(
+        wordDaoMock,
+        queryFormatter = ExactMatchQueryFormatter(),
+        wordInfoMapper = WordInfoMapper()
+    )
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     @Before
@@ -40,113 +47,84 @@ class WordDaoAdapterTest {
         testCoroutineDispatcher.cleanupTestCoroutines()
     }
 
-//    @Test
-//    fun get_dict_entry_for_asztal_by_query_match_anywhere() =
-//        testCoroutineDispatcher.runBlockingTest {
-//            val queryResult = dataSource.queryWithMatchAnyWhereInDictionary(
-//                sampleTableInHungarian.baseForm.run {
-//                    substring(1, length - 1)
-//                },
-//                sampleTableInHungarian.dictionaryId
-//            )
-//
-//            assertThat(
-//                queryResult,
-//                not(IsEmptyCollection())
-//            )
-//
-//            assertThat(
-//                queryResult.firstOrNull()?.baseForm,
-//                equalTo(sampleTableInHungarian.baseForm)
-//            )
-//
-//            assertThat(
-//                dataSource.queryWithMatchAnyWhereInDictionary(
-//                    "x",
-//                    sampleTableInHungarian.dictionaryId
-//                ),
-//                IsEmptyCollection()
-//            )
-//
-//        }
 
-//    @Test
-//    fun insert_new_word_in_data_source() = testCoroutineDispatcher.runBlockingTest {
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "szem",
-//                SampleEyeWordDataEntry.dictionaryId
-//            ),
-//            IsEmptyCollection()
-//        )
-//
-//        dataSource.insertDictEntry(SampleEyeWordDataEntry)
-//
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "szem",
-//                SampleEyeWordDataEntry.dictionaryId
-//            ),
-//            not(IsEmptyCollection())
-//        )
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "szem",
-//                SampleEyeWordDataEntry.dictionaryId
-//            ).firstOrNull()?.baseForm,
-//            equalTo(SampleEyeWordDataEntry.baseForm)
-//        )
-//
-//    }
+    @Test
+    fun insert_new_word_in_data_source() = testCoroutineDispatcher.runBlockingTest {
+        assertThat(
+            roomQueryExecutor.query(
+                "szem",
+                SampleEyeWordDataEntry.dictionaryId
+            ),
+            IsEmptyCollection()
+        )
 
-//    @Test
-//    fun insert_multiple_entries_in_data_source() = testCoroutineDispatcher.runBlockingTest {
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "szem",
-//                SampleEyeWordDataEntry.dictionaryId
-//            ),
-//            IsEmptyCollection()
-//        )
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "doboz",
-//                SampleBoxWordDataEntry.dictionaryId
-//            ),
-//            IsEmptyCollection()
-//        )
-//
-//        dataSource.insertDictEntries(sampleDictEntries)
-//
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "szem",
-//                SampleEyeWordDataEntry.dictionaryId
-//            ),
-//            not(IsEmptyCollection())
-//        )
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "szem",
-//                SampleEyeWordDataEntry.dictionaryId
-//            ).firstOrNull()?.baseForm,
-//            equalTo(SampleEyeWordDataEntry.baseForm)
-//        )
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "doboz",
-//                SampleBoxWordDataEntry.dictionaryId
-//            ),
-//            not(IsEmptyCollection())
-//        )
-//        assertThat(
-//            dataSource.queryWithMatchAnyWhereInDictionary(
-//                "doboz",
-//                SampleBoxWordDataEntry.dictionaryId
-//            ).firstOrNull()?.baseForm,
-//            equalTo(SampleBoxWordDataEntry.baseForm)
-//        )
-//    }
+        dataSource.insertDictEntry(SampleEyeWordDataEntry)
+
+        assertThat(
+            roomQueryExecutor.query(
+                "szem",
+                SampleEyeWordDataEntry.dictionaryId
+            ),
+            not(IsEmptyCollection())
+        )
+        assertThat(
+            roomQueryExecutor.query(
+                "szem",
+                SampleEyeWordDataEntry.dictionaryId
+            ).firstOrNull()?.baseForm,
+            equalTo(SampleEyeWordDataEntry.baseForm)
+        )
+
+    }
+
+    @Test
+    fun insert_multiple_entries_in_data_source() = testCoroutineDispatcher.runBlockingTest {
+        assertThat(
+            roomQueryExecutor.query(
+                "szem",
+                SampleEyeWordDataEntry.dictionaryId
+            ),
+            IsEmptyCollection()
+        )
+        assertThat(
+            roomQueryExecutor.query(
+                "doboz",
+                SampleBoxWordDataEntry.dictionaryId
+            ),
+            IsEmptyCollection()
+        )
+
+        dataSource.insertDictEntries(sampleDictEntries)
+
+        assertThat(
+            roomQueryExecutor.query(
+                "szem",
+                SampleEyeWordDataEntry.dictionaryId
+            ),
+            not(IsEmptyCollection())
+        )
+        assertThat(
+            roomQueryExecutor.query(
+                "szem",
+                SampleEyeWordDataEntry.dictionaryId
+            ).firstOrNull()?.baseForm,
+            equalTo(SampleEyeWordDataEntry.baseForm)
+        )
+        assertThat(
+            roomQueryExecutor.query(
+                "doboz",
+                SampleBoxWordDataEntry.dictionaryId
+            ),
+            not(IsEmptyCollection())
+        )
+        assertThat(
+            roomQueryExecutor.query(
+                "doboz",
+                SampleBoxWordDataEntry.dictionaryId
+            ).firstOrNull()?.baseForm,
+            equalTo(SampleBoxWordDataEntry.baseForm)
+        )
+    }
 
     @Test
     fun when_getting_translation_with_valid_ids_return_translation() {
