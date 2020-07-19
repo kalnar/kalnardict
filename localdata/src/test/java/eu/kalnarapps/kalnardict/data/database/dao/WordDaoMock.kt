@@ -17,20 +17,8 @@ class WordDaoMock : WordDao {
     override suspend fun getByQuery(queryString: String, dictionaryId: Int): List<Word.WordInfo> {
         return words.filter {
             it.dictionaryId == dictionaryId &&
-                    it.baseForm.contains(
-                        queryString.run {
-                            var searchText = if (this[0] == '%') {
-                                substring(1)
-                            } else {
-                                this
-                            }
-                            searchText = if (searchText.last() == '%') {
-                                searchText.substring(0, searchText.lastIndex)
-                            } else {
-                                searchText
-                            }
-                            searchText
-                        }
+                    it.baseForm.matches(
+                        queryString.replace("%", ".*").toRegex()
                     )
         }.map {
             Word.WordInfo(it.id, it.baseForm, it.alternativeBaseForm, it.dictionaryId)

@@ -1,6 +1,10 @@
 package eu.kalnarapps.kalnardict.data.dao.query
 
 import eu.kalnarapps.kalnardict.data.dao.query.formatter.ExactMatchQueryFormatter
+import eu.kalnarapps.kalnardict.data.dao.query.formatter.FuzzyQueryFormatter
+import eu.kalnarapps.kalnardict.data.dao.query.formatter.MatchAnyWhereFormatter
+import eu.kalnarapps.kalnardict.data.dao.query.formatter.MatchEndQueryFormatter
+import eu.kalnarapps.kalnardict.data.dao.query.formatter.MatchStartQueryFormatter
 import eu.kalnarapps.kalnardict.data.database.dao.WordDaoMock
 import eu.kalnarapps.kalnardict.data.database.dao.sampleTableInHungarian
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
@@ -21,8 +25,6 @@ class RoomQueryExecutorTest {
     private val wordDaoMock = WordDaoMock()
     private val mapper = WordInfoMapper()
 
-    // TODO: this should be tested directly on device or some sqlite environment
-    //  along with each match mode
     @Test
     fun get_dict_entry_for_asztal_by_exact_query() =
         testCoroutineRule.runBlockingTest {
@@ -48,7 +50,153 @@ class RoomQueryExecutorTest {
 
             assertThat(
                 roomQueryExecutor.query(
-                    "x",
+                    sampleTableInHungarian.baseForm.substring(2),
+                    sampleTableInHungarian.dictionaryId
+                ),
+                IsEmptyCollection()
+            )
+
+        }
+
+    @Test
+    fun get_dict_entry_for_asztal_by_query_with_match_anywhere() =
+        testCoroutineRule.runBlockingTest {
+            val roomQueryExecutor = RoomQueryExecutor(
+                wordDaoMock,
+                queryFormatter = MatchAnyWhereFormatter(),
+                wordInfoMapper = mapper
+            )
+            val queryResult = roomQueryExecutor.query(
+                sampleTableInHungarian.baseForm.substring(
+                    2, sampleTableInHungarian.baseForm.length - 1
+                ),
+                sampleTableInHungarian.dictionaryId
+            )
+
+            assertThat(
+                queryResult,
+                not(IsEmptyCollection())
+            )
+
+            assertThat(
+                queryResult.firstOrNull()?.baseForm,
+                equalTo(sampleTableInHungarian.baseForm)
+            )
+
+            assertThat(
+                roomQueryExecutor.query(
+                    sampleTableInHungarian.baseForm.substring(2) + "x",
+                    sampleTableInHungarian.dictionaryId
+                ),
+                IsEmptyCollection()
+            )
+
+        }
+
+    @Test
+    fun get_dict_entry_for_asztal_by_query_with_match_ending() =
+        testCoroutineRule.runBlockingTest {
+            val roomQueryExecutor = RoomQueryExecutor(
+                wordDaoMock,
+                queryFormatter = MatchEndQueryFormatter(),
+                wordInfoMapper = mapper
+            )
+            val queryResult = roomQueryExecutor.query(
+                sampleTableInHungarian.baseForm.substring(
+                    2, sampleTableInHungarian.baseForm.length
+                ),
+                sampleTableInHungarian.dictionaryId
+            )
+
+            assertThat(
+                queryResult,
+                not(IsEmptyCollection())
+            )
+
+            assertThat(
+                queryResult.firstOrNull()?.baseForm,
+                equalTo(sampleTableInHungarian.baseForm)
+            )
+
+            assertThat(
+                roomQueryExecutor.query(
+                    sampleTableInHungarian.baseForm.substring(
+                        0, sampleTableInHungarian.baseForm.length - 2
+                    ),
+                    sampleTableInHungarian.dictionaryId
+                ),
+                IsEmptyCollection()
+            )
+
+        }
+
+    @Test
+    fun get_dict_entry_for_asztal_by_query_with_match_beginning() =
+        testCoroutineRule.runBlockingTest {
+            val roomQueryExecutor = RoomQueryExecutor(
+                wordDaoMock,
+                queryFormatter = MatchStartQueryFormatter(),
+                wordInfoMapper = mapper
+            )
+            val queryResult = roomQueryExecutor.query(
+                sampleTableInHungarian.baseForm.substring(
+                    0, sampleTableInHungarian.baseForm.length - 3
+                ),
+                sampleTableInHungarian.dictionaryId
+            )
+
+            assertThat(
+                queryResult,
+                not(IsEmptyCollection())
+            )
+
+            assertThat(
+                queryResult.firstOrNull()?.baseForm,
+                equalTo(sampleTableInHungarian.baseForm)
+            )
+
+            assertThat(
+                roomQueryExecutor.query(
+                    sampleTableInHungarian.baseForm.substring(
+                        2, sampleTableInHungarian.baseForm.length
+                    ),
+                    sampleTableInHungarian.dictionaryId
+                ),
+                IsEmptyCollection()
+            )
+
+        }
+
+    @Test
+    fun get_dict_entry_for_asztal_by_query_with_match_fuzzy() =
+        testCoroutineRule.runBlockingTest {
+            val roomQueryExecutor = RoomQueryExecutor(
+                wordDaoMock,
+                queryFormatter = FuzzyQueryFormatter(),
+                wordInfoMapper = mapper
+            )
+            val queryResult = roomQueryExecutor.query(
+                with(sampleTableInHungarian.baseForm) {
+                    substring(1, 2) + substring(length - 1, length)
+                },
+                sampleTableInHungarian.dictionaryId
+            )
+
+            assertThat(
+                queryResult,
+                not(IsEmptyCollection())
+            )
+
+            assertThat(
+                queryResult.firstOrNull()?.baseForm,
+                equalTo(sampleTableInHungarian.baseForm)
+            )
+
+            assertThat(
+                roomQueryExecutor.query(
+                    with(sampleTableInHungarian.baseForm) {
+                        substring(length - 1, length) + substring(1, 2)
+                    },
                     sampleTableInHungarian.dictionaryId
                 ),
                 IsEmptyCollection()
