@@ -25,7 +25,6 @@ class WordDaoAdapterTest {
     private val wordDaoMock = WordDaoMock()
     private val dataSource = WordDaoAdapter(
         wordDaoMock,
-        wordInfoMapper = WordInfoMapper(),
         translatedWordMapper = TranslatedWordMapper()
     )
     private val testCoroutineDispatcher = TestCoroutineDispatcher()

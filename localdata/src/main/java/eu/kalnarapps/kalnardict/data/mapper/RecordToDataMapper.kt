@@ -14,13 +14,6 @@ fun DictionaryLogEntry.toDictionaryLogEntryData(): DictionaryLogEntryData {
 }
 
 fun Word.toDictEntry(): WordDataEntry {
-//    return object : DictEntry {
-//        override fun getId(): Int = id
-//        override fun getBaseForm(): String = baseForm
-//        override fun getAlternativeBaseForm(): String = alternativeBaseForm
-//        override fun getTranslation(): String = translation
-//        override fun getDictionaryId(): Int = dictionaryId
-//    }
     return WordEntry(
         id = id,
         baseForm = baseForm,

@@ -22,13 +22,6 @@ val sampleTableInHungarian = Word(
     dictionaryId = HUNGARIAN_ENGLISH_DICT_ID
 )
 
-//import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
-//val hungarianToEnglishTestDictionary = DictLanguage(
-//    id = 1,
-//    code = "hu_en_dictionary",
-//    name = "hungarian to english dictionary"
-//)
-
 const val DICTIONARY_ID_FIRST = 1
 const val DICTIONARY_ID_SECOND = 2
 

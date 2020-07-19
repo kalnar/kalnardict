@@ -8,10 +8,6 @@ import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 interface WordDataSource {
     suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry)
     suspend fun insertDictEntries(wordDataEntries: List<TranslatedWordInsertEntry>): OperationResult
-//    suspend fun queryWithMatchAnyWhereInDictionary(
-//        query: String,
-//        dictionaryId: Int
-//    ): List<WordDataEntry>
 
     suspend fun getTranslationByWordAndDictionaryId(
         wordId: Int,

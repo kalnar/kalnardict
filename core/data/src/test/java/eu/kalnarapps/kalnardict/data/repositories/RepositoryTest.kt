@@ -6,11 +6,12 @@ import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordDataEntry
-import eu.kalnarapps.kalnardict.data.mock.MockWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryMapper
 import eu.kalnarapps.kalnardict.data.mock.MockEmptyWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
+import eu.kalnarapps.kalnardict.data.mock.MockQueryExecutorProvider
+import eu.kalnarapps.kalnardict.data.mock.MockWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
 import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
@@ -37,9 +38,11 @@ import org.junit.Test
 class RepositoryTest {
 
     private val languageMapper = LanguageDataMapper()
+    private val mockDb: ArrayList<TranslatedWordDataEntry> = ArrayList<TranslatedWordDataEntry>()
     private val repository =
         Repository(
-            MockWordDataSource(),
+            MockWordDataSource(mockDb),
+            MockQueryExecutorProvider(mockDb),
             MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             DictionaryMapper(
@@ -83,11 +86,12 @@ class RepositoryTest {
             )
 
             // when
+            val savingName = "sampleExternalDbTable"
             val importResult = repository.importTableFromDb(
                 ImportJob(
                     sampleExternalDbTable,
                     validExternalResource,
-                    "sampleExternalDbTable",
+                    savingName,
                     1
                 )
             ).toList()
@@ -132,7 +136,7 @@ class RepositoryTest {
                     HasPropertyWithValue<String>(
                         "description",
                         equalTo(
-                            sampleExternalDbTable.name
+                            savingName
                         )
                     )
                 )
@@ -189,7 +193,8 @@ class RepositoryTest {
 
         val repository = Repository(
             MockEmptyWordDataSource(),
-            MockDictionaryDataSource(),
+            MockQueryExecutorProvider(),
+            MockDictionaryDataSource(ArrayList()),
             TestExternalDatabaseHandler(),
             MockDictionaryMapper()
         )
@@ -304,6 +309,7 @@ class RepositoryTest {
                         )
                     )
                 ),
+                MockQueryExecutorProvider(),
                 MockDictionaryDataSource(),
                 TestExternalDatabaseHandler(),
                 MockDictionaryMapper()
@@ -330,6 +336,7 @@ class RepositoryTest {
     ) {
         val repository = Repository(
             MockWordDataSource(ArrayList(givenWordList)),
+            MockQueryExecutorProvider(),
             MockDictionaryDataSource(),
             TestExternalDatabaseHandler(),
             MockDictionaryMapper()

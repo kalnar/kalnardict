@@ -7,25 +7,24 @@ import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 
-open class MockDictionaryDataSource : DictionaryDataSource {
-    protected val mockDictionaries = ArrayList<DictionaryLogEntryData>().apply {
-        addAll(
-            listOf(
-                object :
-                    DictionaryLogEntryData {
-                    override val id: Int
-                        get() = 1
-                    override val name: String
-                        get() = "test_fr_dictionary"
-                    override val languageFrom: String
-                        get() = "hu"
-                    override val languageTo: String
-                        get() = "fr"
-                },
-                Stubs.Dictionaries.frenchEnglishDictionary.toDictionaryLogEntryData()
-            )
+open class MockDictionaryDataSource(
+    private val mockDictionaries: ArrayList<DictionaryLogEntryData> = ArrayList<DictionaryLogEntryData>(
+        listOf(
+            object :
+                DictionaryLogEntryData {
+                override val id: Int
+                    get() = 1
+                override val name: String
+                    get() = "test_fr_dictionary"
+                override val languageFrom: String
+                    get() = "hu"
+                override val languageTo: String
+                    get() = "fr"
+            },
+            Stubs.Dictionaries.frenchEnglishDictionary.toDictionaryLogEntryData()
         )
-    }
+    )
+) : DictionaryDataSource {
 
     override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long {
         val newId = mockDictionaries.size + 1

@@ -5,13 +5,10 @@ import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
 import eu.kalnarapps.kalnardict.data.entities.Word
 import eu.kalnarapps.kalnardict.data.mapper.LocalDataToRoomEntityMapper
-import eu.kalnarapps.kalnardict.data.mapper.RoomEntityToLocalDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
-import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 
 class WordDaoAdapter(
     private val wordDao: WordDao,
-    private val wordInfoMapper: RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry>,
     private val translatedWordMapper: LocalDataToRoomEntityMapper<TranslatedWordInsertEntry, Word>
 ) : WordDataSource {
     override suspend fun insertDictEntry(wordDataEntry: TranslatedWordInsertEntry) {
@@ -34,15 +31,6 @@ class WordDaoAdapter(
             OperationResult.Success
         }
     }
-
-//    override suspend fun queryWithMatchAnyWhereInDictionary(
-//        query: String,
-//        dictionaryId: Int
-//    ): List<WordDataEntry> {
-//        return wordDao.getByQuery("%${query}%", dictionaryId).map {
-//            wordInfoMapper.toLocalData(it)
-//        }
-//    }
 
     override suspend fun getTranslationByWordAndDictionaryId(
         wordId: Int,

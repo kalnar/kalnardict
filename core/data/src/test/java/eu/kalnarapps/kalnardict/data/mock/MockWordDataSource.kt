@@ -63,13 +63,6 @@ open class MockWordDataSource(
         return OperationResult.Success
     }
 
-    override suspend fun queryWithMatchAnyWhereInDictionary(
-        query: String,
-        dictionaryId: Int
-    ): List<WordDataEntry> {
-        return mockDb.filter { it.dictionaryId == dictionaryId && it.baseForm.contains(query) }
-    }
-
     override suspend fun getTranslationByWordAndDictionaryId(
         wordId: Int,
         dictionaryId: Int

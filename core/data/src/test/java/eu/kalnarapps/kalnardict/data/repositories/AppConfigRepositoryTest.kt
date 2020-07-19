@@ -24,7 +24,7 @@ class AppConfigRepositoryTest {
         testCoroutineRule.runBlockingTest {
 
             val repository = AppConfigRepository(
-                configurationDao = MockConfigurationDataSource(),
+                configurationDataSource = MockConfigurationDataSource(),
                 dictionaryDataSource = MockDictionaryDataSource(),
                 languageDataSource = MockLanguageDataSource()
             )
@@ -41,7 +41,7 @@ class AppConfigRepositoryTest {
     fun update_current_dictionary() {
         testCoroutineRule.runBlockingTest {
             val repository = AppConfigRepository(
-                configurationDao = MockConfigurationDataSource(),
+                configurationDataSource = MockConfigurationDataSource(),
                 dictionaryDataSource = MockDictionaryDataSource(),
                 languageDataSource = MockLanguageDataSource()
             )
