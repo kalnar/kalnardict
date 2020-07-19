@@ -1,6 +1,5 @@
 package eu.kalnarapps.kalnardict.data.dao.configuration
 
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.database.dao.ConfigurationPropertyMockDao
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants

@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.dao.configuration
 
 import androidx.room.Dao
 import androidx.room.Insert

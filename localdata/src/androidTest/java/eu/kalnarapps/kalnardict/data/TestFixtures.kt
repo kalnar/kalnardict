@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.data
 
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry

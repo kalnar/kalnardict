@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao

@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.data.dao
+package eu.kalnarapps.kalnardict.data.dao.configuration
 
 import eu.kalnarapps.kalnardict.data.datasources.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty

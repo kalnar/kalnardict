@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao

@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.data.database.inapp
 
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 

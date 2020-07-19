@@ -5,8 +5,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.TestFixtures
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyDao
-import eu.kalnarapps.kalnardict.data.dao.ConfigurationPropertyKey
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher

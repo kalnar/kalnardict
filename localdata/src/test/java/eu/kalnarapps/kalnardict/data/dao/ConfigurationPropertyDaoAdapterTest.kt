@@ -1,5 +1,7 @@
 package eu.kalnarapps.kalnardict.data.dao
 
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.database.dao.ConfigurationPropertyMockDao
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
@@ -20,9 +22,10 @@ class ConfigurationPropertyDaoAdapterTest {
     fun get_uninitialized_status_when_no_dictionary_was_used() {
         testCoroutineRule.runBlockingTest {
 
-            val configurationDataSource = ConfigurationPropertyDaoAdapter(
-                configurationPropertyDao = ConfigurationPropertyMockDao()
-            )
+            val configurationDataSource =
+                ConfigurationPropertyDaoAdapter(
+                    configurationPropertyDao = ConfigurationPropertyMockDao()
+                )
 
             assertThat(
                 configurationDataSource.getLastDictionaryId(),
@@ -38,16 +41,17 @@ class ConfigurationPropertyDaoAdapterTest {
 
             val lastlyUsedDictionaryId = "2"
 
-            val configurationDataSource = ConfigurationPropertyDaoAdapter(
-                configurationPropertyDao = ConfigurationPropertyMockDao(
-                    listOf(
-                        ConfigurationProperty(
-                            propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
-                            propertyValue = lastlyUsedDictionaryId
+            val configurationDataSource =
+                ConfigurationPropertyDaoAdapter(
+                    configurationPropertyDao = ConfigurationPropertyMockDao(
+                        listOf(
+                            ConfigurationProperty(
+                                propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
+                                propertyValue = lastlyUsedDictionaryId
+                            )
                         )
                     )
                 )
-            )
 
             assertThat(
                 configurationDataSource.getLastDictionaryId(),
@@ -64,16 +68,17 @@ class ConfigurationPropertyDaoAdapterTest {
             val lastlyUsedDictionaryId = "2"
             val newDictionaryId = "3"
 
-            val configurationDataSource = ConfigurationPropertyDaoAdapter(
-                configurationPropertyDao = ConfigurationPropertyMockDao(
-                    listOf(
-                        ConfigurationProperty(
-                            propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
-                            propertyValue = lastlyUsedDictionaryId
+            val configurationDataSource =
+                ConfigurationPropertyDaoAdapter(
+                    configurationPropertyDao = ConfigurationPropertyMockDao(
+                        listOf(
+                            ConfigurationProperty(
+                                propertyKey = ConfigurationPropertyKey.LAST_DICTIONARY.key,
+                                propertyValue = lastlyUsedDictionaryId
+                            )
                         )
                     )
                 )
-            )
 
             configurationDataSource.updateLastDictionary(newDictionaryId.toInt())
 
