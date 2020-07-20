@@ -5,6 +5,7 @@ import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.*
 import org.junit.Rule
@@ -25,7 +26,7 @@ class QueryModeDaoAdapterTest {
             )
 
             assertThat(
-                configurationDataSource.getLastQueryModeId(),
+                configurationDataSource.getLastQueryModeId().toList().first(),
                 equalTo(DataBaseConstants.UNINITIALIZED_INT_PROPERTY)
             )
 
@@ -50,7 +51,7 @@ class QueryModeDaoAdapterTest {
             )
 
             assertThat(
-                configurationDataSource.getLastQueryModeId(),
+                configurationDataSource.getLastQueryModeId().toList().first(),
                 equalTo(lastlyUsedQueryModeId.toInt())
             )
 
@@ -78,7 +79,7 @@ class QueryModeDaoAdapterTest {
             configurationDataSource.updateQueryMode(newQueryModeId.toInt())
 
             assertThat(
-                configurationDataSource.getLastQueryModeId(),
+                configurationDataSource.getLastQueryModeId().toList().first(),
                 equalTo(newQueryModeId.toInt())
             )
 

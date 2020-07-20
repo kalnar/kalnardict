@@ -4,6 +4,8 @@ import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.util.EnumMap
 
 class ConfigurationPropertyMockDao(
@@ -26,6 +28,12 @@ class ConfigurationPropertyMockDao(
                 propertyKey = it.key,
                 propertyValue = propertyRegistry[it] ?: DataBaseConstants.UNINITIALIZED_PROPERTY
             )
+        }
+    }
+
+    override fun getFlowPropertyByKey(key: String): Flow<ConfigurationProperty> = flow {
+        getPropertyByKey(key)?.let {
+            emit(it)
         }
     }
 

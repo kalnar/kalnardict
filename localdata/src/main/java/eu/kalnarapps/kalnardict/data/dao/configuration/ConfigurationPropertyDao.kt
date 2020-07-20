@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConfigurationPropertyDao {
@@ -20,6 +21,17 @@ interface ConfigurationPropertyDao {
     )
     // @formatter:on
     suspend fun getPropertyByKey(key: String): ConfigurationProperty?
+
+    // @formatter:off
+    @Query(
+        """ 
+            SELECT * FROM 
+                ${DataBaseConstants.CONFIGURATION_PROPERTY_TABLE_NAME} 
+            WHERE property_key = :key LIMIT 1
+        """
+    )
+    // @formatter:on
+    fun getFlowPropertyByKey(key: String): Flow<ConfigurationProperty>
 
     @Update
     suspend fun updateProperty(property: ConfigurationProperty)
