@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModeUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
@@ -10,6 +11,7 @@ import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.interactors.GetCurrentLanguageUseCase
+import eu.kalnarapps.kalnardict.interactors.GetQueryMode
 import eu.kalnarapps.kalnardict.interactors.GetTranslation
 import eu.kalnarapps.kalnardict.interactors.ListAvailableLanguages
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
@@ -57,8 +59,7 @@ val useCaseModule = module {
     single {
         ListDictionaryQueryResults(
             dictionaryRepository = get(),
-            configurationRepository = get(),
-            queryModeConfigurationRepository = get()
+            configurationRepository = get()
         ) as SearchQueryUseCase
     }
     single {
@@ -71,5 +72,10 @@ val useCaseModule = module {
         GetCurrentLanguageUseCase(
             configurationRepository = get()
         ) as GetLanguageUseCase
+    }
+    single {
+        GetQueryMode(
+            queryModeConfigurationRepository = get()
+        ) as GetQueryModeUseCase
     }
 }
