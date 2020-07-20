@@ -1,6 +1,8 @@
 package eu.kalnarapps.kalnardict.data.datasources.configuration
 
+import kotlinx.coroutines.flow.Flow
+
 interface QueryModeConfigurationDataSource {
-    suspend fun getLastQueryModeId(): Int
+    fun getLastQueryModeId(): Flow<Int>
     suspend fun updateQueryMode(queryModeId: Int)
 }

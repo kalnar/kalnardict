@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.data
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
+import kotlinx.coroutines.flow.Flow
 
 interface ConfigurationRepository {
     suspend fun getCurrentDictionary(): CurrentDictionary
@@ -11,7 +12,7 @@ interface ConfigurationRepository {
 }
 
 interface QueryModeConfigurationRepository {
-    suspend fun getCurrentQueryMode(): QueryMode
+    fun getCurrentQueryMode(): Flow<QueryMode>
     suspend fun updateCurrentQueryMode(queryMode: QueryMode)
 }
 
