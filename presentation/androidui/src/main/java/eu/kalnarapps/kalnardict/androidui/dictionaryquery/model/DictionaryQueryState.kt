@@ -5,7 +5,7 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 
 data class DictionaryQueryState(
     val typedQueryString: String,
-    val queryResultsWords: List<WordView>,
+    val queryResultsWords: List<WordView> = emptyList(),
     val currentDictionaryItemView: DictionarySelectorItem,
     val dictionarySelectorItems: List<DictionarySelectorItem>,
     val translationText: LoadableContent<DataOperationResult<String>>

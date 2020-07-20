@@ -79,6 +79,8 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                     setUpSpinner()
                 })
         }
+        // TODO: set up querymode popup, maybe with listpopupwindow
+        // idea: https://medium.com/bugless/stylised-listpopupwindow-in-android-9cb453d42b
     }
 
     private fun setUpSpinner() {

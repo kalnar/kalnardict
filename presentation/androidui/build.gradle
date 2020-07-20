@@ -120,4 +120,7 @@ dependencies {
 
     // logging
     implementation 'com.orhanobut:logger:2.2.0'
+
+    // mock libraries
+    implementation 'org.mockito:mockito-core:3.4.4'
 }

@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toWordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
@@ -49,19 +50,39 @@ class DictionaryQueryViewModel(
     private val currentWord: MutableStateFlow<CurrentWord> =
         MutableStateFlow(CurrentWord.NotSelected)
 
+    @ExperimentalCoroutinesApi
+    private val typedQuery: MutableStateFlow<String> =
+        MutableStateFlow("")
+
     init {
         viewModelScope.launch {
+            launch {
+
+                typedQuery.collect { newQuery ->
+                    withContext(dispatcherProvider.io()) {
+                        val updatedResult = listQueryResultsUseCase.invokeWith(newQuery, 0).map {
+                            WordView(
+                                id = it.id,
+                                baseForm = it.baseForm
+                            )
+                        }
+                        postUiStateOnMainThread {
+                            this.copy(
+                                typedQueryString = newQuery,
+                                queryResultsWords = updatedResult
+                            )
+                        }
+                    }
+                }
+            }
 
             when (val currentDictionary = getCurrentLanguageUseCase()) {
                 is CurrentDictionary.SetDictionary -> {
                     setUiState(
                         DictionaryQueryState(
                             typedQueryString = "",
-                            queryResultsWords = listQueryResultsUseCase.invokeWith("").map {
-                                WordView(
-                                    id = it.id,
-                                    baseForm = it.baseForm
-                                )
+                            queryResultsWords = listQueryResultsUseCase.invokeWith("", 0).map {
+                                it.toWordView()
                             },
                             dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke()
                                 .map {
@@ -76,11 +97,13 @@ class DictionaryQueryViewModel(
                     postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
                 }
             }.exhaustive
-            currentWord.collect {
-                if (it is CurrentWord.Selected) {
-                    withContext(dispatcherProvider.io()) {
-                        postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
-                        loadTranslation(it.word)
+            launch {
+                currentWord.collect {
+                    if (it is CurrentWord.Selected) {
+                        withContext(dispatcherProvider.io()) {
+                            postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
+                            loadTranslation(it.word)
+                        }
                     }
                 }
             }
@@ -122,24 +145,6 @@ class DictionaryQueryViewModel(
         return state.value?.dictionarySelectorItems ?: emptyList()
     }
 
-    fun onQueryChanged(newQuery: String) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                val updatedResult = listQueryResultsUseCase.invokeWith(newQuery).map {
-                    WordView(
-                        id = it.id,
-                        baseForm = it.baseForm
-                    )
-                }
-                postUiStateOnMainThread {
-                    this.copy(
-                        typedQueryString = newQuery,
-                        queryResultsWords = updatedResult
-                    )
-                }
-            }
-        }
-    }
 
     fun onDictionaryChanged(dictionaryItem: DictionarySelectorItem) {
         viewModelScope.launch {
@@ -150,19 +155,10 @@ class DictionaryQueryViewModel(
                     OperationResult.Success -> {
                         when (val currentDictionary = getCurrentLanguageUseCase()) {
                             is CurrentDictionary.SetDictionary -> {
-                                val updatedQueryResultWords = listQueryResultsUseCase.invokeWith(
-                                    state.value?.typedQueryString.orEmpty()
-                                ).map {
-                                    WordView(
-                                        id = it.id,
-                                        baseForm = it.baseForm
-                                    )
-                                }
                                 postUiState(
                                     state.value?.copy(
                                         currentDictionaryItemView =
-                                        currentDictionary.dictionary.toDictionarySelectorItem(),
-                                        queryResultsWords = updatedQueryResultWords
+                                        currentDictionary.dictionary.toDictionarySelectorItem()
                                     )
                                 )
                             }
@@ -183,6 +179,14 @@ class DictionaryQueryViewModel(
         viewModelScope.launch {
             withContext(dispatcherProvider.io()) {
                 postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
+            }
+        }
+    }
+
+    fun onQueryChanged(newQuery: String) {
+        viewModelScope.launch {
+            withContext(dispatcherProvider.io()) {
+                typedQuery.value = newQuery
             }
         }
     }
