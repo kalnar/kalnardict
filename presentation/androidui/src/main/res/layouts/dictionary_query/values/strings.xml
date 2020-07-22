@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="query_mode_match_beginning">match beginning</string>
+    <string name="query_mode_match_end">match ending</string>
+    <string name="query_mode_match_anywhere">match anywhere</string>
+    <string name="query_mode_match_fuzzy">fuzzy search</string>
+    <string name="query_mode_match_exact">exact match</string>
+</resources>
