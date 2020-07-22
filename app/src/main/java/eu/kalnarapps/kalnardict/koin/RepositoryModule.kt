@@ -20,12 +20,12 @@ val repositoryModule: Module = module {
     single {
         KalnarLanguageRepository(
             languageDataSource = get(),
-            languageDataMapper = get(Qualifier.languageDataDomainMapper),
-            languageDomainMapper = get(Qualifier.languageDomainDataMapper)
+            languageDataMapper = get(Qualifiers.languageDataDomainMapper),
+            languageDomainMapper = get(Qualifiers.languageDomainDataMapper)
         ) as LanguageRepository
     }
     // we have to create language repository definition for the mapper
-    single(Qualifier.dictionaryDataDomainMapper) {
+    single(Qualifiers.dictionaryDataDomainMapper) {
         DictionaryMapper(
             languageRepository = get()
         ) as DataToDomainOperationalMapper<DictionaryLogEntryData, Dictionary>
@@ -35,7 +35,7 @@ val repositoryModule: Module = module {
             wordDataSource = get(),
             dictionaryDataSource = get(),
             externalDbHandler = get(),
-            dictionaryMapper = get(Qualifier.dictionaryDataDomainMapper),
+            dictionaryMapper = get(Qualifiers.dictionaryDataDomainMapper),
             queryExecutorProvider = get()
         ) as DictionaryRepository
     }

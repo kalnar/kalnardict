@@ -41,6 +41,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(":core:common")
+    implementation project(":presentation")
     implementation project(":presentation:androidui")
     implementation project(":core:interactors")
     implementation project(":core:domain")
@@ -97,9 +98,6 @@ dependencies {
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "androidx.room:room-guava:$room_version"
 
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2'
-
-
     implementation 'org.koin:koin-androidx-viewmodel:2.0.0-beta-4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha06"
@@ -109,5 +107,8 @@ dependencies {
 
     // stetho
     debugImplementation 'com.facebook.stetho:stetho:1.5.1'
+
+    // test
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
 }

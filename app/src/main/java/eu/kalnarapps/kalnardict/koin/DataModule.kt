@@ -46,13 +46,13 @@ val dataModule: Module = module {
     single {
         WordDaoAdapter(
             wordDao = get(),
-            translatedWordMapper = get(Qualifier.translatedWordMapper)
+            translatedWordMapper = get(Qualifiers.translatedWordMapper)
         ) as WordDataSource
     }
     single {
         LanguageDaoAdapter(
             languageDao = get(),
-            languageRoomMapper = get(Qualifier.languageRoomMapper)
+            languageRoomMapper = get(Qualifiers.languageRoomMapper)
         ) as LanguageDataSource
     }
 

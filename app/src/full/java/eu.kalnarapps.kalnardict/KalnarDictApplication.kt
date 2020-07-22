@@ -6,6 +6,8 @@ import eu.kalnarapps.kalnardict.koin.mapperModule
 import eu.kalnarapps.kalnardict.koin.navigationKoinModule
 import eu.kalnarapps.kalnardict.koin.queryExecutorModule
 import eu.kalnarapps.kalnardict.koin.repositoryModule
+import eu.kalnarapps.kalnardict.koin.stringResolverModule
+import eu.kalnarapps.kalnardict.koin.useCaseForUiModule
 import eu.kalnarapps.kalnardict.koin.useCaseModule
 import eu.kalnarapps.kalnardict.koin.utilsModule
 import eu.kalnarapps.kalnardict.koin.viewModuleModule
@@ -23,12 +25,14 @@ class KalnarDictApplication : Application() {
         startKoin {
             androidContext(this@KalnarDictApplication)
             modules(navigationKoinModule)
+            modules(stringResolverModule)
             modules(mapperModule)
             modules(dataModule)
             modules(queryExecutorModule)
             modules(repositoryModule)
-            modules(useCaseModule)
             modules(utilsModule)
+            modules(useCaseModule)
+            modules(useCaseForUiModule)
             modules(viewModuleModule)
         }
         //  uncomment if you want to use stetho

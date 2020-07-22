@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.koin
 
-import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
+import eu.kalnarapps.kalnardict.androidui.common.mapper.UiToDomainMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.LanguageMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.data.entities.Language
@@ -17,37 +17,44 @@ import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
+import eu.kalnarapps.kalnardict.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.mappers.QueryModeMapper
+import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
 
 
 val mapperModule: Module = module {
     factory { WordInfoMapper() as RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry> }
-    factory { LanguageMapper() as DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi> }
+    single { LanguageMapper() }
+    single(Qualifiers.languageDomainUiMapper) {
+        get<LanguageMapper>() as eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>
+    }
+    single(Qualifiers.languageUiDomainMapper) {
+        get<LanguageMapper>() as UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>
+    }
+    single(Qualifiers.queryModeDomainUiMapper) {
+        QueryModeMapper(
+            stringResolver = get(Qualifiers.StringResolvers.dictionaryQueryString)
+        ) as DomainToUiMapper<QueryMode, QueryModelUiModel>
+    }
 
     single { LanguageDataMapper() }
-    single(Qualifier.languageDomainDataMapper) {
+    single(Qualifiers.languageDomainDataMapper) {
         get<LanguageDataMapper>() as DomainToDataMapper<DictLanguage, LanguageLogEntryData>
     }
-    single(Qualifier.languageDataDomainMapper) {
+    single(Qualifiers.languageDataDomainMapper) {
         get<LanguageDataMapper>() as DataToDomainMapper<LanguageLogEntryData, DictLanguage>
     }
 
 
-    factory(Qualifier.translatedWordMapper) {
+    factory(Qualifiers.translatedWordMapper) {
         TranslatedWordMapper() as LocalDataToRoomEntityMapper<TranslatedWordInsertEntry, Word>
     }
 
-    factory(Qualifier.languageRoomMapper) {
+    factory(Qualifiers.languageRoomMapper) {
         LanguageRoomMapper() as LocalDataToRoomEntityMapper<LanguageLogEntryData, Language>
     }
 }
 
-object Qualifier {
-    val translatedWordMapper = StringQualifier("translated_word")
-    val languageRoomMapper = StringQualifier("language_room")
-    val languageDomainDataMapper = StringQualifier("language_domain_data")
-    val languageDataDomainMapper = StringQualifier("language_data_domain")
-    val dictionaryDataDomainMapper = StringQualifier("dictionary_data_domain")
-}

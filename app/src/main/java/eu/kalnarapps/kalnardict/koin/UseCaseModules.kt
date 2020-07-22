@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.koin
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModeUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
@@ -10,8 +11,10 @@ import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
 import eu.kalnarapps.kalnardict.interactors.GetCurrentLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.GetQueryMode
+import eu.kalnarapps.kalnardict.interactors.GetQueryModes
 import eu.kalnarapps.kalnardict.interactors.GetTranslation
 import eu.kalnarapps.kalnardict.interactors.ListAvailableLanguages
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
@@ -20,10 +23,24 @@ import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
 import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
 import eu.kalnarapps.kalnardict.interactors.RegisterNewLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
+import eu.kalnarapps.kalnardict.interactors.UpdateQueryMode
 import org.koin.dsl.module
 
 
 val useCaseModule = module {
+    single {
+        UpdateQueryMode(
+            queryModeConfigurationRepository = get()
+        ) as UpdateQueryModeUseCase
+    }
+    single {
+        GetQueryModes() as GetQueryModesUseCase
+    }
+    single {
+        GetQueryMode(
+            queryModeConfigurationRepository = get()
+        ) as GetQueryModeUseCase
+    }
     single {
         GetTranslation(
             configurationRepository = get(),
@@ -72,10 +89,5 @@ val useCaseModule = module {
         GetCurrentLanguageUseCase(
             configurationRepository = get()
         ) as GetLanguageUseCase
-    }
-    single {
-        GetQueryMode(
-            queryModeConfigurationRepository = get()
-        ) as GetQueryModeUseCase
     }
 }

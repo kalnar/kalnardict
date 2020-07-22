@@ -17,14 +17,5 @@ val viewModuleModule: Module = module {
             uiLogger = get()
         )
     }
-    viewModel {
-        DictionaryQueryViewModel(
-            listQueryResultsUseCase = get(),
-            listRegisteredDictionariesUseCase = get(),
-            updateCurrentLanguageUseCase = get(),
-            getCurrentLanguageUseCase = get(),
-            getTranslation = get(),
-            uiLogger = get()
-        )
-    }
+
 }
