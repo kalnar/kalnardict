@@ -119,7 +119,7 @@ class MockSearchQueryUseCase(
     private val mockEntries: List<MockDictEntry> = emptyList(),
     private val currentDictionary: DictionaryWrapper? = null
 ) : SearchQueryUseCase {
-    override suspend fun invokeWith(query: String): List<DictWord> {
+    override suspend fun invokeWith(query: String, queryModeId: Int): List<DictWord> {
         return mockEntries.filter {
             it.dictionary.id == currentDictionary?.currentDictionary?.dictionary?.id &&
                     it.word.baseForm.contains(query)

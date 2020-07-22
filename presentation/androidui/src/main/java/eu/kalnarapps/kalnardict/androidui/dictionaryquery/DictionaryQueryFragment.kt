@@ -8,19 +8,25 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Button
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.common.model.ChangeObserver
+import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleListAdapter
+import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleTextListWindowBuilder
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.observers.QueryResultObserver
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
+import eu.kalnarapps.kalnardict.models.dictionaryquery.ListTextItem
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_screen_spinner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -78,9 +84,30 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                 .observe(viewLifecycleOwner, ChangeObserver {
                     setUpSpinner()
                 })
+            val button = findViewById<Button>(R.id.query_screen_right_button)
+            val adapter = SimpleListAdapter<ListTextItem>(
+                context
+            ) {
+                viewModel.onQueryModeChanged(it)
+            }
+            val popupList = SimpleTextListWindowBuilder(
+                requireContext(),
+                adapter
+            )
+                .withAnchor(findViewById<TextInputEditText>(R.id.query_screen_input))
+                .build()
+
+            viewModel.getQueryModes().observe(viewLifecycleOwner, Observer {
+                adapter.submitListUpdate(it)
+                popupList.dismiss()
+            })
+
+
+            button.setOnClickListener {
+                popupList.show()
+            }
+
         }
-        // TODO: set up querymode popup, maybe with listpopupwindow
-        // idea: https://medium.com/bugless/stylised-listpopupwindow-in-android-9cb453d42b
     }
 
     private fun setUpSpinner() {

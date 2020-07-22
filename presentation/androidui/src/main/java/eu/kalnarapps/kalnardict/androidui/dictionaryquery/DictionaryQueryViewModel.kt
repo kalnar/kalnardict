@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
@@ -13,6 +14,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toWordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryParams
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
@@ -25,9 +27,15 @@ import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
+import eu.kalnarapps.kalnardict.interactors.GetQueryModesUseCaseForUi
+import eu.kalnarapps.kalnardict.models.dictionaryquery.ListTextItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -38,6 +46,8 @@ class DictionaryQueryViewModel(
     private val updateCurrentLanguageUseCase: ChangeDictLanguageUseCase,
     private val getCurrentLanguageUseCase: GetLanguageUseCase,
     private val getTranslation: GetTranslationUseCase,
+    private val getQueryModesForUi: GetQueryModesUseCaseForUi,
+    private val updateQueryModeUseCase: UpdateQueryModeUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val uiLogger: UiLogger
 ) : BaseViewModel<DictionaryQueryState>(
@@ -46,34 +56,26 @@ class DictionaryQueryViewModel(
 ) {
 
 
-    @ExperimentalCoroutinesApi
     private val currentWord: MutableStateFlow<CurrentWord> =
         MutableStateFlow(CurrentWord.NotSelected)
 
-    @ExperimentalCoroutinesApi
     private val typedQuery: MutableStateFlow<String> =
         MutableStateFlow("")
 
     init {
         viewModelScope.launch {
             launch {
-
-                typedQuery.collect { newQuery ->
-                    withContext(dispatcherProvider.io()) {
-                        val updatedResult = listQueryResultsUseCase.invokeWith(newQuery, 0).map {
-                            WordView(
-                                id = it.id,
-                                baseForm = it.baseForm
-                            )
-                        }
-                        postUiStateOnMainThread {
-                            this.copy(
-                                typedQueryString = newQuery,
-                                queryResultsWords = updatedResult
-                            )
-                        }
+                getQueryModesForUi()
+                    .filter { list -> list.any { it.isSelected } }
+                    .map { it.first { queryMode -> queryMode.isSelected } }
+                    .combine(typedQuery) { queryMode, newQuery ->
+                        QueryParams(
+                            queryModeUiModel = queryMode,
+                            queryString = newQuery
+                        )
+                    }.collect {
+                        updateQueryResults(it)
                     }
-                }
             }
 
             when (val currentDictionary = getCurrentLanguageUseCase()) {
@@ -106,6 +108,26 @@ class DictionaryQueryViewModel(
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun updateQueryResults(params: QueryParams) {
+        withContext(dispatcherProvider.io()) {
+            val updatedResult = listQueryResultsUseCase.invokeWith(
+                params.queryString,
+                params.queryModeUiModel.id
+            ).map {
+                WordView(
+                    id = it.id,
+                    baseForm = it.baseForm
+                )
+            }
+            postUiStateOnMainThread {
+                this.copy(
+                    typedQueryString = params.queryString,
+                    queryResultsWords = updatedResult
+                )
             }
         }
     }
@@ -195,6 +217,18 @@ class DictionaryQueryViewModel(
         viewModelScope.launch {
             withContext(dispatcherProvider.io()) {
                 currentWord.value = CurrentWord.Selected(wordView)
+            }
+        }
+    }
+
+    fun getQueryModes(): LiveData<List<ListTextItem>> {
+        return getQueryModesForUi().asLiveData(viewModelScope.coroutineContext)
+    }
+
+    fun onQueryModeChanged(it: ListTextItem) {
+        viewModelScope.launch {
+            withContext(dispatcherProvider.io()) {
+                updateQueryModeUseCase(it.id)
             }
         }
     }

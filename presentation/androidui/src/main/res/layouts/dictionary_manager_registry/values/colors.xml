@@ -6,4 +6,5 @@
     <color name="error_status_color">#B04C45</color>
     <color name="message_white">#E0F7FA</color>
     <color name="card_background">#e3f2fd</color>
+    <color name="purple_dark">#001332</color>
 </resources>

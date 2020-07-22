@@ -14,7 +14,8 @@ class DictionaryRegistryViewModelFactory(
                 loadDbMetaInfoOnDb = getKoin().get(),
                 registerNewDictionary = getKoin().get(),
                 listAvailableLanguages = getKoin().get(),
-                languageMapper = getKoin().get(),
+                languageDomainMapper = getKoin().get(),
+                languageUiMapper = getKoin().get(),
                 addNewLanguage = getKoin().get(),
                 uiLogger = getKoin().get()
             ) as T

@@ -11,6 +11,7 @@ import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
+import eu.kalnarapps.kalnardict.androidui.common.mapper.UiToDomainMapper
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
@@ -39,7 +40,8 @@ class DictionaryRegistryViewModel(
     private val registerNewDictionary: RegisterNewDictionaryUseCase,
     private val listAvailableLanguages: ListRegisteredLanguagesUseCase,
     private val addNewLanguage: RegisterLanguageUseCase,
-    private val languageMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
+    private val languageDomainMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
+    private val languageUiMapper: UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     uiLogger: UiLogger
 ) : BaseViewModel<DictionaryRegistryState>(
@@ -55,7 +57,7 @@ class DictionaryRegistryViewModel(
         viewModelScope.launch {
             val metaInfoFetch = loadDbMetaInfoOnDb(dbPath)
             val availableLanguages = listAvailableLanguages().map {
-                languageMapper.toUiModel(it)
+                languageDomainMapper.toUiModel(it)
             }
             setUiState(
                 DictionaryRegistryState(
@@ -77,7 +79,7 @@ class DictionaryRegistryViewModel(
                         }
                     },
                     availableLanguages = listAvailableLanguages().map {
-                        languageMapper.toUiModel(it)
+                        languageDomainMapper.toUiModel(it)
                     }
                 )
             )
@@ -168,13 +170,15 @@ class DictionaryRegistryViewModel(
                         }
                     }
                     is DataOperationResult.Failure -> {
+                        postError(ErrorFromUi(it.errorMessage))
                         postUiStateOnMainThread {
                             this.copy(
                                 importProgress = this.importProgress.toMutableMap().apply {
                                     this[externalTableUiInfo] =
                                         DataOperationResult.Failure(
                                             errorMessage = "error occurred while importing" +
-                                                    " ${externalTableUiInfo.originalTableName}"
+                                                    " ${externalTableUiInfo.originalTableName}",
+                                            cause = it
                                         )
                                 }
                             )
@@ -249,7 +253,7 @@ class DictionaryRegistryViewModel(
         viewModelScope.launch {
             withContext(dispatcherProvider.io()) {
                 val operationResult = addNewLanguage(
-                    language = languageMapper.toDomainModel(languageUi)
+                    language = languageUiMapper.toDomainModel(languageUi)
                 )
                 when (operationResult) {
                     OperationResult.Success -> {
@@ -273,7 +277,7 @@ class DictionaryRegistryViewModel(
     private suspend fun updateAvailableLanguages() {
         state.value?.let { state ->
             val availableLanguages = listAvailableLanguages().map {
-                languageMapper.toUiModel(it)
+                languageDomainMapper.toUiModel(it)
             }
             postUiState(
                 state = state.copy(

@@ -6,6 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.core.KoinComponent
 import org.koin.core.get
 
+@ExperimentalCoroutinesApi
 class DictionaryQueryViewModelFactory() : ViewModelProvider.Factory, KoinComponent {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -15,6 +16,8 @@ class DictionaryQueryViewModelFactory() : ViewModelProvider.Factory, KoinCompone
                 listRegisteredDictionariesUseCase = get(),
                 updateCurrentLanguageUseCase = get(),
                 getCurrentLanguageUseCase = get(),
+                updateQueryModeUseCase = get(),
+                getQueryModesForUi = get(),
                 getTranslation = get(),
                 uiLogger = get()
             ) as T

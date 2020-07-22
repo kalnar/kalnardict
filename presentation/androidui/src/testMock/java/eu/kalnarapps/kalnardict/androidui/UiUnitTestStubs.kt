@@ -4,6 +4,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
 
 object UiUnitTestStubs {
     const val WRONG_WORD_ID_FOR_DICTIONARY: String =
@@ -85,5 +86,23 @@ object UiUnitTestStubs {
             languageTo = Languages.french,
             description = frenchToFrenchDictionaryDescription
         )
+    }
+
+    object Ui {
+        object QueryMode {
+            val anywhere = QueryModelUiModel(
+                id = 0,
+                displayString = "anywhere"
+            )
+            val beginning = QueryModelUiModel(
+                id = 1,
+                displayString = "beginning"
+            )
+            val queryModes = listOf(
+                anywhere, beginning
+            )
+        }
+
+
     }
 }

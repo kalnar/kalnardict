@@ -16,7 +16,7 @@ import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -85,8 +85,9 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
+            languageDomainMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
             uiLogger = logger
         )
 
@@ -107,7 +108,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
         )
@@ -134,7 +136,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
         )
@@ -178,7 +181,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
         )
@@ -211,7 +215,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionaryMockWithFailures(listOf(2)),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
         )
@@ -240,17 +245,17 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             not(IsNull())
         )
 
-        val lastResult = viewModel.getRegistrationStatus().last().result
+        val lastResult = viewModel.getRegistrationStatus().last().progress
         assertThat(
             lastResult,
-            IsInstanceOf(OperationResult.Failure::class.java)
+            IsInstanceOf(DataOperationResult.Failure::class.java)
         )
 
-        check(lastResult is OperationResult.Failure)
+        check(lastResult is DataOperationResult.Failure)
 
         assertThat(
-            lastResult,
-            equalTo(OperationResult.Failure(UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG))
+            lastResult.errorMessage(),
+            containsString(UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG)
         )
     }
 
@@ -263,7 +268,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = getKoin().get(),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
         )
@@ -287,7 +293,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = ListLanguagesMock(ArrayList()),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
         )
@@ -311,7 +318,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = ListLanguagesMock(languages),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(languages),
             uiLogger = logger
         )
@@ -351,7 +359,8 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
             dispatcherProvider = TestDispatcherProvider,
             listAvailableLanguages = ListLanguagesMock(languages),
-            languageMapper = LanguageMapper(),
+            languageUiMapper = LanguageMapper(),
+            languageDomainMapper = LanguageMapper(),
             addNewLanguage = MockRegisterLanguageUseCase(languages),
             uiLogger = logger
         )
