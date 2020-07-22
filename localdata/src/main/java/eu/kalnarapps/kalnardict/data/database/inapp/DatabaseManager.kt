@@ -8,10 +8,10 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
@@ -29,7 +29,7 @@ import kotlinx.coroutines.withContext
         Language::class,
         ConfigurationProperty::class
     ],
-    version = 4
+    version = 5
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
@@ -62,7 +62,9 @@ abstract class AppDatabase : RoomDatabase() {
                             DefaultDbInitializer
                         )
                     )
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(
+                        MIGRATION_4_5
+                    )
                     .build()
             }
             return instance!!
