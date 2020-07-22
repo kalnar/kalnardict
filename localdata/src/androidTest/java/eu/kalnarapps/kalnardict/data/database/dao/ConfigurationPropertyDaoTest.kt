@@ -10,6 +10,7 @@ import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
+import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
@@ -107,28 +108,38 @@ class ConfigurationPropertyDaoTest {
                 ConfigurationPropertyKey.QUERY_MATCH_MODE.key
             )
                 .test(scope = this)
-                .assertThat(
-                    { it },
-                    not(
-                        IsIterableContaining(
-                            equalTo(
-                                newQueryModeProperty
+
+            try {
+
+                testCollector
+                    .assertThat(
+                        { it },
+                        not(
+                            IsIterableContaining(
+                                equalTo(
+                                    newQueryModeProperty
+                                )
                             )
                         )
                     )
-                )
-
-            configurationPropertyDao.updateProperty(
-                newQueryModeProperty
-            )
-
-            testCollector
-                .assertThatLastValue(
-                    equalTo(
-                        newQueryModeProperty
+                    .assertThat(
+                        { it.last().propertyValue },
+                        equalTo(DataBaseConstants.DEFAULT_QUERY_MODE_ID)
                     )
+
+                configurationPropertyDao.updateProperty(
+                    newQueryModeProperty
                 )
-                .finish()
+
+                testCollector
+                    .assertThatLastValue(
+                        equalTo(
+                            newQueryModeProperty
+                        )
+                    )
+            } finally {
+                testCollector.finish()
+            }
 
         }
     }
