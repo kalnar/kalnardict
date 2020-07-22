@@ -13,7 +13,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySel
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toWordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiModel
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryParams
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
@@ -86,7 +86,7 @@ class DictionaryQueryViewModel(
                             queryResultsWords = listQueryResultsUseCase.invokeWith("", 0).map {
                                 it.toWordView()
                             },
-                            dictionarySelectorItems = listRegisteredDictionariesUseCase.invoke()
+                            dictionaryUiModels = listRegisteredDictionariesUseCase.invoke()
                                 .map {
                                     it.toDictionarySelectorItem()
                                 },
@@ -159,16 +159,16 @@ class DictionaryQueryViewModel(
 
     fun getLiveIsDictionaryListInitialized(): LiveData<Boolean> {
         return Transformations.map(state) {
-            it.dictionarySelectorItems.isNotEmpty()
+            it.dictionaryUiModels.isNotEmpty()
         }
     }
 
-    fun getRegisteredDictionaries(): List<DictionarySelectorItem> {
-        return state.value?.dictionarySelectorItems ?: emptyList()
+    fun getRegisteredDictionaries(): List<DictionaryUiModel> {
+        return state.value?.dictionaryUiModels ?: emptyList()
     }
 
 
-    fun onDictionaryChanged(dictionaryItem: DictionarySelectorItem) {
+    fun onDictionaryChanged(dictionaryItem: DictionaryUiModel) {
         viewModelScope.launch {
             // TODO: should use flow instead for current dictionary
             withContext(dispatcherProvider.io()) {

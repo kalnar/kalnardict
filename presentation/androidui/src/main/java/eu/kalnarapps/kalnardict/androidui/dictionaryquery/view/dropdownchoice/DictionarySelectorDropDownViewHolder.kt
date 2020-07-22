@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionarySelectorItem
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiModel
 
 class DictionarySelectorDropDownViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?
@@ -20,7 +20,7 @@ class DictionarySelectorDropDownViewHolder(
     private val descriptionView: TextView = itemView.findViewById(R.id.dictionary_description_view)
 
 
-    fun bind(queryLanguageView: DictionarySelectorItem) {
+    fun bind(queryLanguageView: DictionaryUiModel) {
         displayTitle.text = queryLanguageView.displayString
         descriptionView.text = queryLanguageView.description
     }

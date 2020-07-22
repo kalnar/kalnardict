@@ -6,8 +6,8 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 data class DictionaryQueryState(
     val typedQueryString: String,
     val queryResultsWords: List<WordView> = emptyList(),
-    val currentDictionaryItemView: DictionarySelectorItem,
-    val dictionarySelectorItems: List<DictionarySelectorItem>,
+    val currentDictionaryItemView: DictionaryUiModel,
+    val dictionaryUiModels: List<DictionaryUiModel>,
     val translationText: LoadableContent<DataOperationResult<String>>
 )
 
@@ -19,5 +19,5 @@ sealed class CurrentWord {
 
 data class QueryResult(
     val wordList: List<WordView>,
-    val dictionary: DictionarySelectorItem
+    val dictionary: DictionaryUiModel
 )
