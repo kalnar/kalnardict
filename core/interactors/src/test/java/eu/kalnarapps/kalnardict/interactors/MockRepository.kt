@@ -1,14 +1,16 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 
 class StubDictionaryRepository : DictionaryRepository {
@@ -18,25 +20,35 @@ class StubDictionaryRepository : DictionaryRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+    override suspend fun importTableFromDb(importJob: ImportJob): Flow<DataOperationResult<ImportProgress>> {
         val languageFrom =
             Stubs.Languages.frenchAndEnglish.find { importJob.table.languageFrom == it.code }
         val languageTo =
             Stubs.Languages.frenchAndEnglish.find { importJob.table.languageTo == it.code }
-        return if (languageFrom != null && languageTo != null) {
-            dictionaries.add(
-                Dictionary(
-                    id = dictionaries.size + 1,
-                    languageFrom = languageFrom,
-                    languageTo = languageTo,
-                    description = importJob.displayName
+        return flow {
+            if (languageFrom != null && languageTo != null) {
+                dictionaries.add(
+                    Dictionary(
+                        id = dictionaries.size + 1,
+                        languageFrom = languageFrom,
+                        languageTo = languageTo,
+                        description = importJob.displayName
+                    )
                 )
-            )
-            OperationResult.Success
-        } else {
-            OperationResult.Failure(
-                errorMessage = "invalid language specified"
-            )
+                emit(
+                    DataOperationResult.Success(
+                        ImportProgress(
+                            10, 10
+                        )
+                    )
+                )
+            } else {
+                emit(
+                    DataOperationResult.Failure(
+                        errorMessage = "invalid language specified"
+                    )
+                )
+            }
         }
     }
 

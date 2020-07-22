@@ -31,6 +31,7 @@ object Stubs {
             code = "ru"
         )
         val frenchAndEnglish = listOf(french, english)
+        val all = listOf(french, english, russian)
     }
 
     object MetaInfoOnDb {

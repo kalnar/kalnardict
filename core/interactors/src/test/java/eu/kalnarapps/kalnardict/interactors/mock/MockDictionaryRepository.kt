@@ -9,8 +9,10 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import eu.kalnarapps.kalnardict.interactors.Stubs
+import kotlinx.coroutines.flow.Flow
 
 class MockDictionaryRepository : DictionaryRepository {
     data class MockDictEntry(
@@ -36,7 +38,7 @@ class MockDictionaryRepository : DictionaryRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun importTableFromDb(importJob: ImportJob): OperationResult {
+    override suspend fun importTableFromDb(importJob: ImportJob): Flow<DataOperationResult<ImportProgress>> {
         TODO("Not yet implemented")
     }
 
