@@ -27,7 +27,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.Di
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
-import eu.kalnarapps.kalnardict.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 import kotlinx.android.synthetic.main.dictionary_query_fragment.dictionary_query_loader
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
 import kotlinx.coroutines.ExperimentalCoroutinesApi

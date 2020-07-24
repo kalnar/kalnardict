@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.android.utils.strings.KalnarStringResolver
-import eu.kalnarapps.kalnardict.models.strings.StringResolver
-import eu.kalnarapps.kalnardict.models.strings.StringResources
+import eu.kalnarapps.kalnardict.presentation.models.strings.StringResolver
+import eu.kalnarapps.kalnardict.presentation.models.strings.StringResources
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

@@ -1,8 +1,9 @@
-package eu.kalnarapps.kalnardict.models.strings
+package eu.kalnarapps.kalnardict.presentation.models.strings
 
 object StringResources {
     interface StringResource
-    enum class DictionaryQueryString : StringResource {
+    enum class DictionaryQueryString :
+        StringResource {
         QUERY_MODE_MATCH_ANYWHERE,
         QUERY_MODE_MATCH_BEGINNING,
         QUERY_MODE_MATCH_END,

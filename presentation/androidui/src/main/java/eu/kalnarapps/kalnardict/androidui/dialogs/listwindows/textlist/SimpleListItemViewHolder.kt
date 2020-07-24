@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 
 class SimpleListItemViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?,

@@ -1,0 +1,8 @@
+package eu.kalnarapps.kalnardict.presentation.interactors
+
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import kotlinx.coroutines.flow.Flow
+
+interface GetQueryModesUseCaseForUi {
+    operator fun invoke(): Flow<List<QueryModelUiModel>>
+}

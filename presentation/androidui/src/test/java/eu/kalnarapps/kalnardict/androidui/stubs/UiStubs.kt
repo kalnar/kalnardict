@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.androidui.stubs
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
-import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 
 object UiStubs {
 
@@ -45,14 +45,16 @@ object UiStubs {
 
     object Ui {
         object QueryMode {
-            val anywhere = QueryModelUiModel(
-                id = 0,
-                displayString = "anywhere"
-            )
-            val beginning = QueryModelUiModel(
-                id = 1,
-                displayString = "beginning"
-            )
+            val anywhere =
+                QueryModelUiModel(
+                    id = 0,
+                    displayString = "anywhere"
+                )
+            val beginning =
+                QueryModelUiModel(
+                    id = 1,
+                    displayString = "beginning"
+                )
             val queryModes = listOf(
                 anywhere, beginning
             )

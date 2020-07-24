@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.models.dictionaryquery
+package eu.kalnarapps.kalnardict.presentation.models.dictionaryquery
 
 data class QueryModelUiModel(
     override val id: Int,

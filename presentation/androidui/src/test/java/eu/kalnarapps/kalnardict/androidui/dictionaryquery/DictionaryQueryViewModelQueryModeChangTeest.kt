@@ -17,8 +17,8 @@ import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
-import eu.kalnarapps.kalnardict.interactors.GetQueryModesUseCaseForUi
-import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.interactors.GetQueryModesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf

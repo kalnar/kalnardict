@@ -1,7 +1,7 @@
 package eu.kalnarapps.kalnardict.koin
 
-import eu.kalnarapps.kalnardict.interactors.GetQueryModesForUi
-import eu.kalnarapps.kalnardict.interactors.GetQueryModesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.GetQueryModesForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.GetQueryModesUseCaseForUi
 import org.koin.dsl.module
 
 val useCaseForUiModule = module {

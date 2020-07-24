@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.presentation.interactors
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeInfoUseCase
-import eu.kalnarapps.kalnardict.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

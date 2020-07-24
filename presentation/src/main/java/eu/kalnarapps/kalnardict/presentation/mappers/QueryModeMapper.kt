@@ -1,9 +1,10 @@
-package eu.kalnarapps.kalnardict.mappers
+package eu.kalnarapps.kalnardict.presentation.mappers
 
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
-import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
-import eu.kalnarapps.kalnardict.models.strings.StringResolver
-import eu.kalnarapps.kalnardict.models.strings.StringResources
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.strings.StringResolver
+import eu.kalnarapps.kalnardict.presentation.models.strings.StringResources
+import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 
 class QueryModeMapper(
     private val stringResolver: StringResolver<StringResources.DictionaryQueryString>

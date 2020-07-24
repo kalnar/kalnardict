@@ -18,9 +18,9 @@ import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
-import eu.kalnarapps.kalnardict.mappers.DomainToUiMapper
-import eu.kalnarapps.kalnardict.mappers.QueryModeMapper
-import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.QueryModeMapper
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

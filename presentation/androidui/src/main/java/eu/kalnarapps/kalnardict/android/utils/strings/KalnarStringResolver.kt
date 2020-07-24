@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.android.utils.strings
 
 import android.content.Context
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.models.strings.StringResolver
-import eu.kalnarapps.kalnardict.models.strings.StringResources
+import eu.kalnarapps.kalnardict.presentation.models.strings.StringResolver
+import eu.kalnarapps.kalnardict.presentation.models.strings.StringResources
 
 class KalnarStringResolver(
     private val context: Context

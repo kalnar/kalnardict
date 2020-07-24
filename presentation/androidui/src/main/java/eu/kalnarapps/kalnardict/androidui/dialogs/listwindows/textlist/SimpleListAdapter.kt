@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import eu.kalnarapps.kalnardict.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 
 class SimpleListAdapter<T : ListTextItem>(
     private val context: Context,

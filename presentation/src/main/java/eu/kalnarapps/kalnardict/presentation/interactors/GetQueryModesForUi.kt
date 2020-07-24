@@ -1,10 +1,10 @@
-package eu.kalnarapps.kalnardict.interactors
+package eu.kalnarapps.kalnardict.presentation.interactors
 
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModeUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModesUseCase
-import eu.kalnarapps.kalnardict.mappers.DomainToUiMapper
-import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.mappers
+package eu.kalnarapps.kalnardict.presentation.mappers
 
 interface DomainToUiMapper<DomainModel, UiModel> {
 

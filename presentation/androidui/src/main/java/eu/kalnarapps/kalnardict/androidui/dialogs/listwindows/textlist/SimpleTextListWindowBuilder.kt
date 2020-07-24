@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dialogs.DialogBuilder
 import eu.kalnarapps.kalnardict.androidui.dialogs.ListDialog
-import eu.kalnarapps.kalnardict.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 
 class SimpleTextListWindowBuilder(
     private val context: Context,

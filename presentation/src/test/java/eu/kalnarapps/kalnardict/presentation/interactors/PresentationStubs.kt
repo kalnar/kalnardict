@@ -5,7 +5,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
-import eu.kalnarapps.kalnardict.models.translations.RenderingStrategy
+import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
 
 object PresentationStubs {

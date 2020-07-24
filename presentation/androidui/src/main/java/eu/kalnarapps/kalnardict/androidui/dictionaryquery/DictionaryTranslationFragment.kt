@@ -16,7 +16,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryS
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.TranslationViewLoaderProvider
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.models.translations.RenderingStrategy
+import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 
