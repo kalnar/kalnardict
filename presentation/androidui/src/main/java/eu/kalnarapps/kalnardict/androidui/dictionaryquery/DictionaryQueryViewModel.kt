@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvi
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
+import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySelectorItem
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toWordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
@@ -136,7 +137,11 @@ class DictionaryQueryViewModel(
         state.value?.let {
             postUiState(
                 it.copy(
-                    translationText = LoadableContent.Completed(getTranslation(word.id))
+                    translationText = LoadableContent.Completed(
+                        getTranslation(word.id).map { translation ->
+                            UiEvent(translation)
+                        }
+                    )
                 )
             )
         }
@@ -151,7 +156,7 @@ class DictionaryQueryViewModel(
         }
     }
 
-    fun getTranslation(): LiveData<LoadableContent<DataOperationResult<String>>> {
+    fun getTranslation(): LiveData<LoadableContent<DataOperationResult<UiEvent<String>>>> {
         return Transformations.map(state) {
             it.translationText
         }

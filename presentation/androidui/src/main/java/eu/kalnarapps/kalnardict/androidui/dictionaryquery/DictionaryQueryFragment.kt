@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
@@ -78,7 +77,9 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
             val recycleView = findViewById<RecyclerView>(R.id.query_result_list_view)
             recycleView.adapter = queryResultAdapter
 
-            queryResultObserver?.let { viewModel.getQueryResult().observe(viewLifecycleOwner, it) }
+            queryResultObserver?.let {
+                viewModel.getQueryResult().observe(viewLifecycleOwner, it)
+            }
 
             viewModel.getLiveIsDictionaryListInitialized()
                 .observe(viewLifecycleOwner, ChangeObserver {

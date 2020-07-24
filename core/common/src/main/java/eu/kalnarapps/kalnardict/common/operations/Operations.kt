@@ -17,6 +17,13 @@ interface OperationFailure {
 }
 
 sealed class DataOperationResult<T> {
+    fun <R> map(transformation: (T) -> R): DataOperationResult<R> {
+        return when (this) {
+            is Success -> Success(transformation(this.data))
+            is Failure -> Failure(errorMessage = this.errorMessage, cause = this.cause)
+        }
+    }
+
     data class Success<T>(val data: T) : DataOperationResult<T>()
     data class Failure<T>(val errorMessage: String, val cause: OperationFailure? = null) :
         DataOperationResult<T>(), OperationFailure {

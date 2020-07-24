@@ -10,6 +10,7 @@ import eu.kalnarapps.kalnardict.koin.stringResolverModule
 import eu.kalnarapps.kalnardict.koin.useCaseForUiModule
 import eu.kalnarapps.kalnardict.koin.useCaseModule
 import eu.kalnarapps.kalnardict.koin.utilsModule
+import eu.kalnarapps.kalnardict.koin.viewModule
 import eu.kalnarapps.kalnardict.koin.viewModuleModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.koin.androidContext
@@ -34,6 +35,7 @@ class KalnarDictApplication : Application() {
             modules(useCaseModule)
             modules(useCaseForUiModule)
             modules(viewModuleModule)
+            modules(viewModule)
         }
         //  uncomment if you want to use stetho
         //  if (BuildConfig.DEBUG) {

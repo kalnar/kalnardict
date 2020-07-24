@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery.model
 
 import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
+import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 
 data class DictionaryQueryState(
@@ -8,7 +9,7 @@ data class DictionaryQueryState(
     val queryResultsWords: List<WordView> = emptyList(),
     val currentDictionaryItemView: DictionaryUiModel,
     val dictionaryUiModels: List<DictionaryUiModel>,
-    val translationText: LoadableContent<DataOperationResult<String>>
+    val translationText: LoadableContent<DataOperationResult<UiEvent<String>>>
 )
 
 sealed class CurrentWord {

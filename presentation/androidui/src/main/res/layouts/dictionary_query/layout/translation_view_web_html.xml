@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.views.WebViewHtmlTranslationView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="left"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:textStyle="bold"
+    tools:text="hello">
+
+</eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.views.WebViewHtmlTranslationView>

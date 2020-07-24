@@ -27,14 +27,11 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp">
 
-            <TextView
-                android:id="@+id/translation_view"
+            <ViewStub
+                android:id="@+id/translation_view_stub"
+                android:inflatedId="@+id/translation_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

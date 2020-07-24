@@ -18,3 +18,4 @@
 /app/src/main/res/navigation/main_nav_graph.xml
 /notes/tags
 *.swp
+temp/
