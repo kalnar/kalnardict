@@ -9,6 +9,20 @@ data class Dictionary(
     val description: String
 )
 
+data class DictionaryWithDisplayTypeInfo(
+    val dictionary: Dictionary,
+    val displayTypeInfo: DisplayTypeInfo
+)
+
+data class DisplayTypeInfo(
+    val displayType: DictionaryDisplayType,
+    val supportedDisplayTypes: List<DictionaryDisplayType>
+)
+
+enum class DictionaryDisplayType {
+    HTML, TEXT
+}
+
 data class DictLanguage(
     val name: String,
     val code: String
