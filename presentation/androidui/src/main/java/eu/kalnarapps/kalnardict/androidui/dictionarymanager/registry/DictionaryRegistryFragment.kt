@@ -18,6 +18,8 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.dictionary_registry_new_language_button
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.table_info_list_submit_button
+import org.koin.android.ext.android.getKoin
+import org.koin.core.parameter.parametersOf
 
 class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
@@ -26,7 +28,7 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
     override val viewModel: DictionaryRegistryViewModel by navGraphViewModels(
         R.id.dictionary_registration_navigation
     ) {
-        DictionaryRegistryViewModelFactory(args.dbPath)
+        getKoin().get<AbstractDictionaryRegistryViewModelFactory> { parametersOf(args.dbPath) }
     }
 
     override fun onCreateView(

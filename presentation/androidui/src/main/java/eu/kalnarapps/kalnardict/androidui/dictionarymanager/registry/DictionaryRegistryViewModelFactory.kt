@@ -2,22 +2,41 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.koin.core.KoinComponent
+import eu.kalnarapps.kalnardict.android.utils.UiLogger
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
+import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
+import eu.kalnarapps.kalnardict.androidui.common.mapper.UiToDomainMapper
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
+import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 
 class DictionaryRegistryViewModelFactory(
-    private val dbPath: String
-) : ViewModelProvider.Factory, KoinComponent {
+    private val dbPath: String,
+    private val loadDbMetaInfoOnDb: ReadExternalDbUseCase,
+    private val registerNewDictionary: RegisterNewDictionaryUseCase,
+    private val listAvailableLanguages: ListRegisteredLanguagesUseCase,
+    private val addNewLanguage: RegisterLanguageUseCase,
+    private val languageDomainMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
+    private val languageUiMapper: UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val uiLogger: UiLogger
+) : AbstractDictionaryRegistryViewModelFactory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DictionaryRegistryViewModel::class.java)) {
             return DictionaryRegistryViewModel(
                 dbPath = dbPath,
-                loadDbMetaInfoOnDb = getKoin().get(),
-                registerNewDictionary = getKoin().get(),
-                listAvailableLanguages = getKoin().get(),
-                languageDomainMapper = getKoin().get(),
-                languageUiMapper = getKoin().get(),
-                addNewLanguage = getKoin().get(),
-                uiLogger = getKoin().get()
+                loadDbMetaInfoOnDb = loadDbMetaInfoOnDb,
+                registerNewDictionary = registerNewDictionary,
+                listAvailableLanguages = listAvailableLanguages,
+                languageDomainMapper = languageDomainMapper,
+                languageUiMapper = languageUiMapper,
+                addNewLanguage = addNewLanguage,
+                dispatcherProvider = dispatcherProvider,
+                uiLogger = uiLogger
             ) as T
         } else {
             throw IllegalArgumentException(
@@ -26,3 +45,5 @@ class DictionaryRegistryViewModelFactory(
         }
     }
 }
+
+interface AbstractDictionaryRegistryViewModelFactory : ViewModelProvider.Factory
