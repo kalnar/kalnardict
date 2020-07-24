@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class ListRegisteredDictionaries(
     private val dictionaryRepository: DictionaryRepository
 ) : ListRegisteredDictionariesUseCase {
-    override fun invoke(): Flow<List<Dictionary>> {
+    override operator fun invoke(): Flow<List<Dictionary>> {
         return dictionaryRepository.readRegisteredDictionaries()
     }
 }

@@ -74,6 +74,6 @@ abstract class BaseViewModel<UiModel>(
 
     protected fun postNavigationCommand(navCommand: NavigationCommand) {
         logger.d("vm", "posting navCommand: $navCommand")
-        _navigationCommand.postValue(navCommand)
+        _navigationCommand.value = navCommand
     }
 }

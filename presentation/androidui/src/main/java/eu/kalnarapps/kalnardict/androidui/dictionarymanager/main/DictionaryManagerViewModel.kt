@@ -63,7 +63,7 @@ class DictionaryManagerViewModel(
 
     fun onDbSelected(uriPath: String) {
         viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
+            withContext(dispatcherProvider.main()) {
                 postNavigationCommand(
                     NavigationCommand.NavigateToDictionaryRegistry(
                         uri = uriPath

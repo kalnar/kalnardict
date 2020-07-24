@@ -125,12 +125,16 @@ class DictionaryRegistryViewModel(
 
     fun registerDictionaries() {
         viewModelScope.launch {
-            postNavigationCommand(
-                NavigationCommand.NavigateToDictionaryRegistryDialog(
-                    uri = state.value?.dbPath.orEmpty()
+            withContext(dispatcherProvider.main()) {
+                postNavigationCommand(
+                    NavigationCommand.NavigateToDictionaryRegistryDialog(
+                        uri = state.value?.dbPath.orEmpty()
+                    )
                 )
-            )
-            importTables()
+            }
+            withContext(dispatcherProvider.io()) {
+                importTables()
+            }
         }
     }
 
@@ -233,7 +237,7 @@ class DictionaryRegistryViewModel(
 
     fun onDialogButtonClicked() {
         viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
+            withContext(dispatcherProvider.main()) {
                 postNavigationCommand(NavigationCommand.NavigateToDictionaryQuery)
             }
         }
@@ -241,7 +245,7 @@ class DictionaryRegistryViewModel(
 
     fun onLanguageAdditionRequest() {
         viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
+            withContext(dispatcherProvider.main()) {
                 postNavigationCommand(
                     NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog
                 )

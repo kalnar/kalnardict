@@ -10,9 +10,10 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiMode
 
 class DictionarySelectorSpinnerAdapter(
     private val context: Context,
-    private val dictionaryUiModels: List<DictionaryUiModel> = emptyList(),
     private val currentDictionaryItemView: DictionaryUiModel?
 ) : BaseAdapter() {
+
+    private var dictionaryUiModels: List<DictionaryUiModel> = emptyList()
 
     // a spinner will always select the first item no matter what inside setAdapter of AbsSpinner
     // that's why we move the current item on the top of the list
@@ -74,6 +75,11 @@ class DictionarySelectorSpinnerAdapter(
 
     override fun getCount(): Int {
         return dictionaryViewItems.size
+    }
+
+    fun updateList(content: List<DictionaryUiModel>) {
+        dictionaryUiModels = content
+        notifyDataSetChanged()
     }
 
 }
