@@ -3,6 +3,8 @@ package eu.kalnarapps.kalnardict.interactors
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 
@@ -68,6 +70,14 @@ object Stubs {
             languageFrom = Languages.french,
             languageTo = Languages.french,
             description = frenchToFrenchDictionaryDescription
+        )
+        val frenchToFrenchDictionaryDisplayType = DictionaryDisplayType.HTML
+        val frenchToFrenchDictionarySupportedDisplayTypes = listOf(
+            frenchToFrenchDictionaryDisplayType
+        )
+        val frenchToFrenchDictionaryDisplayInfo = DisplayTypeInfo(
+            displayType = frenchToFrenchDictionaryDisplayType,
+            supportedDisplayTypes = frenchToFrenchDictionarySupportedDisplayTypes
         )
     }
 

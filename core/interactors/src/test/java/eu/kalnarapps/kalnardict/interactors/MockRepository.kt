@@ -11,6 +11,7 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
 
 class StubDictionaryRepository : DictionaryRepository {
@@ -66,8 +67,8 @@ class StubDictionaryRepository : DictionaryRepository {
         }
     }
 
-    override suspend fun readRegisteredDictionaries(): List<Dictionary> {
-        return dictionaries
+    override fun readRegisteredDictionaries(): Flow<List<Dictionary>> {
+        return flowOf(dictionaries)
     }
 
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {

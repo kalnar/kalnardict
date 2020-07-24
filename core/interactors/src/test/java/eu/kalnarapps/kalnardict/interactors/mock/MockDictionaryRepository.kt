@@ -46,7 +46,7 @@ class MockDictionaryRepository : DictionaryRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun readRegisteredDictionaries(): List<Dictionary> {
+    override fun readRegisteredDictionaries(): Flow<List<Dictionary>> {
         TODO("Not yet implemented")
     }
 
