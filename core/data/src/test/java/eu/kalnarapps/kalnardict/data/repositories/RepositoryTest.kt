@@ -16,7 +16,9 @@ import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
 import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.data.test.test
 import eu.kalnarapps.kalnardict.data.validExternalResource
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,17 +67,64 @@ class RepositoryTest {
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
             )
-            assertThat(
-                repository.readRegisteredDictionaries(),
-                IsCollectionWithSize(
-                    equalTo(
-                        Stubs.Dictionaries.newDictionary.id - 1
+            val testCollector = repository.readRegisteredDictionaries().test(scope = this)
+            try {
+                testCollector.assertThat(
+                    { it.last() },
+                    IsCollectionWithSize(
+                        equalTo(
+                            Stubs.Dictionaries.newDictionary.id - 1
+                        )
                     )
                 )
-            )
-            assertThat(
-                repository.readRegisteredDictionaries(),
-                not(
+                testCollector.assertThat(
+                    { it.last() },
+                    not(
+                        IsIterableContaining(
+                            HasPropertyWithValue<Int>(
+                                "id",
+                                equalTo(Stubs.Dictionaries.newDictionary.id)
+                            )
+                        )
+                    )
+                )
+
+                // when
+                val savingName = "sampleExternalDbTable"
+                val importResult = repository.importTableFromDb(
+                    ImportJob(
+                        sampleExternalDbTable,
+                        validExternalResource,
+                        savingName,
+                        1
+                    )
+                ).toList()
+
+                val firstResult = importResult.first()
+                assertThat(
+                    firstResult,
+                    instanceOf(DataOperationResult.Success::class.java)
+                )
+                check(firstResult is DataOperationResult.Success)
+                assertThat(
+                    firstResult.data,
+                    equalTo(Stubs.Db.progressOneItem)
+                )
+
+                val secondResult = importResult[1]
+                assertThat(
+                    secondResult,
+                    instanceOf(DataOperationResult.Success::class.java)
+                )
+                check(secondResult is DataOperationResult.Success)
+                assertThat(
+                    secondResult.data,
+                    equalTo(Stubs.Db.progressTwoItem)
+                )
+
+
+                testCollector.assertThat(
+                    { it.last() },
                     IsIterableContaining(
                         HasPropertyWithValue<Int>(
                             "id",
@@ -83,69 +132,26 @@ class RepositoryTest {
                         )
                     )
                 )
-            )
 
-            // when
-            val savingName = "sampleExternalDbTable"
-            val importResult = repository.importTableFromDb(
-                ImportJob(
-                    sampleExternalDbTable,
-                    validExternalResource,
-                    savingName,
-                    1
-                )
-            ).toList()
-
-            val firstResult = importResult.first()
-            assertThat(
-                firstResult,
-                instanceOf(DataOperationResult.Success::class.java)
-            )
-            check(firstResult is DataOperationResult.Success)
-            assertThat(
-                firstResult.data,
-                equalTo(Stubs.Db.progressOneItem)
-            )
-
-            val secondResult = importResult[1]
-            assertThat(
-                secondResult,
-                instanceOf(DataOperationResult.Success::class.java)
-            )
-            check(secondResult is DataOperationResult.Success)
-            assertThat(
-                secondResult.data,
-                equalTo(Stubs.Db.progressTwoItem)
-            )
-
-
-            assertThat(
-                repository.readRegisteredDictionaries(),
-                IsIterableContaining(
-                    HasPropertyWithValue<Int>(
-                        "id",
-                        equalTo(Stubs.Dictionaries.newDictionary.id)
-                    )
-                )
-            )
-
-            // then
-            assertThat(
-                repository.readRegisteredDictionaries(),
-                IsIterableContaining(
-                    HasPropertyWithValue<String>(
-                        "description",
-                        equalTo(
-                            savingName
+                // then
+                testCollector.assertThat(
+                    { it.last() },
+                    IsIterableContaining(
+                        HasPropertyWithValue<String>(
+                            "description",
+                            equalTo(
+                                savingName
+                            )
                         )
                     )
                 )
-            )
-            assertThat(
-                repository.getEntriesByQuery(sampleQueryNewWord),
-                not(IsEmptyCollection())
-            )
-
+                assertThat(
+                    repository.getEntriesByQuery(sampleQueryNewWord),
+                    not(IsEmptyCollection())
+                )
+            } finally {
+                testCollector.finish()
+            }
         }
     }
 
@@ -200,10 +206,15 @@ class RepositoryTest {
         )
 
         testCoroutineRule.runBlockingTest {
-            assertThat(
-                repository.readRegisteredDictionaries(),
-                IsEmptyCollection()
-            )
+            val testCollector = repository.readRegisteredDictionaries().test(scope = this)
+            try {
+                testCollector.assertThat(
+                    { it.last() },
+                    IsEmptyCollection()
+                )
+            } finally {
+                testCollector.finish()
+            }
         }
     }
 
@@ -211,23 +222,27 @@ class RepositoryTest {
     fun read_registered_dictionaries_and_return_found_ones() {
 
         testCoroutineRule.runBlockingTest {
-            val dictionaries = repository.readRegisteredDictionaries()
-            assertThat(
-                dictionaries,
-                not(IsEmptyCollection())
-            )
-            assertThat(
-                dictionaries[0].id,
-                equalTo(1)
-            )
-            assertThat(
-                dictionaries[0].languageFrom.code,
-                equalTo("hu")
-            )
-            assertThat(
-                dictionaries[0].languageFrom.name,
-                IsEqualIgnoringCase("magyar")
-            )
+            val testCollector = repository.readRegisteredDictionaries().test(scope = this)
+            try {
+                testCollector.assertThat(
+                    { it.last() as Collection<Dictionary> },
+                    not(IsEmptyCollection())
+                )
+                testCollector.assertThat(
+                    { it.last()[0].id },
+                    equalTo(1)
+                )
+                testCollector.assertThat(
+                    { it.last()[0].languageFrom.code },
+                    equalTo("hu")
+                )
+                testCollector.assertThat(
+                    { it.last()[0].languageFrom.name },
+                    IsEqualIgnoringCase("magyar")
+                )
+            } finally {
+                testCollector.finish()
+            }
         }
     }
 

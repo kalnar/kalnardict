@@ -19,8 +19,8 @@ data class DisplayTypeInfo(
     val supportedDisplayTypes: List<DictionaryDisplayType>
 )
 
-enum class DictionaryDisplayType {
-    HTML, TEXT
+enum class DictionaryDisplayType(val id: String) {
+    HTML("html"), TEXT("text")
 }
 
 data class DictLanguage(

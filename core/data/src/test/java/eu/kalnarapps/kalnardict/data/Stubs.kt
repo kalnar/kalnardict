@@ -2,10 +2,12 @@ package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.data.Stubs.Languages.english
 import eu.kalnarapps.kalnardict.data.Stubs.Languages.french
+import eu.kalnarapps.kalnardict.data.mock.model.MockDictionaryDisplayTypeDataEntry
 import eu.kalnarapps.kalnardict.data.mock.model.TestTranslatedWord
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
@@ -69,6 +71,10 @@ object Stubs {
         const val englishToFrenchDictionaryDescription = "Mock dictionary from english to french"
         const val frenchToFrenchDictionaryId = 4
         const val frenchToFrenchDictionaryDescription = "Mock french to french dictionary"
+        val frenchToFrenchDictionaryDisplayType = DictionaryDisplayType.HTML
+        val frenchToFrenchDictionaryDisplayTypeDataEntry = MockDictionaryDisplayTypeDataEntry(
+            id = frenchToFrenchDictionaryDisplayType.id
+        )
         val englishToFrenchDictionary = Dictionary(
             id = englishToFrenchDictionaryId,
             languageFrom = Languages.english,

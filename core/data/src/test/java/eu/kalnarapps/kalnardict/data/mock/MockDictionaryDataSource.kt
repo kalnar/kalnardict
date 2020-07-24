@@ -6,6 +6,10 @@ import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 open class MockDictionaryDataSource(
     private val mockDictionaries: ArrayList<DictionaryLogEntryData> = ArrayList<DictionaryLogEntryData>(
@@ -26,16 +30,22 @@ open class MockDictionaryDataSource(
     )
 ) : DictionaryDataSource {
 
+    private val dictionaryChannel = Channel<List<DictionaryLogEntryData>>()
+
     override suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long {
         val newId = mockDictionaries.size + 1
         mockDictionaries.add(
             newDictionary.toDictionaryLogEntryData(id = newId)
         )
+        dictionaryChannel.send(mockDictionaries)
         return (newId).toLong()
     }
 
-    override suspend fun getDictionaries(): List<DictionaryLogEntryData> {
-        return mockDictionaries
+    override fun getDictionaries(): Flow<List<DictionaryLogEntryData>> = flow {
+        emit(mockDictionaries)
+        dictionaryChannel.consumeEach {
+            emit(it)
+        }
     }
 
     override suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData> {
