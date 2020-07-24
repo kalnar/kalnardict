@@ -6,6 +6,9 @@ import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 class DictionaryLogDaoAdapter(
     private val dictionaryMetaDao: DictionaryLogDao
@@ -21,9 +24,11 @@ class DictionaryLogDaoAdapter(
         )
     }
 
-    override suspend fun getDictionaries(): List<DictionaryLogEntryData> {
-        return dictionaryMetaDao.getDictionaries().map {
-            it.toDictionaryLogEntryData()
+    override fun getDictionaries(): Flow<List<DictionaryLogEntryData>> {
+        return dictionaryMetaDao.getDictionaries().distinctUntilChanged().map {
+            it.map { dictLogEntry ->
+                dictLogEntry.toDictionaryLogEntryData()
+            }
         }
     }
 

@@ -15,8 +15,8 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.Dicti
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.OnRegisterInfoUpdateListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
-import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.dictionary_registry_new_language_button
+import kotlinx.android.synthetic.main.dictionary_registry_fragment.list_recycler_view
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.table_info_list_submit_button
 import org.koin.android.ext.android.getKoin
 import org.koin.core.parameter.parametersOf

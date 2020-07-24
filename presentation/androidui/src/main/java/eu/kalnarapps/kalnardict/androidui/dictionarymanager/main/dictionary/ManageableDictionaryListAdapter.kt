@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.ManageableDictionaryView
 
 class ManageableDictionaryListAdapter(
-    private val list: List<ManageableDictionaryView>,
     private val onDictionaryClickListener: OnDictionaryClickListener,
     private val onNewButtonAction: OnNewButtonAction
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var list: List<ManageableDictionaryView> = emptyList()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -46,6 +47,11 @@ class ManageableDictionaryListAdapter(
     }
 
     override fun getItemCount(): Int = list.size + 1
+
+    fun updateList(content: List<ManageableDictionaryView>) {
+        list = content
+        notifyDataSetChanged()
+    }
 
 }
 

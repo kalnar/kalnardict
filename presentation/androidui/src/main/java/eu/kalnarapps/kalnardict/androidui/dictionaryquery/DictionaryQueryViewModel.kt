@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -87,10 +88,11 @@ class DictionaryQueryViewModel(
                             queryResultsWords = listQueryResultsUseCase.invokeWith("", 0).map {
                                 it.toWordView()
                             },
+                            // this is temporary, only needed so that the app builds
                             dictionaryUiModels = listRegisteredDictionariesUseCase.invoke()
-                                .map {
-                                    it.toDictionarySelectorItem()
-                                },
+                                .map { list ->
+                                    list.map { it.toDictionarySelectorItem() }
+                                }.toList().last(),
                             currentDictionaryItemView = currentDictionary.dictionary.toDictionarySelectorItem(),
                             translationText = LoadableContent.UnInitialized
                         )

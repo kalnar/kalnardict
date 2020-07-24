@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="30dp"
-        app:layout_constraintBottom_toTopOf="@id/list_recycler_view"
+        app:layout_constraintBottom_toTopOf="@id/dictionary_manager_list_recycler_view"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
@@ -34,16 +34,27 @@
             android:layout_marginTop="@dimen/title_description_spacing"
             android:layout_marginEnd="@dimen/message_description_horizontal_margin"
             android:gravity="center"
+            android:visibility="gone"
             android:paddingBottom="@dimen/after_description_spacing"
             android:text="@string/dictionary_manager_no_dictionary_description"
             android:textColor="@color/message_white"
             android:textSize="@dimen/message_description_text_size"
             app:layout_constraintTop_toBottomOf="@id/dictionary_manager_no_dictionary_title_view" />
 
+        <ProgressBar
+            android:id="@+id/dictionary_manager_loader"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_margin="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dictionary_manager_no_dictionary_title_view" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_recycler_view"
+        android:id="@+id/dictionary_manager_list_recycler_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

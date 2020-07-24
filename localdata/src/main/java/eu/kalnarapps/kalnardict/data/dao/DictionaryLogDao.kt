@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DictionaryLogDao {
@@ -15,5 +16,5 @@ interface DictionaryLogDao {
     suspend fun getDictionaryById(id: Int): DictionaryLogEntry?
 
     @Query("SELECT * FROM dictionary_log")
-    suspend fun getDictionaries(): List<DictionaryLogEntry>
+    fun getDictionaries(): Flow<List<DictionaryLogEntry>>
 }

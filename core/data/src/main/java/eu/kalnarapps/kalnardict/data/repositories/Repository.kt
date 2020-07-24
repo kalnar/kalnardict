@@ -25,6 +25,7 @@ import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class Repository(
     private val wordDataSource: WordDataSource,
@@ -203,9 +204,9 @@ class Repository(
         }
     }
 
-    override suspend fun readRegisteredDictionaries(): List<Dictionary> {
+    override fun readRegisteredDictionaries(): Flow<List<Dictionary>> {
         return dictionaryDataSource.getDictionaries().map {
-            it.toDictionary()
+            it.map { dictLogEntryData -> dictLogEntryData.toDictionary() }
         }
     }
 

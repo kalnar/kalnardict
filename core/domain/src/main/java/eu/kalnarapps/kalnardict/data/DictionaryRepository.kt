@@ -18,7 +18,7 @@ interface DictionaryRepository {
     suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase):
             DataOperationResult<List<ExternalDatabaseTable>>
 
-    suspend fun readRegisteredDictionaries(): List<Dictionary>
+    fun readRegisteredDictionaries(): Flow<List<Dictionary>>
     suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary>
     suspend fun getTranslationById(wordId: Int, dictionaryId: Int): DataOperationResult<String>
 

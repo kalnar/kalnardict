@@ -25,12 +25,7 @@ class AppConfigRepository(
                 getCurrentDictionaryFromData(fetchDictionary.data)
             }
             is DataOperationResult.Failure -> {
-                val dictionaries = dictionaryDataSource.getDictionaries()
-                if (dictionaries.isEmpty()) {
-                    CurrentDictionary.DictionaryNotSet
-                } else {
-                    getCurrentDictionaryFromData(dictionaries.first())
-                }
+                CurrentDictionary.DictionaryNotSet
             }
         }
     }

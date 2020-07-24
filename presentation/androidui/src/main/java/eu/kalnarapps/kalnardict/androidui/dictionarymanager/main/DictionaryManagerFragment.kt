@@ -7,20 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
+import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
 import eu.kalnarapps.kalnardict.androidui.common.viewextensions.visibleXorGone
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.ManageableDictionaryListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnDictionaryClickListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnNewButtonAction
+import eu.kalnarapps.kalnardict.common.extentions.exhaustive
+import kotlinx.android.synthetic.main.dictionary_manager_fragment.dictionary_manager_list_recycler_view
+import kotlinx.android.synthetic.main.dictionary_manager_fragment.dictionary_manager_loader
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.dictionary_manager_no_dictionary_description
-import kotlinx.android.synthetic.main.dictionary_manager_fragment.list_recycler_view
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
+@ExperimentalCoroutinesApi
 open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
 
     override val viewModel: DictionaryManagerViewModel by viewModel()
@@ -36,12 +42,9 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dictionaries = viewModel.getRegisteredDictionaries()
-        dictionary_manager_no_dictionary_description.visibleXorGone(dictionaries.isEmpty())
-        list_recycler_view.apply {
+        dictionary_manager_list_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ManageableDictionaryListAdapter(
-                dictionaries,
                 object : OnDictionaryClickListener {
                     override fun onClick(dictionaryView: ManageableDictionaryView) {
                         Toast.makeText(
@@ -58,6 +61,20 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
 
                 }
             )
+            viewModel.getRegisteredDictionaries().observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    LoadableContent.UnInitialized,
+                    LoadableContent.Loading -> Unit
+                    is LoadableContent.Completed -> {
+                        dictionary_manager_loader.visibility = View.GONE
+                        dictionary_manager_no_dictionary_description.visibleXorGone(it.content.isEmpty())
+
+                        (adapter as ManageableDictionaryListAdapter).updateList(it.content)
+
+                        Unit
+                    }
+                }.exhaustive
+            })
         }
     }
 

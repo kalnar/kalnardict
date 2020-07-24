@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.androidui.common.model
 
 sealed class LoadableContent<out T> {
     object UnInitialized : LoadableContent<Nothing>()
-    class Loading<T>(val progress: LoadingProgress) : LoadableContent<T>()
+    object Loading : LoadableContent<Nothing>()
     class Completed<T>(val content: T) : LoadableContent<T>()
 }
 
