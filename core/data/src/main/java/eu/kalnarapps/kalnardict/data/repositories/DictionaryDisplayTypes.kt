@@ -19,7 +19,15 @@ class DictionaryDisplayTypes(
         }
     }
 
-    override fun getSupportedDisplayTypesFor(dictionary: Dictionary): Flow<List<DictionaryDisplayType>> {
-        TODO("Not yet implemented")
+    override fun getSupportedDisplayTypesFor(
+        dictionary: Dictionary
+    ): Flow<List<DictionaryDisplayType>> {
+        return dictionaryDisplayTypeDataSource
+            .supportedDisplayTypesForDictionaryById(dictionary.id)
+            .map { dictionaryDisplayTypeDataEntries ->
+                dictionaryDisplayTypeDataEntries.map {
+                    displayTypeMapper.toDomainModel(it)
+                }
+            }
     }
 }

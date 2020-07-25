@@ -75,6 +75,12 @@ object Stubs {
         val frenchToFrenchDictionaryDisplayTypeDataEntry = MockDictionaryDisplayTypeDataEntry(
             id = frenchToFrenchDictionaryDisplayType.id
         )
+        val frenchToFrenchDictionarySupportedDisplayTypeDataEntries = listOf(
+            frenchToFrenchDictionaryDisplayTypeDataEntry
+        )
+        val frenchToFrenchDictionarySupportedDisplayTypes = listOf(
+            frenchToFrenchDictionaryDisplayType
+        )
         val englishToFrenchDictionary = Dictionary(
             id = englishToFrenchDictionaryId,
             languageFrom = Languages.english,

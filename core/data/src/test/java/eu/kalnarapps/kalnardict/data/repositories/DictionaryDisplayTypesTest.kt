@@ -67,5 +67,53 @@ class DictionaryDisplayTypesTest {
 
     }
 
+    @Test
+    fun return_supported_display_types_for_dictionary() {
+
+        testCoroutineRule.runBlockingTest {
+
+            val dictionary = Stubs.Dictionaries.frenchToFrenchDictionary
+            val expectedSupportedDisplayType =
+                Stubs.Dictionaries.frenchToFrenchDictionaryDisplayType
+            val expectedSupportedDisplayTypes = listOf(
+                expectedSupportedDisplayType
+            )
+            val expectedDisplayTypeDataEntry =
+                Stubs.Dictionaries.frenchToFrenchDictionaryDisplayTypeDataEntry
+            val expectedDisplayTypeDataEntries = listOf(
+                expectedDisplayTypeDataEntry
+            )
+
+            `when`(
+                dictionaryDisplayTypeDataSource.supportedDisplayTypesForDictionaryById(dictionary.id)
+            ).thenReturn(
+                flowOf(expectedDisplayTypeDataEntries)
+            )
+            `when`(
+                displayTypeMapper.toDomainModel(expectedDisplayTypeDataEntry)
+            ).thenReturn(
+                expectedSupportedDisplayType
+            )
+
+            // when getting display type for dictionary
+            val repository = DictionaryDisplayTypes(
+                dictionaryDisplayTypeDataSource = dictionaryDisplayTypeDataSource,
+                displayTypeMapper = displayTypeMapper
+            )
+            val displayType = repository.getSupportedDisplayTypesFor(dictionary)
+
+            val testCollector = displayType.test(scope = this)
+            try {
+                testCollector.assertThatLastValue(
+                    equalTo(expectedSupportedDisplayTypes)
+                )
+            } finally {
+                testCollector.finish()
+            }
+        }
+
+
+    }
+
 
 }
