@@ -1,12 +1,14 @@
-package eu.kalnarapps.kalnardict.data.android.test
+package eu.kalnarapps.kalnardict.data.test
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.collection.IsEmptyCollection
 
 fun <T> Flow<T>.test(scope: CoroutineScope): TestObserver<T> {
     return TestObserver(scope, this)
@@ -32,13 +34,11 @@ class TestObserver<T>(
     fun assertThatLastValue(
         expected: Matcher<T>
     ): TestObserver<T> {
+        assertThat(values, not(IsEmptyCollection()))
         assertThat(values.last(), expected)
         return this
     }
 
-    suspend fun join() {
-        job.join()
-    }
 
     fun finish() {
         job.cancel()

@@ -18,6 +18,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsIterableContaining
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -28,7 +29,9 @@ import java.io.IOException
 class ConfigurationPropertyDaoTest {
     private lateinit var configurationPropertyDao: ConfigurationPropertyDao
     private var db: AppDatabase
-    private val testCoroutineRule = TestCoroutineRule()
+
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()

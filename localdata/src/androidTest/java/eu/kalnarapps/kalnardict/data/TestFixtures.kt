@@ -83,4 +83,8 @@ object TestFixtures {
         val tablesInTestDb = listOf(frenchEnglishTable, englishRussianTable)
     }
 
+    object DisplayTypes {
+        const val HTML = "html_display"
+    }
+
 }

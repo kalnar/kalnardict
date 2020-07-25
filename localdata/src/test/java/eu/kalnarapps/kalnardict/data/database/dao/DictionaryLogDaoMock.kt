@@ -2,12 +2,33 @@ package eu.kalnarapps.kalnardict.data.database.dao
 
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
+@ExperimentalCoroutinesApi
 class DictionaryLogDaoMock : DictionaryLogDao {
     private val mockDictionaryInfoMap = hashMapOf<Int, DictionaryLogEntry>()
+    private val dictionaryChannel = Channel<HashMap<Int, DictionaryLogEntry>>()
+
+    init {
+        GlobalScope.launch {
+            dictionaryChannel.consumeEach {
+            }
+        }
+    }
+
     override suspend fun insertDictionary(sampleDictionaryLogEntry: DictionaryLogEntry): Long {
         val newId = mockDictionaryInfoMap.entries.size + 1
         mockDictionaryInfoMap[newId] = sampleDictionaryLogEntry
+        runBlocking {
+            dictionaryChannel.send(mockDictionaryInfoMap)
+        }
         return newId.toLong()
     }
 
@@ -15,8 +36,11 @@ class DictionaryLogDaoMock : DictionaryLogDao {
         return mockDictionaryInfoMap[id]
     }
 
-    override suspend fun getDictionaries(): List<DictionaryLogEntry> {
-        return mockDictionaryInfoMap.values.toList()
+    override fun getDictionaries(): Flow<List<DictionaryLogEntry>> = flow {
+        emit(mockDictionaryInfoMap.values.toList())
+        dictionaryChannel.consumeEach {
+            emit(mockDictionaryInfoMap.values.toList())
+        }
     }
 
 }

@@ -1,0 +1,19 @@
+package eu.kalnarapps.kalnardict.data.android.test
+
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+
+@ExperimentalCoroutinesApi
+object TestDispatcherProvider : DispatcherProvider {
+    override fun io(): CoroutineDispatcher {
+        return TestCoroutineDispatcher()
+    }
+
+    override fun main(): CoroutineDispatcher {
+        return TestCoroutineDispatcher()
+    }
+
+}
+
