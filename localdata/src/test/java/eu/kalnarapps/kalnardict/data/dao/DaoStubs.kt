@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.dao
 
-import eu.kalnarapps.kalnardict.data.model.DictionaryDisplayTypeData
+import eu.kalnarapps.kalnardict.data.entities.DictionaryDisplayTypeData
+
 
 object DaoStubs {
     object Dictionaries {

@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 
 @Entity
 data class Word(
@@ -71,9 +72,26 @@ data class ConfigurationProperty(
     @ColumnInfo(name = "property_value") val propertyValue: String
 )
 
+@Entity(
+    tableName = DataBaseConstants.DISPLAY_TYPE_TABLE_NAME
+)
+data class SupportedDictionaryDisplayType(
+    @ColumnInfo(name = "dictionary_id")
+    val dictionaryId: Int,
+    @ColumnInfo(name = DataBaseConstants.DISPLAY_TYPE_COLUMN)
+    val id: String
+)
+
+data class DictionaryDisplayTypeData(
+    @ColumnInfo(name = DataBaseConstants.DISPLAY_TYPE_COLUMN)
+    override val id: String
+) : DictionaryDisplayTypeDataEntry
+
 object DataBaseConstants {
     const val UNINITIALIZED_PROPERTY: String = "uninitialized"
     const val DEFAULT_QUERY_MODE_ID: String = "0"
     const val UNINITIALIZED_INT_PROPERTY: Int = -1
     const val CONFIGURATION_PROPERTY_TABLE_NAME = "configuration_property"
+    const val DISPLAY_TYPE_TABLE_NAME = "dictionary_display_types"
+    const val DISPLAY_TYPE_COLUMN = "_display_type"
 }
