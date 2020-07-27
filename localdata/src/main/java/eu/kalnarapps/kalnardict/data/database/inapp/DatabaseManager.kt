@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
@@ -12,9 +13,12 @@ import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
+import eu.kalnarapps.kalnardict.data.dao.dictionary.SupportedDisplayTypesDao
+import eu.kalnarapps.kalnardict.data.database.inapp.converters.DisplayTypeConverters
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.entities.Language
+import eu.kalnarapps.kalnardict.data.entities.SupportedDictionaryDisplayType
 import eu.kalnarapps.kalnardict.data.entities.Word
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -27,15 +31,18 @@ import kotlinx.coroutines.withContext
         Word::class,
         DictionaryLogEntry::class,
         Language::class,
-        ConfigurationProperty::class
+        ConfigurationProperty::class,
+        SupportedDictionaryDisplayType::class
     ],
-    version = 5
+    version = 6
 )
+@TypeConverters(DisplayTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun languageDao(): LanguageDao
     abstract fun dictionaryLogDao(): DictionaryLogDao
     abstract fun configurationPropertyDao(): ConfigurationPropertyDao
+    abstract fun supportedDisplayTypesDao(): SupportedDisplayTypesDao
 
     companion object {
         private var instance: AppDatabase? = null
@@ -63,7 +70,8 @@ abstract class AppDatabase : RoomDatabase() {
                         )
                     )
                     .addMigrations(
-                        MIGRATION_4_5
+                        MIGRATION_4_5,
+                        MIGRATION_5_6
                     )
                     .build()
             }

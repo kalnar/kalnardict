@@ -3,9 +3,11 @@ package eu.kalnarapps.kalnardict.data.entities
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import eu.kalnarapps.kalnardict.data.model.DisplayType
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 
 @Entity
@@ -45,7 +47,7 @@ data class Language(
 )
 data class DictionaryLogEntry(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Int = 0,
+    @ColumnInfo(name = DbColumns.DICTIONARY_LOG_ENTRY_ID) val id: Int = 0,
     @ColumnInfo(name = "dictionary_name") val dictionaryName: String,
     // TODO: use a FK with Language
     @ColumnInfo(name = "language_from") val languageFrom: String,
@@ -73,17 +75,24 @@ data class ConfigurationProperty(
 )
 
 @Entity(
-    tableName = DataBaseConstants.DISPLAY_TYPE_TABLE_NAME
+    tableName = DataBaseConstants.DISPLAY_TYPE_TABLE_NAME,
+    foreignKeys = [ForeignKey(
+        entity = DictionaryLogEntry::class,
+        parentColumns = [DbColumns.DICTIONARY_LOG_ENTRY_ID],
+        childColumns = [DbColumns.DICTIONARY_ID],
+        onDelete = ForeignKey.CASCADE
+    )],
+    primaryKeys = [DbColumns.DICTIONARY_ID, DbColumns.DISPLAY_TYPE_COLUMN]
 )
 data class SupportedDictionaryDisplayType(
-    @ColumnInfo(name = "dictionary_id")
+    @ColumnInfo(name = DbColumns.DICTIONARY_ID)
     val dictionaryId: Int,
-    @ColumnInfo(name = DataBaseConstants.DISPLAY_TYPE_COLUMN)
-    val id: String
+    @ColumnInfo(name = DbColumns.DISPLAY_TYPE_COLUMN)
+    val id: DisplayType
 )
 
 data class DictionaryDisplayTypeData(
-    @ColumnInfo(name = DataBaseConstants.DISPLAY_TYPE_COLUMN)
+    @ColumnInfo(name = DbColumns.DISPLAY_TYPE_COLUMN)
     override val id: String
 ) : DictionaryDisplayTypeDataEntry
 
@@ -93,5 +102,10 @@ object DataBaseConstants {
     const val UNINITIALIZED_INT_PROPERTY: Int = -1
     const val CONFIGURATION_PROPERTY_TABLE_NAME = "configuration_property"
     const val DISPLAY_TYPE_TABLE_NAME = "dictionary_display_types"
-    const val DISPLAY_TYPE_COLUMN = "_display_type"
+}
+
+object DbColumns {
+    const val DISPLAY_TYPE_COLUMN = "display_type"
+    const val DICTIONARY_ID = "dictionary_id"
+    const val DICTIONARY_LOG_ENTRY_ID = "id"
 }
