@@ -12,6 +12,7 @@ import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeInfoUseCase
 import eu.kalnarapps.kalnardict.interactors.GetCurrentLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.GetQueryMode
 import eu.kalnarapps.kalnardict.interactors.GetQueryModes
@@ -24,10 +25,16 @@ import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
 import eu.kalnarapps.kalnardict.interactors.RegisterNewLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateQueryMode
+import eu.kalnarapps.kalnardict.interactors.displaytypes.GetDictionaryWithDisplayTypeInfo
 import org.koin.dsl.module
 
 
 val useCaseModule = module {
+    single {
+        GetDictionaryWithDisplayTypeInfo(
+            displayTypeRepository = get()
+        ) as GetDictionaryWithDisplayTypeInfoUseCase
+    }
     single {
         UpdateQueryMode(
             queryModeConfigurationRepository = get()

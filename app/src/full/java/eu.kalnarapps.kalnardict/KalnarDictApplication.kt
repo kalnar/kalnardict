@@ -8,6 +8,7 @@ import eu.kalnarapps.kalnardict.koin.queryExecutorModule
 import eu.kalnarapps.kalnardict.koin.repositoryModule
 import eu.kalnarapps.kalnardict.koin.stringResolverModule
 import eu.kalnarapps.kalnardict.koin.useCaseForUiModule
+import eu.kalnarapps.kalnardict.koin.useCaseFromUiModule
 import eu.kalnarapps.kalnardict.koin.useCaseModule
 import eu.kalnarapps.kalnardict.koin.utilsModule
 import eu.kalnarapps.kalnardict.koin.viewModule
@@ -34,6 +35,7 @@ class KalnarDictApplication : Application() {
             modules(utilsModule)
             modules(useCaseModule)
             modules(useCaseForUiModule)
+            modules(useCaseFromUiModule)
             modules(viewModuleModule)
             modules(viewModule)
         }

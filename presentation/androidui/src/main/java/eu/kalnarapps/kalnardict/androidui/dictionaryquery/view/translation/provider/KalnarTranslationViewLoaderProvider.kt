@@ -12,9 +12,9 @@ import org.koin.core.KoinComponent
 
 class KalnarTranslationViewLoaderProvider : TranslationViewLoaderProvider, KoinComponent {
     override fun provide(renderingStrategy: RenderingStrategy): TranslationViewLoader {
-        return when (renderingStrategy) {
-            RenderingStrategy.HTML -> TranslationWebViewHtmlLoader()
-            RenderingStrategy.SIMPLE_TEXT -> TranslationTextLoader()
+        return when (renderingStrategy.id) {
+            "html" -> TranslationWebViewHtmlLoader()
+            else -> TranslationTextLoader()
         }
     }
 }

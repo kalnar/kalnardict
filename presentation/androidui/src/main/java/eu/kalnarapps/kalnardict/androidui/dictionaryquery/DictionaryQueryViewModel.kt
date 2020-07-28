@@ -9,7 +9,6 @@ import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
-import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySelectorItem
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
@@ -30,6 +29,7 @@ import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCas
 import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
 import eu.kalnarapps.kalnardict.presentation.interactors.GetQueryModesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -159,7 +159,7 @@ class DictionaryQueryViewModel(
     }
 
     fun getQueryResult(): LiveData<QueryResult> {
-        return Transformations.map(state) {
+        return state.map {
             QueryResult(
                 wordList = it.queryResultsWords,
                 dictionary = it.currentDictionaryItemView

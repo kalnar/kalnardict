@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.presentation.models
+package eu.kalnarapps.kalnardict.presentation.models.dictionaryquery
 
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 
@@ -9,3 +9,8 @@ data class DictionaryUiModel(
     val renderingStrategy: RenderingStrategy,
     val supportedRenderingStrategies: List<RenderingStrategy>
 )
+
+sealed class DictionarySelection {
+    data class Current(val uiModel: DictionaryUiModel) : DictionarySelection()
+    object NotAvailable : DictionarySelection()
+}

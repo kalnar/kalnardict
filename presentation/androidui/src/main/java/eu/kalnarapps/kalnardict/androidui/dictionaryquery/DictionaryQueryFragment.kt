@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
-import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleListAdapter
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleTextListWindowBuilder
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
@@ -27,6 +26,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.Di
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 import kotlinx.android.synthetic.main.dictionary_query_fragment.dictionary_query_loader
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view

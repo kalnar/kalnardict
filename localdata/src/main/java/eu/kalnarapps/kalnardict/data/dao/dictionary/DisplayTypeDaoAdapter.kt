@@ -23,4 +23,14 @@ class DisplayTypeDaoAdapter(
     ): Flow<List<DictionaryDisplayTypeDataEntry>> {
         return supportedTypesDao.getSupportedDisplayTypesForDictionaryWithId(dictionaryId)
     }
+
+    override suspend fun setDisplayTypeForDictionaryById(
+        dictionaryId: Int,
+        displayTypeData: DictionaryDisplayTypeDataEntry
+    ) {
+        displayTypePreferencesDao.setDisplayTypeForDictionary(
+            dictionaryId,
+            displayTypeData.id
+        )
+    }
 }

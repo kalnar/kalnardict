@@ -6,4 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface DictionaryDisplayTypeDataSource {
     fun displayTypeForDictionaryById(dictionaryId: Int): Flow<DictionaryDisplayTypeDataEntry>
     fun supportedDisplayTypesForDictionaryById(dictionaryId: Int): Flow<List<DictionaryDisplayTypeDataEntry>>
+    suspend fun setDisplayTypeForDictionaryById(
+        dictionaryId: Int,
+        displayTypeData: DictionaryDisplayTypeDataEntry
+    )
 }

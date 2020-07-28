@@ -3,10 +3,11 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.ManageableDictionaryView
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
 
 class ManageableDictionaryListAdapter(
-    private val onDictionaryClickListener: OnDictionaryClickListener,
+    private val onDictionaryUpdateListener: OnDictionaryUpdateListener,
     private val onNewButtonAction: OnNewButtonAction
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -21,7 +22,7 @@ class ManageableDictionaryListAdapter(
             DictionaryListViewType.MANAGEABLE_DICTIONARY_VIEW.id -> ManageableDictionaryViewHolder(
                 inflater,
                 parent,
-                onDictionaryClickListener
+                onDictionaryUpdateListener
             )
             else -> NewButtonViewHolder(inflater, parent)
         }
@@ -61,8 +62,8 @@ enum class DictionaryListViewType(val id: Int) {
 }
 
 
-interface OnDictionaryClickListener {
-    fun onClick(dictionaryView: ManageableDictionaryView)
+interface OnDictionaryUpdateListener {
+    fun onClick(dictionaryUpdate: DictionaryUpdateUi.Info)
 }
 
 interface OnNewButtonAction {

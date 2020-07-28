@@ -1,6 +1,8 @@
 package eu.kalnarapps.kalnardict.presentation.models.translations
 
-enum class RenderingStrategy {
-    HTML,
-    SIMPLE_TEXT;
-}
+import eu.kalnarapps.kalnardict.presentation.models.common.SimpleListItem
+
+data class RenderingStrategy(
+    override val id: String,
+    override val displayString: String
+) : SimpleListItem

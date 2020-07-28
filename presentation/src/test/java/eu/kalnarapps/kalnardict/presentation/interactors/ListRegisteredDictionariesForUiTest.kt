@@ -6,7 +6,7 @@ import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDi
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.interactors.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.presentation.interactors.test.test
-import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flowOf

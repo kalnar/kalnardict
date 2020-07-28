@@ -11,11 +11,11 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.navigation.navGraphViewModels
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
-import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.TranslationViewLoaderProvider
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
@@ -49,15 +49,15 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
 
                 }
                 is LoadableContent.Completed -> {
-                    when (it.content) {
+                    when (val result = it.content) {
                         is DataOperationResult.Success -> {
-                            if (!it.content.data.hasBeenHandled()) {
+                            if (!result.data.hasBeenHandled()) {
                                 viewModel.getUiState().value
                                     ?.currentDictionaryItemView?.renderingStrategy?.let { strategy ->
                                         loadTranslationStub(
                                             strategy,
                                             view,
-                                            it.content.data.content()
+                                            result.data.content()
                                         )
                                     }
                             } else Unit
@@ -65,7 +65,7 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
                         is DataOperationResult.Failure -> {
                             Toast.makeText(
                                 requireContext(),
-                                it.content.errorMessage,
+                                result.errorMessage,
                                 Toast.LENGTH_LONG
                             ).show()
                         }

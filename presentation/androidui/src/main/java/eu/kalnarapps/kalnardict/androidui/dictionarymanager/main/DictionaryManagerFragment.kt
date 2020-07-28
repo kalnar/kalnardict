@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
-import eu.kalnarapps.kalnardict.androidui.common.model.LoadableContent
 import eu.kalnarapps.kalnardict.androidui.common.viewextensions.visibleXorGone
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.ManageableDictionaryListAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnDictionaryClickListener
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnDictionaryUpdateListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary.OnNewButtonAction
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryManagerState
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.dictionary_manager_list_recycler_view
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.dictionary_manager_loader
 import kotlinx.android.synthetic.main.dictionary_manager_fragment.dictionary_manager_no_dictionary_description
@@ -45,13 +47,9 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
         dictionary_manager_list_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ManageableDictionaryListAdapter(
-                object : OnDictionaryClickListener {
-                    override fun onClick(dictionaryView: ManageableDictionaryView) {
-                        Toast.makeText(
-                            context,
-                            "${dictionaryView.dictionaryName} clicked",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                object : OnDictionaryUpdateListener {
+                    override fun onClick(dictionaryUpdate: DictionaryUpdateUi.Info) {
+                        viewModel.updateDictionary(dictionaryUpdate)
                     }
                 },
                 object : OnNewButtonAction {

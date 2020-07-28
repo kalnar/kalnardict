@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.presentation.interactors
 
-import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import kotlinx.coroutines.flow.Flow
 
 interface ListRegisteredDictionariesUseCaseForUi {

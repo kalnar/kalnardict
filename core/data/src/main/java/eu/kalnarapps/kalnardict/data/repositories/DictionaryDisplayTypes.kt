@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.data.repositories
 import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
 import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTypeDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainMapper
+import eu.kalnarapps.kalnardict.data.mapper.DomainToDataMapper
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
@@ -11,12 +12,23 @@ import kotlinx.coroutines.flow.map
 
 class DictionaryDisplayTypes(
     private val dictionaryDisplayTypeDataSource: DictionaryDisplayTypeDataSource,
-    private val displayTypeMapper: DataToDomainMapper<DictionaryDisplayTypeDataEntry, DictionaryDisplayType>
+    private val displayTypeDataMapper: DataToDomainMapper<DictionaryDisplayTypeDataEntry, DictionaryDisplayType>,
+    private val displayTypeDomainMapper: DomainToDataMapper<DictionaryDisplayType, DictionaryDisplayTypeDataEntry>
 ) : DisplayTypeRepository {
     override fun getDisplayTypeFor(dictionary: Dictionary): Flow<DictionaryDisplayType> {
         return dictionaryDisplayTypeDataSource.displayTypeForDictionaryById(dictionary.id).map {
-            displayTypeMapper.toDomainModel(it)
+            displayTypeDataMapper.toDomainModel(it)
         }
+    }
+
+    override suspend fun setDisplayTypeFor(
+        dictionaryId: Int,
+        displayType: DictionaryDisplayType
+    ) {
+        dictionaryDisplayTypeDataSource.setDisplayTypeForDictionaryById(
+            dictionaryId = dictionaryId,
+            displayTypeData = displayTypeDomainMapper.toData(displayType)
+        )
     }
 
     override fun getSupportedDisplayTypesFor(
@@ -26,7 +38,7 @@ class DictionaryDisplayTypes(
             .supportedDisplayTypesForDictionaryById(dictionary.id)
             .map { dictionaryDisplayTypeDataEntries ->
                 dictionaryDisplayTypeDataEntries.map {
-                    displayTypeMapper.toDomainModel(it)
+                    displayTypeDataMapper.toDomainModel(it)
                 }
             }
     }

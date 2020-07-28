@@ -4,7 +4,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplay
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeInfoUseCase
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
-import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

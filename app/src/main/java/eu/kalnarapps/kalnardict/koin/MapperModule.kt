@@ -6,6 +6,8 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.Selec
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainMapper
+import eu.kalnarapps.kalnardict.data.mapper.DictionaryDisplayTypeDomainMapper
+import eu.kalnarapps.kalnardict.data.mapper.DictionaryDisplayTypeMapper
 import eu.kalnarapps.kalnardict.data.mapper.DomainToDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
@@ -16,11 +18,21 @@ import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordInsertEntry
 import eu.kalnarapps.kalnardict.data.mapper.WordDataEntry
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
+import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
+import eu.kalnarapps.kalnardict.presentation.mappers.DictionaryDisplayTypeDomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.DictionaryMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.ManageableDictionaryMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.QueryModeMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.RenderingStrategyMapper
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -29,7 +41,8 @@ val mapperModule: Module = module {
     factory { WordInfoMapper() as RoomEntityToLocalDataMapper<Word.WordInfo, WordDataEntry> }
     single { LanguageMapper() }
     single(Qualifiers.languageDomainUiMapper) {
-        get<LanguageMapper>() as eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>
+        get<LanguageMapper>()
+                as eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>
     }
     single(Qualifiers.languageUiDomainMapper) {
         get<LanguageMapper>() as UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>
@@ -55,6 +68,40 @@ val mapperModule: Module = module {
 
     factory(Qualifiers.languageRoomMapper) {
         LanguageRoomMapper() as LocalDataToRoomEntityMapper<LanguageLogEntryData, Language>
+    }
+
+    single(Qualifiers.dictionaryDisplayDataDomainMapper) {
+        DictionaryDisplayTypeMapper()
+                as DataToDomainMapper<DictionaryDisplayTypeDataEntry, DictionaryDisplayType>
+    }
+
+    single(Qualifiers.dictionaryDisplayDomainUiMapper) {
+        DictionaryDisplayTypeDomainToUiMapper(
+            stringResolver = get(Qualifiers.StringResolvers.dictionaryRenderingStrategyStrings)
+        ) as DomainToUiMapper<DictionaryDisplayType, RenderingStrategy>
+    }
+
+    single(Qualifiers.DomainToData.dictionaryDisplayDomainDataMapper) {
+        DictionaryDisplayTypeDomainMapper() as
+                DomainToDataMapper<DictionaryDisplayType, DictionaryDisplayTypeDataEntry>
+    }
+
+    single(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper) {
+        DictionaryMapper(
+            displayTypeMapper = get(Qualifiers.dictionaryDisplayDomainUiMapper)
+        ) as DomainToUiMapper<DictionaryWithDisplayTypeInfo, DictionaryUiModel>
+    }
+
+    single(Qualifiers.manageableDictionaryDomainUiMapper) {
+        ManageableDictionaryMapper(
+            displayTypeMapper = get(Qualifiers.dictionaryDisplayDomainUiMapper)
+        ) as DomainToUiMapper<DictionaryWithDisplayTypeInfo, ManageableDictionaryView>
+    }
+
+    single(Qualifiers.renderingStrategyUiDomainMapper) {
+        RenderingStrategyMapper() as eu.kalnarapps.kalnardict
+        .presentation.mappers
+        .UiToDomainMapper<RenderingStrategy, DictionaryDisplayType>
     }
 }
 

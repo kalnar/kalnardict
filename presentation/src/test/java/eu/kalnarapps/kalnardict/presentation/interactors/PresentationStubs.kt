@@ -5,8 +5,8 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
-import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
 
 object PresentationStubs {
 
@@ -35,7 +35,7 @@ object PresentationStubs {
         }
 
         object RenderingStrategies {
-            val frenchHtml = RenderingStrategy.HTML
+            val frenchHtml = RenderingStrategy(id = "html", displayString = "html")
             val supportFrenchStrategies = listOf(frenchHtml)
         }
 
@@ -46,13 +46,14 @@ object PresentationStubs {
                 supportedDisplayTypes = DisplayTypes.supportedFrenchDisplayTypes
             )
         )
-        val frenchUiModel = DictionaryUiModel(
-            id = frenchId,
-            displayString = "${Languages.frenchLanguageCode} -> ${Languages.frenchLanguageCode}",
-            description = frenchDescription,
-            renderingStrategy = RenderingStrategies.frenchHtml,
-            supportedRenderingStrategies = RenderingStrategies.supportFrenchStrategies
-        )
+        val frenchUiModel =
+            DictionaryUiModel(
+                id = frenchId,
+                displayString = "${Languages.frenchLanguageCode} -> ${Languages.frenchLanguageCode}",
+                description = frenchDescription,
+                renderingStrategy = RenderingStrategies.frenchHtml,
+                supportedRenderingStrategies = RenderingStrategies.supportFrenchStrategies
+            )
     }
 
 

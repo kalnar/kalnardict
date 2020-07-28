@@ -20,7 +20,15 @@ data class DisplayTypeInfo(
 )
 
 enum class DictionaryDisplayType(val id: String) {
-    HTML("html"), TEXT("text")
+    HTML("html"), TEXT("text");
+
+    companion object {
+        fun fromId(id: String): DictionaryDisplayType {
+            return values().associateBy(DictionaryDisplayType::id)[id] ?: error(
+                "${id.ifBlank { "<blank_id>" }} is not associated to any DictionaryDisplayType"
+            )
+        }
+    }
 }
 
 data class DictLanguage(

@@ -10,4 +10,10 @@ object StringResources {
         QUERY_MODE_MATCH_EXACT,
         QUERY_MODE_MATCH_FUZZY;
     }
+
+    enum class DictionaryRenderingStrategies :
+        StringResource {
+        HTML,
+        TEXT;
+    }
 }

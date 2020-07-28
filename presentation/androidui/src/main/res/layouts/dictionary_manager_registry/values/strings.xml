@@ -22,4 +22,6 @@
     <string name="selected_language_text">%s (%s)</string>
     <string name="add_new_language_dialog_title_text">Add new language</string>
     <string name="language_registry_dialog_cta">register language</string>
+    <string name="dictionary_manager_update_rendering_type">update rendering type:</string>
+    <string name="dictionary_update_submit_cta_title">update</string>
 </resources>

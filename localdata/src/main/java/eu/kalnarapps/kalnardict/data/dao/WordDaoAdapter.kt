@@ -21,11 +21,13 @@ class WordDaoAdapter(
         val newIds = wordDao.insertWords(wordDataEntries.map {
             translatedWordMapper.toRoomEntityModel(it)
         })
-        return if (newIds.contains(-1)) {
+        return if (newIds.contains(DaoConstants.ROOM_ON_CONFLICT_IGNORE_CONSTANT)) {
             OperationResult.Failure(
                 errorMessage =
                 "insert failed: the following words failed: " +
-                        "${wordDataEntries.filterIndexed { index, _ -> newIds[index] == -1L }}"
+                        "${wordDataEntries.filterIndexed { index, _ ->
+                            newIds[index] == DaoConstants.ROOM_ON_CONFLICT_IGNORE_CONSTANT
+                        }}"
             )
         } else {
             OperationResult.Success

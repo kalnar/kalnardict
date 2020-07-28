@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_rendering_html">html with css</string>
+    <string name="dictionary_rendering_text">plain text</string>
+</resources>

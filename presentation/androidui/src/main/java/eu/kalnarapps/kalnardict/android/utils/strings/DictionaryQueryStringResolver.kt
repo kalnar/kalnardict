@@ -5,7 +5,7 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.presentation.models.strings.StringResolver
 import eu.kalnarapps.kalnardict.presentation.models.strings.StringResources
 
-class KalnarStringResolver(
+class DictionaryQueryStringResolver(
     private val context: Context
 ) : StringResolver<StringResources.DictionaryQueryString> {
     override fun lookUpString(resource: StringResources.DictionaryQueryString): String {

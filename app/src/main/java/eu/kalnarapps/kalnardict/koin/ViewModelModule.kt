@@ -16,6 +16,7 @@ val viewModuleModule: Module = module {
     viewModel {
         DictionaryManagerViewModel(
             listRegisteredDictionariesUseCase = get(),
+            updateRenderingStrategy = get(),
             uiLogger = get()
         )
     }

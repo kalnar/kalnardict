@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvi
 import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.android.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.android.test.test
+import eu.kalnarapps.kalnardict.data.model.DisplayType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Rule
@@ -23,7 +24,7 @@ class DisplayTypePreferencesTest {
         testCoroutineRule.runBlockingTest {
 
             val dictionaryId = TestFixtures.DICTIONARY_ID_FIRST
-            val expectedDisplayType = TestFixtures.DisplayTypes.HTML
+            val expectedDisplayType = TestFixtures.DisplayTypes.TEXT
             val dao = DisplayTypePreferences(
                 ApplicationProvider.getApplicationContext<Context>(),
                 DefaultDispatcherProvider
@@ -35,13 +36,13 @@ class DisplayTypePreferencesTest {
             try {
                 testCollector.assertThat(
                     { it.last() },
-                    equalTo("")
+                    equalTo(DisplayType.HTML.id)
                 )
 
                 dao.setDisplayTypeForDictionary(dictionaryId, expectedDisplayType)
-                advanceTimeBy(1000L)
 
-//                Thread.sleep(10L)
+                // listener on preferences needs some time to trigger
+                Thread.sleep(10L)
                 // then getting the expected preference
                 testCollector.assertThatLastValue(
                     equalTo(expectedDisplayType)

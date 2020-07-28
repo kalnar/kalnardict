@@ -1,30 +1,38 @@
 package eu.kalnarapps.kalnardict.koin
 
+import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
-import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
-import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.dao.WordDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
+import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.configuration.QueryModeDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypeDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypePreferences
+import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypePreferencesDao
+import eu.kalnarapps.kalnardict.data.dao.dictionary.SupportedDisplayTypesDao
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDbDataInitializer
 import eu.kalnarapps.kalnardict.data.database.inapp.DefaultDbInitializer
-import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.datasources.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
+import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.configuration.QueryModeConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTypeDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
+@ExperimentalCoroutinesApi
 val dataModule: Module = module {
 
     single { DefaultDbInitializer as AppDbDataInitializer }
@@ -37,6 +45,13 @@ val dataModule: Module = module {
     single { get<AppDatabase>().languageDao() as LanguageDao }
     single { get<AppDatabase>().dictionaryLogDao() as DictionaryLogDao }
     single { get<AppDatabase>().configurationPropertyDao() as ConfigurationPropertyDao }
+    single { get<AppDatabase>().supportedDisplayTypesDao() as SupportedDisplayTypesDao }
+    single {
+        DisplayTypePreferences(
+            context = androidContext(),
+            dispatcherProvider = DefaultDispatcherProvider
+        ) as DisplayTypePreferencesDao
+    }
 
     single {
         DictionaryLogDaoAdapter(
@@ -70,5 +85,11 @@ val dataModule: Module = module {
         QueryModeDaoAdapter(
             configurationPropertyDao = get()
         ) as QueryModeConfigurationDataSource
+    }
+    single {
+        DisplayTypeDaoAdapter(
+            displayTypePreferencesDao = get(),
+            supportedTypesDao = get()
+        ) as DictionaryDisplayTypeDataSource
     }
 }

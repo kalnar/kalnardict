@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.androidui.common.model
+package eu.kalnarapps.kalnardict.presentation.models.common
 
 sealed class LoadableContent<out T> {
     object UnInitialized : LoadableContent<Nothing>()

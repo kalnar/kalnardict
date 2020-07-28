@@ -8,7 +8,11 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlin.coroutines.CoroutineContext
 
-inline fun <reified T> SharedPreferences.observeKey(key: String, default: T, dispatcher: CoroutineContext = Dispatchers.Default): Flow<T> {
+inline fun <reified T> SharedPreferences.observeKey(
+    key: String,
+    default: T,
+    dispatcher: CoroutineContext = Dispatchers.Default
+): Flow<T> {
     val flow: Flow<T> = channelFlow {
         offer(getItem(key, default))
 

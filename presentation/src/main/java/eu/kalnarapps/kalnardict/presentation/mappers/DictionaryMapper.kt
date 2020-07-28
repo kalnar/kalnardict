@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.presentation.mappers
 
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
-import eu.kalnarapps.kalnardict.presentation.models.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 
 class DictionaryMapper(

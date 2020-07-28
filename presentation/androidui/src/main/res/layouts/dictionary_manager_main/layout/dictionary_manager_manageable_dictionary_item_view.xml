@@ -9,11 +9,11 @@
     android:paddingEnd="20dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/manageable_dictionary_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="@drawable/card_background"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -71,4 +71,55 @@
                 tools:text="hungarian" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dictionary_update_view"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toBottomOf="@id/manageable_dictionary_view"
+        app:layout_constraintLeft_toLeftOf="@id/manageable_dictionary_view"
+        app:layout_constraintRight_toRightOf="@id/manageable_dictionary_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dictionary_update_rendering_key"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/dictionary_update_rendering_value"
+            app:layout_constraintBottom_toBottomOf="@id/dictionary_update_rendering_value"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="@string/dictionary_manager_update_rendering_type"
+            />
+
+        <Spinner
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/dictionary_update_rendering_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintLeft_toRightOf="@id/dictionary_update_rendering_key"
+            tools:listitem="@layout/dictionary_registry_table_info_language_item_view"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dictionary_update_submit_cta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/button_background"
+            android:paddingHorizontal="30dp"
+            android:text="@string/dictionary_update_submit_cta_title"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/dictionary_update_rendering_value"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

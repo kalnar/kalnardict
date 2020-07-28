@@ -86,23 +86,25 @@ class GetTranslationTest {
         currentDictionary: CurrentDictionary,
         expectedTranslation: String
     ) {
-        val getTranslation = GetTranslation(
-            configurationRepository = MockConfigurationRepository(currentDictionary),
-            repository = MockDictionaryRepository()
-        )
-        // when
-        val result = getTranslation(wordId)
+        testCoroutineRule.runBlockingTest {
+            val getTranslation = GetTranslation(
+                configurationRepository = MockConfigurationRepository(currentDictionary),
+                repository = MockDictionaryRepository()
+            )
+            // when
+            val result = getTranslation(wordId)
 
-        // then
-        assertThat(
-            result,
-            IsInstanceOf(DataOperationResult.Success::class.java)
-        )
-        check(result is DataOperationResult.Success<String>)
-        assertThat(
-            result.data,
-            equalTo(expectedTranslation)
-        )
+            // then
+            assertThat(
+                result,
+                IsInstanceOf(DataOperationResult.Success::class.java)
+            )
+            check(result is DataOperationResult.Success<String>)
+            assertThat(
+                result.data,
+                equalTo(expectedTranslation)
+            )
+        }
     }
 }
 

@@ -85,6 +85,7 @@ object TestFixtures {
 
     object DisplayTypes {
         const val HTML = "html_display"
+        const val TEXT = "text_display"
     }
 
 }
