@@ -6,9 +6,9 @@ import eu.kalnarapps.kalnardict.data.database.dao.ConfigurationPropertyMockDao
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.data.test.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,10 +27,15 @@ class ConfigurationPropertyDaoAdapterTest {
                     configurationPropertyDao = ConfigurationPropertyMockDao()
                 )
 
-            assertThat(
-                configurationDataSource.getLastDictionaryId(),
-                equalTo(DataBaseConstants.UNINITIALIZED_INT_PROPERTY)
-            )
+            val testCollector = configurationDataSource.getLastDictionaryId().test(scope = this)
+            try {
+                testCollector.assertThat(
+                    { it.last() },
+                    equalTo(DataBaseConstants.UNINITIALIZED_INT_PROPERTY)
+                )
+            } finally {
+                testCollector.finish()
+            }
 
         }
     }
@@ -53,10 +58,15 @@ class ConfigurationPropertyDaoAdapterTest {
                     )
                 )
 
-            assertThat(
-                configurationDataSource.getLastDictionaryId(),
-                equalTo(lastlyUsedDictionaryId.toInt())
-            )
+            val testCollector = configurationDataSource.getLastDictionaryId().test(scope = this)
+            try {
+                testCollector.assertThat(
+                    { it.last() },
+                    equalTo(lastlyUsedDictionaryId.toInt())
+                )
+            } finally {
+                testCollector.finish()
+            }
 
         }
     }
@@ -82,10 +92,15 @@ class ConfigurationPropertyDaoAdapterTest {
 
             configurationDataSource.updateLastDictionary(newDictionaryId.toInt())
 
-            assertThat(
-                configurationDataSource.getLastDictionaryId(),
-                equalTo(newDictionaryId.toInt())
-            )
+            val testCollector = configurationDataSource.getLastDictionaryId().test(scope = this)
+            try {
+                testCollector.assertThat(
+                    { it.last() },
+                    equalTo(newDictionaryId.toInt())
+                )
+            } finally {
+                testCollector.finish()
+            }
 
         }
     }

@@ -10,8 +10,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -21,7 +23,7 @@ import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleLis
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleTextListWindowBuilder
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
@@ -123,7 +125,7 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
         view.findViewById<Spinner>(R.id.query_screen_spinner).apply {
             adapter = DictionarySelectorSpinnerAdapter(
                 requireContext(),
-                viewModel.getUiState().value?.currentDictionaryItemView
+                null
             ).apply {
                 onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onNothingSelected(parent: AdapterView<*>?) = Unit
@@ -143,7 +145,13 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                     LoadableContent.UnInitialized,
                     LoadableContent.Loading -> Unit
                     is LoadableContent.Completed -> {
-                        (this.adapter as DictionarySelectorSpinnerAdapter).updateList(it.content)
+                        val current = viewModel.getUiState().value?.currentDictionaryItemView
+                        if (current is LoadableContent.Completed) {
+                            (this.adapter as DictionarySelectorSpinnerAdapter).updateList(
+                                listOf(current.content).plus(
+                                    it.content.filterNot { dict -> dict.id == current.content.id })
+                            )
+                        } else Unit
                     }
                 }.exhaustive
             })

@@ -5,14 +5,14 @@ import androidx.lifecycle.ViewModelProvider
 import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
-import eu.kalnarapps.kalnardict.androidui.common.mapper.UiToDomainMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
+import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
 
 class DictionaryRegistryViewModelFactory(
     private val dbPath: String,

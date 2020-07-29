@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.androidui.stubs.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider

@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.GetDictionaryByIdUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModeUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModesUseCase
@@ -25,6 +26,7 @@ import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
 import eu.kalnarapps.kalnardict.interactors.RegisterNewLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateQueryMode
+import eu.kalnarapps.kalnardict.interactors.dictionary.GetDictionaryById
 import eu.kalnarapps.kalnardict.interactors.displaytypes.GetDictionaryWithDisplayTypeInfo
 import org.koin.dsl.module
 
@@ -82,8 +84,7 @@ val useCaseModule = module {
     }
     single {
         ListDictionaryQueryResults(
-            dictionaryRepository = get(),
-            configurationRepository = get()
+            dictionaryRepository = get()
         ) as SearchQueryUseCase
     }
     single {
@@ -96,5 +97,10 @@ val useCaseModule = module {
         GetCurrentLanguageUseCase(
             configurationRepository = get()
         ) as GetLanguageUseCase
+    }
+    single {
+        GetDictionaryById(
+            dictionaryRepository = get()
+        ) as GetDictionaryByIdUseCase
     }
 }

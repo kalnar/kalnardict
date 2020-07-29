@@ -52,14 +52,17 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
                     when (val result = it.content) {
                         is DataOperationResult.Success -> {
                             if (!result.data.hasBeenHandled()) {
-                                viewModel.getUiState().value
-                                    ?.currentDictionaryItemView?.renderingStrategy?.let { strategy ->
+                                val currentDictionary = viewModel.getUiState().value
+                                    ?.currentDictionaryItemView
+                                if (currentDictionary is LoadableContent.Completed) {
+                                    currentDictionary.content.renderingStrategy.let { strategy ->
                                         loadTranslationStub(
                                             strategy,
                                             view,
                                             result.data.content()
                                         )
                                     }
+                                } else Unit
                             } else Unit
                         }
                         is DataOperationResult.Failure -> {

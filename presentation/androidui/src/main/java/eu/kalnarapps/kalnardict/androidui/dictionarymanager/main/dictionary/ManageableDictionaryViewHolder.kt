@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.spinner.SimpleListSpinnerAdapter
-import eu.kalnarapps.kalnardict.androidui.common.spinner.extensions.withItemOnFirstIndex
 import eu.kalnarapps.kalnardict.androidui.common.viewextensions.visibleXorGone
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
@@ -48,11 +47,16 @@ class ManageableDictionaryViewHolder(
         updateRenderingStrategySpinner.apply {
             adapter = SimpleListSpinnerAdapter(
                 context = this.context,
-                dictionarySelectorItems =
-                manageableDictionaryView.availableRenderingStrategy.withItemOnFirstIndex(
-                    manageableDictionaryView.currentRenderingStrategy
-                )
+                dictionarySelectorItems = manageableDictionaryView.availableRenderingStrategy
             )
+            post {
+                with(manageableDictionaryView.availableRenderingStrategy) {
+                    find { it == manageableDictionaryView.currentRenderingStrategy }
+                        ?.let {
+                            setSelection(this.indexOf(it))
+                        }
+                }
+            }
         }
         submitUpdateCta.setOnClickListener {
             onDictionaryUpdateListener.onClick(

@@ -6,8 +6,8 @@ import eu.kalnarapps.kalnardict.presentation.interactors.ListManageableDictionar
 import eu.kalnarapps.kalnardict.presentation.interactors.ListManageableDictionariesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.ListRegisteredDictionariesForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.ListRegisteredDictionariesUseCaseForUi
-//import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryForUi
-//import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
 import kotlinx.coroutines.FlowPreview
 import org.koin.dsl.module
 
@@ -34,13 +34,12 @@ val useCaseForUiModule = module {
             dictionaryMapper = get(Qualifiers.manageableDictionaryDomainUiMapper)
         ) as ListManageableDictionariesUseCaseForUi
     }
-//        // TODO: make GetLanguageUseCase return flow
-//    single {
-//        GetCurrentDictionaryForUi(
-//            getCurrentLanguageUseCase = get(),
-//            getDictionaryDisplayTypeInfo = get(),
-//            dictionaryMapper = get(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper)
-//        ) as GetCurrentDictionaryUseCaseForUi
-//
-//    }
+    single {
+        GetCurrentDictionaryForUi(
+            getCurrentLanguageUseCase = get(),
+            getDictionaryDisplayTypeInfo = get(),
+            dictionaryMapper = get(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper)
+        ) as GetCurrentDictionaryUseCaseForUi
+
+    }
 }

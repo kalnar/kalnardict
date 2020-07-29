@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 
 class DictionarySelectorDropDownViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?

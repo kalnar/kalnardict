@@ -9,7 +9,7 @@ class MockConfigurationRepository(
     private var currentDictionary: CurrentDictionary
 ) : ConfigurationRepository {
 
-    override suspend fun getCurrentDictionary(): CurrentDictionary =
+    override fun getCurrentDictionary(): CurrentDictionary =
         currentDictionary
 
     override suspend fun getCurrentAccentMode(): AccentMode =

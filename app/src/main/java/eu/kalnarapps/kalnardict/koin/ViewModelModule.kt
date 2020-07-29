@@ -35,4 +35,5 @@ val viewModuleModule: Module = module {
             uiLogger = get()
         ) as AbstractDictionaryRegistryViewModelFactory
     }
+
 }

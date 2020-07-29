@@ -1,6 +1,5 @@
 package eu.kalnarapps.kalnardict.koin
 
-import eu.kalnarapps.kalnardict.androidui.common.mapper.UiToDomainMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.LanguageMapper
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.data.entities.Language
@@ -20,18 +19,28 @@ import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
+import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import eu.kalnarapps.kalnardict.presentation.mappers.DictionaryDisplayTypeDomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.DictionaryMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.ManageableDictionaryMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.QueryModeMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.RenderingStrategyMapper
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapperWithExtras
+import eu.kalnarapps.kalnardict.presentation.mappers.query.QueryModeUiToDomainMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.query.QueryUiToDomainMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.query.WordDomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -42,7 +51,7 @@ val mapperModule: Module = module {
     single { LanguageMapper() }
     single(Qualifiers.languageDomainUiMapper) {
         get<LanguageMapper>()
-                as eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>
+                as DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>
     }
     single(Qualifiers.languageUiDomainMapper) {
         get<LanguageMapper>() as UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>
@@ -99,9 +108,22 @@ val mapperModule: Module = module {
     }
 
     single(Qualifiers.renderingStrategyUiDomainMapper) {
-        RenderingStrategyMapper() as eu.kalnarapps.kalnardict
-        .presentation.mappers
-        .UiToDomainMapper<RenderingStrategy, DictionaryDisplayType>
+        RenderingStrategyMapper() as
+                UiToDomainMapper<RenderingStrategy, DictionaryDisplayType>
+    }
+
+    single(Qualifiers.UiToDomain.queryModeUiToDomainMapper) {
+        QueryModeUiToDomainMapper() as UiToDomainMapper<QueryModelUiModel, QueryMode>
+    }
+
+    single(Qualifiers.DomainToUi.wordDomainToUiMapper) {
+        WordDomainToUiMapper() as DomainToUiMapper<DictWord, WordView>
+    }
+
+    single(Qualifiers.UiToDomain.queryUiToDomainMapper) {
+        QueryUiToDomainMapper(
+            queryModeUiToDomainMapper = get(Qualifiers.UiToDomain.queryModeUiToDomainMapper)
+        ) as UiToDomainMapperWithExtras<QueryUiModel, DictQuery, Dictionary>
     }
 }
 

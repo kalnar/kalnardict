@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 
 
 class DictionarySelectorSpinnerAdapter(
@@ -19,10 +19,11 @@ class DictionarySelectorSpinnerAdapter(
     // that's why we move the current item on the top of the list
     private val dictionaryViewItems: List<DictionaryUiModel>
         get() {
-            return currentDictionaryItemView?.let {
-                listOf(currentDictionaryItemView).plus(
-                    dictionaryUiModels.filterNot { it.id == currentDictionaryItemView.id })
-            } ?: dictionaryUiModels
+            return dictionaryUiModels
+//            return currentDictionaryItemView?.let {
+//                listOf(currentDictionaryItemView).plus(
+//                    dictionaryUiModels.filterNot { it.id == currentDictionaryItemView.id })
+//            } ?: dictionaryUiModels
         }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

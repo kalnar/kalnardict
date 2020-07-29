@@ -5,8 +5,8 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 
 object PresentationStubs {
 
@@ -35,7 +35,7 @@ object PresentationStubs {
         }
 
         object RenderingStrategies {
-            val frenchHtml = RenderingStrategy(id = "html", displayString = "html")
+            val frenchHtml = RenderingStrategy.HTML
             val supportFrenchStrategies = listOf(frenchHtml)
         }
 

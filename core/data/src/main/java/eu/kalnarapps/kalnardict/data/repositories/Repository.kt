@@ -57,10 +57,8 @@ class Repository(
         }
     }
 
-    // TODO: test getDictionaryById
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
-        return when (val fetchDictionary =
-            dictionaryDataSource.getDictionaryById(dictionaryId)) {
+        return when (val fetchDictionary = dictionaryDataSource.getDictionaryById(dictionaryId)) {
             is DataOperationResult.Success -> {
                 dictionaryMapper.toDomainModel(fetchDictionary.data)
             }
@@ -71,7 +69,6 @@ class Repository(
                 )
             }
         }
-
     }
 
     override suspend fun getTranslationById(

@@ -1,6 +1,8 @@
 package eu.kalnarapps.kalnardict.data.datasources.configuration
 
+import kotlinx.coroutines.flow.Flow
+
 interface ConfigurationDataSource {
-    suspend fun getLastDictionaryId(): Int
+    fun getLastDictionaryId(): Flow<Int>
     suspend fun updateLastDictionary(dictionaryId: Int)
 }

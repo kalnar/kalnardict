@@ -2,16 +2,20 @@ package eu.kalnarapps.kalnardict.data.dao.configuration
 
 import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
-import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 
 
 class ConfigurationPropertyDaoAdapter(
     private val configurationPropertyDao: ConfigurationPropertyDao
 ) : ConfigurationDataSource {
-    override suspend fun getLastDictionaryId(): Int {
-        return configurationPropertyDao.getPropertyByKey(
+    override fun getLastDictionaryId(): Flow<Int> {
+        return configurationPropertyDao.getFlowPropertyByKey(
             ConfigurationPropertyKey.LAST_DICTIONARY.key
-        )?.propertyValue?.toIntOrNull() ?: DataBaseConstants.UNINITIALIZED_INT_PROPERTY
+        )
+            .filter { it.propertyValue.toIntOrNull() != null }
+            .map { it.propertyValue.toInt() }
     }
 
     override suspend fun updateLastDictionary(dictionaryId: Int) {

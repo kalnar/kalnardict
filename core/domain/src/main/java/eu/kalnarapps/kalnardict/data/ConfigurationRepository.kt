@@ -6,7 +6,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import kotlinx.coroutines.flow.Flow
 
 interface ConfigurationRepository {
-    suspend fun getCurrentDictionary(): CurrentDictionary
+    fun getCurrentDictionary(): Flow<CurrentDictionary>
     suspend fun getCurrentAccentMode(): AccentMode
     suspend fun updateCurrentDictionary(dictionary: Dictionary)
 }

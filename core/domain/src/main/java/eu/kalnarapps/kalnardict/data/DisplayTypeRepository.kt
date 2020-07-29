@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.data
 
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import kotlinx.coroutines.flow.Flow

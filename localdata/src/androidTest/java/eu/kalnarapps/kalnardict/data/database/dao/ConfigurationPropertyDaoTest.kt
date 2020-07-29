@@ -140,6 +140,7 @@ class ConfigurationPropertyDaoTest {
                             newQueryModeProperty
                         )
                     )
+
             } finally {
                 testCollector.finish()
             }

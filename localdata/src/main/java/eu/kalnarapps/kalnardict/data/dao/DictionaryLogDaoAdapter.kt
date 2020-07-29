@@ -32,12 +32,15 @@ class DictionaryLogDaoAdapter(
     }
 
     override suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData> {
-        // TODO: to test
-        return dictionaryMetaDao.getDictionaryById(id)?.let {
-            DataOperationResult.Success(it.toDictionaryLogEntryData())
-        } ?: DataOperationResult.Failure(
-            errorMessage = "no dictionary in data source with id $id"
-        )
+        return dictionaryMetaDao.getDictionaryById(id).let {
+            if (it != null) {
+                DataOperationResult.Success(it.toDictionaryLogEntryData())
+            } else {
+                DataOperationResult.Failure<DictionaryLogEntryData>(
+                    errorMessage = "no dictionary in data source with id $id"
+                )
+            }
+        }
     }
 }
 

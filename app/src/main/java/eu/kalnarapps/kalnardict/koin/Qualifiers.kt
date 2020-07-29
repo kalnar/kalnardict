@@ -21,6 +21,15 @@ object Qualifiers {
         val dictionaryDisplayDomainDataMapper = StringQualifier("dictionary_display_domain_data")
     }
 
+    object UiToDomain {
+        val queryUiToDomainMapper = StringQualifier("query_ui_domain")
+        val queryModeUiToDomainMapper = StringQualifier("query_mode_ui_domain")
+    }
+
+    object DomainToUi {
+        val wordDomainToUiMapper = StringQualifier("word_domain_ui")
+    }
+
     object StringResolvers {
 
         val dictionaryQueryString = StringQualifier("dictionary_query_string")

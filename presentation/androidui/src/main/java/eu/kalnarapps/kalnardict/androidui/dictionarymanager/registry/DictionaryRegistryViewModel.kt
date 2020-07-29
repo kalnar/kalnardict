@@ -10,8 +10,6 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
 import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
-import eu.kalnarapps.kalnardict.androidui.common.mapper.DomainToUiMapper
-import eu.kalnarapps.kalnardict.androidui.common.mapper.UiToDomainMapper
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
@@ -30,6 +28,8 @@ import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
+import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -94,10 +94,6 @@ class DictionaryRegistryViewModel(
         return Transformations.map(state) {
             it.registerDictionaryUiModels.isNotEmpty()
         }
-    }
-
-    fun getSelectableLanguages(): List<SelectableLanguage.LanguageUi> {
-        return state.value?.availableLanguages.orEmpty()
     }
 
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {

@@ -10,22 +10,28 @@ import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 
 class AppConfigRepository(
     private val configurationDataSource: ConfigurationDataSource,
     private val dictionaryDataSource: DictionaryDataSource,
     private val languageDataSource: LanguageDataSource
 ) : ConfigurationRepository {
-    override suspend fun getCurrentDictionary(): CurrentDictionary {
-        return when (
-            val fetchDictionary = dictionaryDataSource.getDictionaryById(
-                configurationDataSource.getLastDictionaryId()
-            )) {
-            is DataOperationResult.Success -> {
-                getCurrentDictionaryFromData(fetchDictionary.data)
-            }
-            is DataOperationResult.Failure -> {
-                CurrentDictionary.DictionaryNotSet
+    @FlowPreview
+    override fun getCurrentDictionary(): Flow<CurrentDictionary> {
+        return configurationDataSource.getLastDictionaryId().map {
+            dictionaryDataSource.getDictionaryById(it)
+        }.map {
+            when (val fetchDictionary = it) {
+                is DataOperationResult.Success -> {
+                    getCurrentDictionaryFromData(fetchDictionary.data)
+                }
+                is DataOperationResult.Failure -> {
+                    CurrentDictionary.DictionaryNotSet
+                }
             }
         }
     }

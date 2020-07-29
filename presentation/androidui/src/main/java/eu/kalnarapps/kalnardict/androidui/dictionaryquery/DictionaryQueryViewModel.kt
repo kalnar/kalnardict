@@ -10,28 +10,27 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvi
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.mapper.toDictionarySelectorItem
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiModel
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryParams
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.WordView
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
 import eu.kalnarapps.kalnardict.presentation.interactors.GetQueryModesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.ListRegisteredDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.query.SearchQueryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionarySelection
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
@@ -43,15 +42,15 @@ import kotlinx.coroutines.withContext
 
 @ExperimentalCoroutinesApi
 class DictionaryQueryViewModel(
-    private val listQueryResultsUseCase: SearchQueryUseCase,
-    private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCase,
+    private val listQueryResultsUseCase: SearchQueryUseCaseFromUi,
+    private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi,
     private val updateCurrentLanguageUseCase: ChangeDictLanguageUseCase,
-    private val getCurrentLanguageUseCase: GetLanguageUseCase,
+    private val getCurrentDictionary: GetCurrentDictionaryUseCaseForUi,
     private val getTranslation: GetTranslationUseCase,
     private val getQueryModesForUi: GetQueryModesUseCaseForUi,
     private val updateQueryModeUseCase: UpdateQueryModeUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val uiLogger: UiLogger
+    uiLogger: UiLogger
 ) : BaseViewModel<DictionaryQueryState>(
     dispatcherProvider = dispatcherProvider,
     logger = uiLogger
@@ -65,76 +64,82 @@ class DictionaryQueryViewModel(
         MutableStateFlow("")
 
     init {
+        setUiState(DictionaryQueryState())
         viewModelScope.launch {
-            launch {
+            getCurrentDictionary()
+                .collect {
+                    when (it) {
+                        is DictionarySelection.Current -> {
+                            postUiStateOnMainThread {
+                                copy(
+                                    currentDictionaryItemView =
+                                    LoadableContent.Completed(it.uiModel)
+                                )
+                            }
+                        }
+                        DictionarySelection.NotAvailable -> {
+                            withContext(dispatcherProvider.main()) {
+                                postNavigationCommand(
+                                    NavigationCommand.NavigateToDictionaryManager
+                                )
+                            }
+                        }
+                    }.exhaustive
+                }
+        }
+        viewModelScope.launch {
+            combine(
                 getQueryModesForUi()
                     .filter { list -> list.any { it.isSelected } }
-                    .map { it.first { queryMode -> queryMode.isSelected } }
-                    .combine(typedQuery) { queryMode, newQuery ->
-                        QueryParams(
-                            queryModeUiModel = queryMode,
-                            queryString = newQuery
-                        )
-                    }.collect {
-                        updateQueryResults(it)
-                    }
+                    .map { it.first { queryMode -> queryMode.isSelected } },
+                typedQuery,
+                getCurrentDictionary()
+                    .filter {
+                        it is DictionarySelection.Current
+                    } as Flow<DictionarySelection.Current>
+            ) { queryMode, newQuery, currentDictionary ->
+                QueryUiModel(
+                    queryMode = queryMode,
+                    queryString = newQuery,
+                    dictionaryUiModel = currentDictionary.uiModel
+                )
             }
-
-            when (val currentDictionary = getCurrentLanguageUseCase()) {
-                is CurrentDictionary.SetDictionary -> {
-                    setUiState(
-                        DictionaryQueryState(
-                            typedQueryString = "",
-                            currentDictionaryItemView = currentDictionary.dictionary.toDictionarySelectorItem(),
-                            translationText = LoadableContent.UnInitialized
-                        )
-                    )
+                .collect {
+                    updateQueryResults(it)
                 }
-                CurrentDictionary.DictionaryNotSet -> {
+        }
+        viewModelScope.launch {
+            currentWord.collect {
+                if (it is CurrentWord.Selected) {
                     withContext(dispatcherProvider.main()) {
-                        postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
+                        postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
                     }
-                }
-            }.exhaustive
-            launch {
-                currentWord.collect {
-                    if (it is CurrentWord.Selected) {
-                        withContext(dispatcherProvider.main()) {
-                            postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
-                        }
-                        withContext(dispatcherProvider.io()) {
-                            loadTranslation(it.word)
-                        }
+                    withContext(dispatcherProvider.io()) {
+                        loadTranslation(it.word)
                     }
                 }
             }
-            launch {
-                listRegisteredDictionariesUseCase().map { dictionaries ->
-                    LoadableContent.Completed(
-                        dictionaries.map { it.toDictionarySelectorItem() }
-                    ) as LoadableContent<List<DictionaryUiModel>>
-                }.onStart {
-                    emit(LoadableContent.Loading)
-                }.collect {
-                    postUiState {
-                        copy(dictionaryUiModels = it)
-                    }
+        }
+        viewModelScope.launch {
+            listRegisteredDictionariesUseCase().map { dictionaries ->
+                LoadableContent.Completed(
+                    dictionaries
+                ) as LoadableContent<List<DictionaryUiModel>>
+            }.onStart {
+                emit(LoadableContent.Loading)
+            }.collect {
+                postUiState {
+                    copy(dictionaryUiModels = it)
                 }
             }
         }
     }
 
-    private suspend fun updateQueryResults(params: QueryParams) {
+    private suspend fun updateQueryResults(params: QueryUiModel) {
         withContext(dispatcherProvider.io()) {
-            val updatedResult = listQueryResultsUseCase.invokeWith(
-                params.queryString,
-                params.queryModeUiModel.id
-            ).map {
-                WordView(
-                    id = it.id,
-                    baseForm = it.baseForm
-                )
-            }
+            val updatedResult = listQueryResultsUseCase(
+                queryUiModel = params
+            )
             postUiStateOnMainThread {
                 this.copy(
                     typedQueryString = params.queryString,
@@ -182,31 +187,8 @@ class DictionaryQueryViewModel(
 
     fun onDictionaryChanged(dictionaryItem: DictionaryUiModel) {
         viewModelScope.launch {
-            // TODO: should use flow instead for current dictionary
             withContext(dispatcherProvider.io()) {
-                val res = updateCurrentLanguageUseCase(dictionaryItem.id)
-                when (res) {
-                    OperationResult.Success -> {
-                        when (val currentDictionary = getCurrentLanguageUseCase()) {
-                            is CurrentDictionary.SetDictionary -> {
-                                postUiState(
-                                    state.value?.copy(
-                                        currentDictionaryItemView =
-                                        currentDictionary.dictionary.toDictionarySelectorItem()
-                                    )
-                                )
-                            }
-                            CurrentDictionary.DictionaryNotSet -> {
-                                withContext(dispatcherProvider.main()) {
-                                    postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
-                                }
-                            }
-                        }.exhaustive
-                    }
-                    is OperationResult.Failure -> {
-                        uiLogger.log("error for language update: ${res.errorMessage()}")
-                    }
-                }.exhaustive
+                updateCurrentLanguageUseCase(dictionaryItem.id)
             }
         }
     }

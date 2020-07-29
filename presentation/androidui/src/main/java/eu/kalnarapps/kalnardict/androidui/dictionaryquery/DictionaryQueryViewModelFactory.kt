@@ -15,7 +15,7 @@ class DictionaryQueryViewModelFactory() : ViewModelProvider.Factory, KoinCompone
                 listQueryResultsUseCase = get(),
                 listRegisteredDictionariesUseCase = get(),
                 updateCurrentLanguageUseCase = get(),
-                getCurrentLanguageUseCase = get(),
+                getCurrentDictionary = get(),
                 updateQueryModeUseCase = get(),
                 getQueryModesForUi = get(),
                 getTranslation = get(),
