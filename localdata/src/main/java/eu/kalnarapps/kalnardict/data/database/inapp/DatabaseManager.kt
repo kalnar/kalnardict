@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
         ConfigurationProperty::class,
         SupportedDictionaryDisplayType::class
     ],
-    version = 6
+    version = 8
 )
 @TypeConverters(DisplayTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -71,7 +71,9 @@ abstract class AppDatabase : RoomDatabase() {
                     )
                     .addMigrations(
                         MIGRATION_4_5,
-                        MIGRATION_5_6
+                        MIGRATION_5_6,
+                        MIGRATION_6_7,
+                        MIGRATION_7_8
                     )
                     .build()
             }

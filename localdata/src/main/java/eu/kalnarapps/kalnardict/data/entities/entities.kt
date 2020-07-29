@@ -10,7 +10,16 @@ import androidx.room.Relation
 import eu.kalnarapps.kalnardict.data.model.DisplayType
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 
-@Entity
+@Entity(
+    indices = [
+        Index(
+            name = "word_dictionary_form_index",
+            value = [
+                "dictionary_id", "base_form", "base_form_alt"
+            ]
+        )
+    ]
+)
 data class Word(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "base_form") val baseForm: String,

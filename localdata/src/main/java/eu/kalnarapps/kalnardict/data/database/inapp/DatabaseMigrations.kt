@@ -41,3 +41,28 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         )
     }
 }
+
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                CREATE INDEX IF NOT EXISTS index_Word_dictionary_id ON Word (dictionary_id)
+                """
+        )
+    }
+}
+
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                DROP INDEX index_Word_dictionary_id;
+                """
+        )
+        database.execSQL(
+            """
+                CREATE INDEX IF NOT EXISTS word_dictionary_form_index ON Word (dictionary_id,base_form,base_form_alt)
+                """
+        )
+    }
+}

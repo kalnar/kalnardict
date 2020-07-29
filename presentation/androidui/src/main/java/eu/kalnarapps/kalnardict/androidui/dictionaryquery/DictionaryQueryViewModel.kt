@@ -12,7 +12,6 @@ import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
@@ -35,6 +34,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -141,11 +141,13 @@ class DictionaryQueryViewModel(
             val updatedResult = listQueryResultsUseCase(
                 queryUiModel = params
             )
-            postUiStateOnMainThread {
-                this.copy(
-                    typedQueryString = params.queryString,
-                    queryResultsWords = LoadableContent.Completed(updatedResult)
-                )
+            withContext(dispatcherProvider.main()) {
+                postUiStateOnMainThread {
+                    this.copy(
+                        typedQueryString = params.queryString,
+                        queryResultsWords = LoadableContent.Completed(updatedResult)
+                    )
+                }
             }
         }
     }
