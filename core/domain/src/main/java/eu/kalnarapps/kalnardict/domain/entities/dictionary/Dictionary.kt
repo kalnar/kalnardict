@@ -9,6 +9,11 @@ data class Dictionary(
     val description: String
 )
 
+data class DictionaryWithDisplayType(
+    val dictionary: Dictionary,
+    val displayType: DictionaryDisplayType
+)
+
 data class DictionaryWithDisplayTypeInfo(
     val dictionary: Dictionary,
     val displayTypeInfo: DisplayTypeInfo

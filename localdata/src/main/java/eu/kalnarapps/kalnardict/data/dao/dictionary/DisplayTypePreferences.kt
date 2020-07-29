@@ -3,30 +3,31 @@ package eu.kalnarapps.kalnardict.data.dao.dictionary
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.preference.PreferenceManager
-import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
+import com.tfcporciuncula.flow.FlowSharedPreferences
 import eu.kalnarapps.kalnardict.data.model.DisplayType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.receiveAsFlow
 
 @ExperimentalCoroutinesApi
 class DisplayTypePreferences(
-    context: Context,
-    private val dispatcherProvider: DispatcherProvider
+    context: Context
 ) : DisplayTypePreferencesDao {
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val flowPreferences = FlowSharedPreferences(sharedPreferences)
 
-    override fun getDisplayTypeForDictionary(dictionaryId: Int): Flow<String> {
-        return sharedPreferences.observeKey(
-            getPreferenceKeyForDictionary(dictionaryId),
-            default = DisplayType.HTML.id,
-            dispatcher = dispatcherProvider.io()
-        )
+    override fun getDisplayTypeForDictionary(dictionaryId: Int): String {
+        return flowPreferences.getString(
+            key = getPreferenceKeyForDictionary(dictionaryId),
+            defaultValue = DisplayType.HTML.id
+        ).get()
+    }
+
+    override fun getDisplayTypeForDictionaryFlow(dictionaryId: Int): Flow<String> {
+        return flowPreferences.getString(
+            key = getPreferenceKeyForDictionary(dictionaryId),
+            defaultValue = DisplayType.HTML.id
+        ).asFlow()
     }
 
     override suspend fun setDisplayTypeForDictionary(dictionaryId: Int, type: String) {

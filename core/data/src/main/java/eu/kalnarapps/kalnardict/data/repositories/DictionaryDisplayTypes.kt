@@ -15,10 +15,19 @@ class DictionaryDisplayTypes(
     private val displayTypeDataMapper: DataToDomainMapper<DictionaryDisplayTypeDataEntry, DictionaryDisplayType>,
     private val displayTypeDomainMapper: DomainToDataMapper<DictionaryDisplayType, DictionaryDisplayTypeDataEntry>
 ) : DisplayTypeRepository {
-    override fun getDisplayTypeFor(dictionary: Dictionary): Flow<DictionaryDisplayType> {
-        return dictionaryDisplayTypeDataSource.displayTypeForDictionaryById(dictionary.id).map {
+
+    override fun getDisplayTypeFlowFor(dictionary: Dictionary): Flow<DictionaryDisplayType> {
+        return dictionaryDisplayTypeDataSource.displayTypeForDictionaryByIdFlow(dictionary.id).map {
             displayTypeDataMapper.toDomainModel(it)
         }
+    }
+
+    override fun getDisplayTypeFor(dictionary: Dictionary): DictionaryDisplayType {
+        return displayTypeDataMapper.toDomainModel(
+            dictionaryDisplayTypeDataSource.displayTypeForDictionaryById(
+                dictionary.id
+            )
+        )
     }
 
     override suspend fun setDisplayTypeFor(

@@ -6,7 +6,8 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import kotlinx.coroutines.flow.Flow
 
 interface DisplayTypeRepository {
-    fun getDisplayTypeFor(dictionary: Dictionary): Flow<DictionaryDisplayType>
+    fun getDisplayTypeFlowFor(dictionary: Dictionary): Flow<DictionaryDisplayType>
+    fun getDisplayTypeFor(dictionary: Dictionary): DictionaryDisplayType
     suspend fun setDisplayTypeFor(
         dictionaryId: Int,
         displayType: DictionaryDisplayType

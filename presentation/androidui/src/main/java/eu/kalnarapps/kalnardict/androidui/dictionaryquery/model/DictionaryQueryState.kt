@@ -24,3 +24,8 @@ data class QueryResult(
     val wordList: LoadableContent<List<WordView>>,
     val dictionary: LoadableContent<DictionaryUiModel>
 )
+
+data class DictionaryUiInfo(
+    val dictionaryList: LoadableContent<List<DictionaryUiModel>>,
+    val current: LoadableContent<DictionaryUiModel>
+)

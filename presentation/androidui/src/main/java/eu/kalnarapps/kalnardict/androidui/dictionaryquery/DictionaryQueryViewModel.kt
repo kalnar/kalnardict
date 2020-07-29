@@ -12,6 +12,7 @@ import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
+import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
 import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive

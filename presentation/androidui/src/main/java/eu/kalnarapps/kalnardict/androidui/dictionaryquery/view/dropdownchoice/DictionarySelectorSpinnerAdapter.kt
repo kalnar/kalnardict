@@ -19,11 +19,10 @@ class DictionarySelectorSpinnerAdapter(
     // that's why we move the current item on the top of the list
     private val dictionaryViewItems: List<DictionaryUiModel>
         get() {
-            return dictionaryUiModels
-//            return currentDictionaryItemView?.let {
-//                listOf(currentDictionaryItemView).plus(
-//                    dictionaryUiModels.filterNot { it.id == currentDictionaryItemView.id })
-//            } ?: dictionaryUiModels
+            return currentDictionaryItemView?.let {
+                listOf(currentDictionaryItemView).plus(
+                    dictionaryUiModels.filterNot { it.id == currentDictionaryItemView.id })
+            } ?: dictionaryUiModels
         }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

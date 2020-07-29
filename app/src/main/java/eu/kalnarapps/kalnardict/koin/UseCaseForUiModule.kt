@@ -24,6 +24,7 @@ val useCaseForUiModule = module {
         ListRegisteredDictionariesForUi(
             listRegisteredDictionaries = get(),
             getDictionaryWithDisplayTypeInfoUseCase = get(),
+            getDictionaryWithDisplayType = get(),
             dictionaryMapper = get(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper)
         ) as ListRegisteredDictionariesUseCaseForUi
     }

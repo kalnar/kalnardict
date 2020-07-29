@@ -12,8 +12,18 @@ class DisplayTypeDaoAdapter(
 ) : DictionaryDisplayTypeDataSource {
     override fun displayTypeForDictionaryById(
         dictionaryId: Int
+    ): DictionaryDisplayTypeDataEntry {
+        return DictionaryDisplayTypeData(
+            id = displayTypePreferencesDao.getDisplayTypeForDictionary(
+                dictionaryId
+            )
+        )
+    }
+
+    override fun displayTypeForDictionaryByIdFlow(
+        dictionaryId: Int
     ): Flow<DictionaryDisplayTypeDataEntry> {
-        return displayTypePreferencesDao.getDisplayTypeForDictionary(dictionaryId).map {
+        return displayTypePreferencesDao.getDisplayTypeForDictionaryFlow(dictionaryId).map {
             DictionaryDisplayTypeData(id = it)
         }
     }

@@ -22,6 +22,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
+import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
@@ -98,7 +99,7 @@ val mapperModule: Module = module {
     single(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper) {
         DictionaryMapper(
             displayTypeMapper = get(Qualifiers.dictionaryDisplayDomainUiMapper)
-        ) as DomainToUiMapper<DictionaryWithDisplayTypeInfo, DictionaryUiModel>
+        ) as DomainToUiMapper<DictionaryWithDisplayType, DictionaryUiModel>
     }
 
     single(Qualifiers.manageableDictionaryDomainUiMapper) {

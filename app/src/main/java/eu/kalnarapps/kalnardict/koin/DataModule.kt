@@ -48,8 +48,7 @@ val dataModule: Module = module {
     single { get<AppDatabase>().supportedDisplayTypesDao() as SupportedDisplayTypesDao }
     single {
         DisplayTypePreferences(
-            context = androidContext(),
-            dispatcherProvider = DefaultDispatcherProvider
+            context = androidContext()
         ) as DisplayTypePreferencesDao
     }
 
