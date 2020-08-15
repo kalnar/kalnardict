@@ -2,6 +2,8 @@ package eu.kalnarapps.kalnardict.data.dao.dictionary
 
 import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTypeDataSource
 import eu.kalnarapps.kalnardict.data.entities.DictionaryDisplayTypeData
+import eu.kalnarapps.kalnardict.data.entities.SupportedDictionaryDisplayType
+import eu.kalnarapps.kalnardict.data.model.DisplayType
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -41,6 +43,20 @@ class DisplayTypeDaoAdapter(
         displayTypePreferencesDao.setDisplayTypeForDictionary(
             dictionaryId,
             displayTypeData.id
+        )
+    }
+
+    override suspend fun addSupportedDisplayTypeForDictionaryById(
+        dictionaryId: Int,
+        displayTypesData: List<DictionaryDisplayTypeDataEntry>
+    ) {
+        supportedTypesDao.insertDisplayTypes(
+            displayTypesData.mapNotNull {
+                SupportedDictionaryDisplayType(
+                    dictionaryId = dictionaryId,
+                    id = DisplayType.fromId(it.id) ?: return@mapNotNull null
+                )
+            }
         )
     }
 }

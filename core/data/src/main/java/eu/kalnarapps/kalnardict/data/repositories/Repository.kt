@@ -131,6 +131,7 @@ class Repository(
                                         emit(
                                             DataOperationResult.Success(
                                                 ImportProgress(
+                                                    dictionaryId = dictionaryId.toInt(),
                                                     totalRowCount = readRowCountResult.data,
                                                     registeredCount = processedRowNumbers
                                                 )

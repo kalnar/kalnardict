@@ -1,6 +1,5 @@
 package eu.kalnarapps.kalnardict.data.datasources.dictionary
 
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 import kotlinx.coroutines.flow.Flow
 
@@ -11,5 +10,9 @@ interface DictionaryDisplayTypeDataSource {
     suspend fun setDisplayTypeForDictionaryById(
         dictionaryId: Int,
         displayTypeData: DictionaryDisplayTypeDataEntry
+    )
+    suspend fun addSupportedDisplayTypeForDictionaryById(
+        dictionaryId: Int,
+        displayTypesData: List<DictionaryDisplayTypeDataEntry>
     )
 }

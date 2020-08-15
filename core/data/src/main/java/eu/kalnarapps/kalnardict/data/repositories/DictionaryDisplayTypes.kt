@@ -40,6 +40,16 @@ class DictionaryDisplayTypes(
         )
     }
 
+    override suspend fun addDisplayTypesFor(
+        dictionaryId: Int,
+        displayTypes: List<DictionaryDisplayType>
+    ) {
+        dictionaryDisplayTypeDataSource.addSupportedDisplayTypeForDictionaryById(
+            dictionaryId = dictionaryId,
+            displayTypesData = displayTypes.map { displayTypeDomainMapper.toData(it) }
+        )
+    }
+
     override fun getSupportedDisplayTypesFor(
         dictionary: Dictionary
     ): Flow<List<DictionaryDisplayType>> {

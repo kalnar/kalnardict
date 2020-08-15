@@ -29,4 +29,9 @@ interface SupportedDisplayTypesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDisplayType(dictionaryDisplayType: SupportedDictionaryDisplayType): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertDisplayTypes(
+        dictionaryDisplayTypes: List<SupportedDictionaryDisplayType>
+    ): List<Long>
 }

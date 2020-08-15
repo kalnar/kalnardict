@@ -70,6 +70,7 @@ val useCaseModule = module {
     }
     single {
         RegisterNewDictionary(
+            displayTypeRepository = get(),
             dictionaryRepository = get(),
             languageRepository = get()
         ) as RegisterNewDictionaryUseCase
