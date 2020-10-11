@@ -42,6 +42,7 @@ class DictionaryRegistrationStatusDialog : DialogFragment() {
         dialog?.setOnDismissListener {
             viewModel.cancelImports()
         }
+        dialog?.setCanceledOnTouchOutside(false)
     }
 
     private fun View.setUpView() {
