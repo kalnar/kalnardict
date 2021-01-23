@@ -1,6 +1,6 @@
-package eu.kalnarapps.kalnardict.android.utils.error
+package eu.kalnarapps.kalnardict.presentation.models.errors
 
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 
 data class ErrorFromUi(
     val logMessage: String,

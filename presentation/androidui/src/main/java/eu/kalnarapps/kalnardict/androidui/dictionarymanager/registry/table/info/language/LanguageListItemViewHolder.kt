@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 
 class LanguageListItemViewHolder(

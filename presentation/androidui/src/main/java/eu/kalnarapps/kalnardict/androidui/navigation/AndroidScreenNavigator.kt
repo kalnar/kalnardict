@@ -6,6 +6,8 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryFragmentArgs
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog.DictionaryRegistrationStatusDialogArgs
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
+import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNavigator
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import org.koin.core.KoinComponent
 
 class AndroidScreenNavigator(

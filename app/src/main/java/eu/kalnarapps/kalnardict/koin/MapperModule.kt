@@ -1,7 +1,7 @@
 package eu.kalnarapps.kalnardict.koin
 
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper.LanguageMapper
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.mappers.language.LanguageMapper
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.Word
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainMapper

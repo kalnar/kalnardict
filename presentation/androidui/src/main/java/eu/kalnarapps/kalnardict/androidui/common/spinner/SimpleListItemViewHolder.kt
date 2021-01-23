@@ -5,10 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
-import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.presentation.models.common.SimpleListItem
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 
 class SimpleListItemViewHolder(
     inflater: LayoutInflater, parent: ViewGroup?

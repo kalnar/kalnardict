@@ -8,10 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
-import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNavigator
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -33,11 +33,11 @@ abstract class BaseFragment<UiModel> : Fragment() {
     private fun listenToErrors() {
         viewModel.error.observe(viewLifecycleOwner, Observer {
             uiLogger.logErrorFromUi(it)
-            when (it.errorFeedback) {
+            when (val feedBack = it.errorFeedback) {
                 is ErrorUiFeedBack.ShowSnackBar -> TODO()
                 ErrorUiFeedBack.OnlyLog -> Unit
-                is ErrorUiFeedBack.ShowToast -> showToast(it.errorFeedback.msg)
-                is ErrorUiFeedBack.Navigate -> navigator.execute(it.errorFeedback.navCommand)
+                is ErrorUiFeedBack.ShowToast -> showToast(feedBack.msg)
+                is ErrorUiFeedBack.Navigate -> navigator.execute(feedBack.navCommand)
             }.exhaustive
         })
     }

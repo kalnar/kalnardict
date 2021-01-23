@@ -12,8 +12,8 @@ import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.model.NewChangeObserver
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEventObserver
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryViewModel
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.RegistryError
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 
 

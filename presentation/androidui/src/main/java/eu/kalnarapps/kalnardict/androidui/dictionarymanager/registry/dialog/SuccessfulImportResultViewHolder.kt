@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableStatus
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableStatus
 
 class SuccessfulImportResultViewHolder(
     inflater: LayoutInflater, parent: ViewGroup

@@ -4,44 +4,38 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableProgress
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableStatus
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegistryError
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
-import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
-import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
-import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
-import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
+import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewDictionaryUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
+import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.languages.RegisterLanguageUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.DictionaryRegistryState
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableStatus
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.NewDictionaryInfoUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.RegisterDictionaryUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.RegistryError
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DictionaryRegistryViewModel(
     dbPath: String,
-    loadDbMetaInfoOnDb: ReadExternalDbUseCase,
-    private val registerNewDictionary: RegisterNewDictionaryUseCase,
-    private val listAvailableLanguages: ListRegisteredLanguagesUseCase,
-    private val addNewLanguage: RegisterLanguageUseCase,
-    private val languageDomainMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
-    private val languageUiMapper: UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>,
+    loadDbMetaInfoOnDb: GetExternalDbInfoUseCaseForUi,
+    private val registerNewDictionary: RegisterNewDictionaryUseCaseFromUi,
+    private val listAvailableLanguages: ListRegisteredLanguagesUseCaseForUi,
+    private val addNewLanguage: RegisterLanguageUseCaseFromUi,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     uiLogger: UiLogger
 ) : BaseViewModel<DictionaryRegistryState>(
@@ -56,18 +50,13 @@ class DictionaryRegistryViewModel(
     init {
         viewModelScope.launch {
             val metaInfoFetch = loadDbMetaInfoOnDb(dbPath)
-            val availableLanguages = listAvailableLanguages().map {
-                languageDomainMapper.toUiModel(it)
-            }
+            val availableLanguages = listAvailableLanguages()
             setUiState(
                 DictionaryRegistryState(
                     dbPath = dbPath,
                     registerDictionaryUiModels = when (metaInfoFetch) {
                         is DataOperationResult.Success -> metaInfoFetch.data.map {
-                            RegisterDictionaryUi(
-                                it.toExternalTableUiInfo(),
-                                availableLanguages
-                            )
+                            RegisterDictionaryUi(it, availableLanguages)
                         }
                         is DataOperationResult.Failure -> {
                             postError(
@@ -78,9 +67,7 @@ class DictionaryRegistryViewModel(
                             emptyList()
                         }
                     },
-                    availableLanguages = listAvailableLanguages().map {
-                        languageDomainMapper.toUiModel(it)
-                    }
+                    availableLanguages = listAvailableLanguages()
                 )
             )
         }
@@ -144,27 +131,28 @@ class DictionaryRegistryViewModel(
 
     private suspend fun registerDictionary(externalTableUiInfo: ExternalTableUiInfo) {
         // TODO: this check should happen in registerDictionaries or onRegisterDictionariesClicked
-        if (externalTableUiInfo.languageFromUi is SelectableLanguage.LanguageUi &&
-            externalTableUiInfo.languageToUi is SelectableLanguage.LanguageUi
+        val languageFrom = externalTableUiInfo.languageFromUi
+        val languageTo = externalTableUiInfo.languageToUi
+        if (languageFrom is SelectableLanguage.LanguageUi &&
+            languageTo is SelectableLanguage.LanguageUi
         ) {
             registerNewDictionary(
-                dbUri = state.value?.dbPath.orEmpty(),
-                originalName = externalTableUiInfo.originalTableName,
-                savingName = externalTableUiInfo.dictionaryName,
-                languageFrom = externalTableUiInfo.languageFromUi.code,
-                languageTo = externalTableUiInfo.languageToUi.code
+                NewDictionaryInfoUi(
+                    state.value?.dbPath.orEmpty(),
+                    originalTableName = externalTableUiInfo.originalTableName,
+                    originalLanguageFrom = externalTableUiInfo.originalLanguageFrom,
+                    originalLanguageTo = externalTableUiInfo.originalLanguageTo,
+                    dictionaryName = externalTableUiInfo.dictionaryName,
+                    languageFromUi = languageFrom,
+                    languageToUi = languageTo
+                )
             ).collect {
                 when (it) {
                     is DataOperationResult.Success -> {
                         postUiStateOnMainThread {
                             this.copy(
                                 importProgress = this.importProgress.toMutableMap().apply {
-                                    this[externalTableUiInfo] = DataOperationResult.Success(
-                                        ImportTableProgress(
-                                            totalRows = it.data.totalRowCount,
-                                            registeredRows = it.data.registeredCount
-                                        )
-                                    )
+                                    this[externalTableUiInfo] = DataOperationResult.Success(it.data)
                                 }
                             )
                         }
@@ -252,9 +240,7 @@ class DictionaryRegistryViewModel(
     fun onNewLanguageRegistryClicked(languageUi: SelectableLanguage.LanguageUi) {
         viewModelScope.launch {
             withContext(dispatcherProvider.io()) {
-                val operationResult = addNewLanguage(
-                    language = languageUiMapper.toDomainModel(languageUi)
-                )
+                val operationResult = addNewLanguage(languageUi)
                 when (operationResult) {
                     OperationResult.Success -> {
                         updateAvailableLanguages()
@@ -276,9 +262,7 @@ class DictionaryRegistryViewModel(
 
     private suspend fun updateAvailableLanguages() {
         state.value?.let { state ->
-            val availableLanguages = listAvailableLanguages().map {
-                languageDomainMapper.toUiModel(it)
-            }
+            val availableLanguages = listAvailableLanguages()
             postUiState(
                 state = state.copy(
                     availableLanguages = availableLanguages,
@@ -302,14 +286,5 @@ class DictionaryRegistryViewModel(
 //        TODO("Not yet implemented")
     }
 
-}
-
-// TODO: refactor to DomainToUiModel mapper
-private fun ExternalDatabaseTable.toExternalTableUiInfo(): ExternalTableUiInfo {
-    return ExternalTableUiInfo(
-        originalTableName = this.name,
-        originalLanguageFrom = this.languageFrom,
-        originalLanguageTo = this.languageTo
-    )
 }
 

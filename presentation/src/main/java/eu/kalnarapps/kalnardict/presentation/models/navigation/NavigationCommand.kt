@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.androidui.navigation
+package eu.kalnarapps.kalnardict.presentation.models.navigation
 
 sealed class NavigationCommand {
     object Back : NavigationCommand()

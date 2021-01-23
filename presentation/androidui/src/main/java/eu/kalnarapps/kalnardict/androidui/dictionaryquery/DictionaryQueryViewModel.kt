@@ -5,36 +5,35 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
 import eu.kalnarapps.kalnardict.androidui.common.model.UiEvent
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.CurrentWord
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.domain.usecases.ChangeDictLanguageUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
-import eu.kalnarapps.kalnardict.presentation.interactors.GetQueryModesUseCaseForUi
-import eu.kalnarapps.kalnardict.presentation.interactors.ListRegisteredDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
+import eu.kalnarapps.kalnardict.presentation.interactors.query.GetQueryModesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.query.SearchQueryUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.query.UpdateQueryModeUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.words.GetTranslationUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.CurrentWord
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionarySelection
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -45,11 +44,11 @@ import kotlinx.coroutines.withContext
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: SearchQueryUseCaseFromUi,
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi,
-    private val updateCurrentLanguageUseCase: ChangeDictLanguageUseCase,
+    private val updateCurrentLanguageUseCase: ChangeDictionaryUseCaseFromUi,
     private val getCurrentDictionary: GetCurrentDictionaryUseCaseForUi,
-    private val getTranslation: GetTranslationUseCase,
+    private val getTranslation: GetTranslationUseCaseForUi,
     private val getQueryModesForUi: GetQueryModesUseCaseForUi,
-    private val updateQueryModeUseCase: UpdateQueryModeUseCase,
+    private val updateQueryModeUseCase: UpdateQueryModeUseCaseFromUi,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     uiLogger: UiLogger
 ) : BaseViewModel<DictionaryQueryState>(

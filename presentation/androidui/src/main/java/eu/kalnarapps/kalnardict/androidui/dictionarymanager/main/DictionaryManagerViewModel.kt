@@ -3,13 +3,13 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
-import eu.kalnarapps.kalnardict.presentation.interactors.ListManageableDictionariesUseCaseForUi
-import eu.kalnarapps.kalnardict.presentation.interactors.UpdateDictionaryUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.UpdateDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryManagerState
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi

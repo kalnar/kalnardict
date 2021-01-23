@@ -1,6 +1,6 @@
-package eu.kalnarapps.kalnardict.android.utils
+package eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers
 
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
 
 interface UiLogger {
     fun log(msg: String)

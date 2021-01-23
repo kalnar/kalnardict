@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model
+package eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
@@ -18,6 +18,17 @@ data class ExternalTableUiInfo(
     val languageFromUi: SelectableLanguage = SelectableLanguage.NotSet,
     val originalLanguageTo: String,
     val languageToUi: SelectableLanguage = SelectableLanguage.NotSet,
+    val isSelected: Boolean = false
+)
+
+data class NewDictionaryInfoUi(
+    val dbPath: String,
+    val originalTableName: String,
+    val dictionaryName: String = originalTableName,
+    val originalLanguageFrom: String,
+    val languageFromUi: SelectableLanguage.LanguageUi,
+    val originalLanguageTo: String,
+    val languageToUi: SelectableLanguage.LanguageUi,
     val isSelected: Boolean = false
 )
 

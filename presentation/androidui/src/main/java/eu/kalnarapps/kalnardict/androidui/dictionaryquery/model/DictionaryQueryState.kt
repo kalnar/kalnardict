@@ -13,19 +13,3 @@ data class DictionaryQueryState(
     val dictionaryUiModels: LoadableContent<List<DictionaryUiModel>> = LoadableContent.UnInitialized,
     val translationText: LoadableContent<DataOperationResult<UiEvent<String>>> = LoadableContent.UnInitialized
 )
-
-sealed class CurrentWord {
-    object NotSelected : CurrentWord()
-    class Selected(val word: WordView) : CurrentWord()
-}
-
-
-data class QueryResult(
-    val wordList: LoadableContent<List<WordView>>,
-    val dictionary: LoadableContent<DictionaryUiModel>
-)
-
-data class DictionaryUiInfo(
-    val dictionaryList: LoadableContent<List<DictionaryUiModel>>,
-    val current: LoadableContent<DictionaryUiModel>
-)

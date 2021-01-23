@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.RegisterDictionaryUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.language.LanguageSelectorSpinnerAdapter
 
 class TableInfoViewHolder(

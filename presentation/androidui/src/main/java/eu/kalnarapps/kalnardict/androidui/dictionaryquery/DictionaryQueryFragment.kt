@@ -20,7 +20,6 @@ import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleListAdapter
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleTextListWindowBuilder
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
-import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.QueryResult
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.dropdownchoice.DictionarySelectorSpinnerAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.QueryResultListAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.resultlist.listeners.OnWordClickedListener
@@ -28,6 +27,7 @@ import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import kotlinx.android.synthetic.main.dictionary_query_fragment.dictionary_query_loader
 import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
@@ -54,13 +54,13 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
         )
         queryResultObserver = Observer {
             uiLogger.log("updating list: $it")
-            when (it.wordList) {
+            when (val wordList = it.wordList) {
                 LoadableContent.UnInitialized,
                 LoadableContent.Loading -> Unit
                 is LoadableContent.Completed -> {
                     dictionary_query_loader.visibility = View.GONE
                     query_result_list_view.visibility = View.VISIBLE
-                    queryResultAdapter?.updateWords(it.wordList.content)
+                    queryResultAdapter?.updateWords(wordList.content)
                 }
             }.exhaustive
         }

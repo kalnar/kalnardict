@@ -6,9 +6,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableStatus
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableStatus
 
 class ProcessingImportViewHolder(
     inflater: LayoutInflater, parent: ViewGroup
@@ -32,15 +32,14 @@ class ProcessingImportViewHolder(
             R.string.table_registration_dialog_processing_status_message,
             importTableResult.table.originalTableName
         )
-        when (importTableResult.progress) {
+        when (val progress = importTableResult.progress) {
             is DataOperationResult.Success -> {
                 progressTextView.text =
-                    "${importTableResult.progress.data.registeredRows}/" +
-                            "${importTableResult.progress.data.totalRows}"
-                if (progressBarHorizontal.max != importTableResult.progress.data.totalRows) {
-                    progressBarHorizontal.max = importTableResult.progress.data.totalRows
+                    "${progress.data.registeredRows}/${progress.data.totalRows}"
+                if (progressBarHorizontal.max != progress.data.totalRows) {
+                    progressBarHorizontal.max = progress.data.totalRows
                 }
-                progressBarHorizontal.progress = importTableResult.progress.data.registeredRows
+                progressBarHorizontal.progress = progress.data.registeredRows
             }
             is DataOperationResult.Failure -> Unit
         }.exhaustive

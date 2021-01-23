@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.presentation.interactors
+package eu.kalnarapps.kalnardict.presentation.interactors.dictionary
 
 import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 
 
 class LanguageSelectorSpinnerAdapter(

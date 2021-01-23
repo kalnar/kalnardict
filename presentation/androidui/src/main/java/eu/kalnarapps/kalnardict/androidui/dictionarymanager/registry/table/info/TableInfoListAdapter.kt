@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.RegisterDictionaryUi
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.RegisterDictionaryUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 
 class TableInfoListAdapter(
     list: List<RegisterDictionaryUi>,

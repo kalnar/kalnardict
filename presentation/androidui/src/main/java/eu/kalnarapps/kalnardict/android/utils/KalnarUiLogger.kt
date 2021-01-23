@@ -5,7 +5,8 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.FormatStrategy
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 
 
 class KalnarUiLogger : UiLogger {

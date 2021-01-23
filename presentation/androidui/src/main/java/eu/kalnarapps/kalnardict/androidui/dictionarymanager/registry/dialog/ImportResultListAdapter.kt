@@ -4,7 +4,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.dialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ImportTableStatus
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableStatus
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 
 class ImportResultListAdapter(

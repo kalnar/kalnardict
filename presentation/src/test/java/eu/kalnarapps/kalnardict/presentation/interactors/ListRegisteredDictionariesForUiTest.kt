@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.presentation.interactors
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeInfoUseCase
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesForUi
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.interactors.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.presentation.interactors.test.test

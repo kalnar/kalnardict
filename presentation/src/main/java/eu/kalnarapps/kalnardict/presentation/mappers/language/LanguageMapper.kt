@@ -1,6 +1,6 @@
-package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.mapper
+package eu.kalnarapps.kalnardict.presentation.mappers.language
 
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper

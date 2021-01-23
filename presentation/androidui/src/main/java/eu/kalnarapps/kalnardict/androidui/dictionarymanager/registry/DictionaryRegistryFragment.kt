@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
 import eu.kalnarapps.kalnardict.androidui.common.model.ChangeObserver
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.DictionaryRegistryState
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.DictionaryRegistryState
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.OnRegisterInfoUpdateListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
 import kotlinx.android.synthetic.main.dictionary_registry_fragment.dictionary_registry_new_language_button

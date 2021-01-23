@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.koin
 
 import androidx.navigation.NavController
 import eu.kalnarapps.kalnardict.androidui.navigation.AndroidScreenNavigator
-import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
+import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNavigator
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
 

@@ -2,26 +2,20 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
-import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
-import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.RegisterLanguageUseCase
-import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
-import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
-import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
+import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewDictionaryUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
+import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.languages.RegisterLanguageUseCaseFromUi
 
 class DictionaryRegistryViewModelFactory(
     private val dbPath: String,
-    private val loadDbMetaInfoOnDb: ReadExternalDbUseCase,
-    private val registerNewDictionary: RegisterNewDictionaryUseCase,
-    private val listAvailableLanguages: ListRegisteredLanguagesUseCase,
-    private val addNewLanguage: RegisterLanguageUseCase,
-    private val languageDomainMapper: DomainToUiMapper<DictLanguage, SelectableLanguage.LanguageUi>,
-    private val languageUiMapper: UiToDomainMapper<SelectableLanguage.LanguageUi, DictLanguage>,
+    private val loadDbMetaInfoOnDb: GetExternalDbInfoUseCaseForUi,
+    private val registerNewDictionary: RegisterNewDictionaryUseCaseFromUi,
+    private val listAvailableLanguages: ListRegisteredLanguagesUseCaseForUi,
+    private val addNewLanguage: RegisterLanguageUseCaseFromUi,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val uiLogger: UiLogger
 ) : AbstractDictionaryRegistryViewModelFactory {
@@ -32,8 +26,6 @@ class DictionaryRegistryViewModelFactory(
                 loadDbMetaInfoOnDb = loadDbMetaInfoOnDb,
                 registerNewDictionary = registerNewDictionary,
                 listAvailableLanguages = listAvailableLanguages,
-                languageDomainMapper = languageDomainMapper,
-                languageUiMapper = languageUiMapper,
                 addNewLanguage = addNewLanguage,
                 dispatcherProvider = dispatcherProvider,
                 uiLogger = uiLogger

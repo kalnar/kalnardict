@@ -3,11 +3,11 @@ package eu.kalnarapps.kalnardict.androidui.common
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 

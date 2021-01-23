@@ -1,4 +1,4 @@
-package eu.kalnarapps.kalnardict.presentation.interactors
+package eu.kalnarapps.kalnardict.presentation.interactors.query
 
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModeUseCase

@@ -1,7 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.test
 
-import eu.kalnarapps.kalnardict.android.utils.UiLogger
-import eu.kalnarapps.kalnardict.android.utils.error.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
 
 
 class TestLogger : UiLogger {
