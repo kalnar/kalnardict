@@ -1,0 +1,39 @@
+digraph {
+  graph [label="kalnarDict\n ",labelloc=t,fontsize=30,ranksep=1.4];
+  node [style=filled, fillcolor="#bbbbbb"];
+  rankdir=TB;
+
+  # Projects
+
+  ":app" [shape=box, fillcolor="#baffc9"];
+  ":core:common" [fillcolor="#ffb3ba"];
+  ":core:data" [fillcolor="#ffb3ba"];
+  ":core:domain" [fillcolor="#ffb3ba"];
+  ":core:interactors" [fillcolor="#ffb3ba"];
+  ":localdata" [fillcolor="#baffc9"];
+  ":presentation" [fillcolor="#ffb3ba"];
+  ":presentation:androidui" [fillcolor="#baffc9"];
+
+  {rank = same; ":app";}
+
+  # Dependencies
+
+  ":app" -> ":core:common" [style=dotted]
+  ":app" -> ":presentation" [style=dotted]
+  ":app" -> ":presentation:androidui" [style=dotted]
+  ":app" -> ":core:interactors" [style=dotted]
+  ":app" -> ":core:domain" [style=dotted]
+  ":app" -> ":core:data" [style=dotted]
+  ":app" -> ":localdata" [style=dotted]
+  ":localdata" -> ":core:data" [style=dotted]
+  ":localdata" -> ":core:common" [style=dotted]
+  ":presentation" -> ":core:common" [style=dotted]
+  ":presentation" -> ":core:domain" [style=dotted]
+  ":core:data" -> ":core:domain" [style=dotted]
+  ":core:data" -> ":core:common" [style=dotted]
+  ":core:domain" -> ":core:common" [style=dotted]
+  ":core:interactors" -> ":core:domain" [style=dotted]
+  ":core:interactors" -> ":core:common" [style=dotted]
+  ":presentation:androidui" -> ":core:common" [style=dotted]
+  ":presentation:androidui" -> ":presentation" [style=dotted]
+}
