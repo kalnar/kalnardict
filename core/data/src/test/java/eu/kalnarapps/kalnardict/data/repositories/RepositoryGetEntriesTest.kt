@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 
-@ExperimentalCoroutinesApi
+
 class RepositoryGetEntriesTest {
 
     private val languageMapper = LanguageDataMapper()

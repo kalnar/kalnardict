@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@ExperimentalCoroutinesApi
+
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: SearchQueryUseCaseFromUi,
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi,

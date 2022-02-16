@@ -32,7 +32,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-@ExperimentalCoroutinesApi
+
 val dataModule: Module = module {
 
     single { DefaultDbInitializer as AppDbDataInitializer }

@@ -12,7 +12,7 @@ import org.hamcrest.core.IsInstanceOf
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+
 class GetTranslationTest {
 
     @get:Rule

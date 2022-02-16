@@ -21,7 +21,7 @@ import org.koin.core.context.stopKoin
 
 class KalnarDictApplication : Application() {
 
-    @ExperimentalCoroutinesApi
+
     override fun onCreate() {
         super.onCreate()
         startKoin {

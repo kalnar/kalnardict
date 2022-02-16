@@ -20,7 +20,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
 
-@FlowPreview
+
 class ListRegisteredDictionariesForUiTest {
 
     private val listRegisteredDictionaries = mock(
@@ -35,7 +35,7 @@ class ListRegisteredDictionariesForUiTest {
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
 
-    @ExperimentalCoroutinesApi
+
     @Test
     fun when_listing_dictionaries_for_ui_then_list_them() {
 

@@ -17,7 +17,7 @@ import org.hamcrest.collection.IsEmptyCollection
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+
 class RoomQueryExecutorTest {
 
     @get:Rule

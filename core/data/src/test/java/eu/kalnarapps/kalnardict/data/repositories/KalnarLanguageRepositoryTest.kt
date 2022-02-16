@@ -19,7 +19,7 @@ import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+
 class KalnarLanguageRepositoryTest {
 
     private val languageMapper = LanguageDataMapper()

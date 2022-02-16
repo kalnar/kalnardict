@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@ExperimentalCoroutinesApi
+
 class DictionaryManagerViewModel(
     private val listRegisteredDictionariesUseCase: ListManageableDictionariesUseCaseForUi,
     private val updateRenderingStrategy: UpdateDictionaryUseCaseFromUi,

@@ -20,7 +20,7 @@ import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 
-@ExperimentalCoroutinesApi
+
 class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
 
     override val viewModel: DictionaryQueryViewModel by navGraphViewModels(
@@ -36,7 +36,7 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
         return inflater.inflate(R.layout.dictionary_translation_fragment, container, false)
     }
 
-    @ExperimentalCoroutinesApi
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

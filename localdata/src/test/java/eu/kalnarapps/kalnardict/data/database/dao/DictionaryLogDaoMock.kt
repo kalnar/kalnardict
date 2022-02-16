@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-@ExperimentalCoroutinesApi
+
 class DictionaryLogDaoMock : DictionaryLogDao {
     private val mockDictionaryInfoMap = hashMapOf<Int, DictionaryLogEntry>()
     private val dictionaryChannel = Channel<HashMap<Int, DictionaryLogEntry>>()

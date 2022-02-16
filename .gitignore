@@ -20,3 +20,5 @@
 *.swp
 temp/
 /projectFilesBackup/.idea/workspace.xml
+
+*.aab

@@ -10,9 +10,7 @@ import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 
 class AppConfigRepository(
@@ -20,7 +18,7 @@ class AppConfigRepository(
     private val dictionaryDataSource: DictionaryDataSource,
     private val languageDataSource: LanguageDataSource
 ) : ConfigurationRepository {
-    @FlowPreview
+
     override fun getCurrentDictionary(): Flow<CurrentDictionary> {
         return configurationDataSource.getLastDictionaryId().map {
             dictionaryDataSource.getDictionaryById(it)

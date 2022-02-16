@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_lis
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
-@ExperimentalCoroutinesApi
+
 class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
 
     private var queryResultAdapter: QueryResultListAdapter? = null
