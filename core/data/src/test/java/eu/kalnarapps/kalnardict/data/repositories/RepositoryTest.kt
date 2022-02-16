@@ -36,7 +36,7 @@ import org.junit.Rule
 import org.junit.Test
 
 
-@ExperimentalCoroutinesApi
+
 class RepositoryTest {
 
     private val languageMapper = LanguageDataMapper()

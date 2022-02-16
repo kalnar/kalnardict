@@ -14,7 +14,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 
-@ExperimentalCoroutinesApi
+
 class RegisterNewDictionaryTestNew {
 
     @get:Rule

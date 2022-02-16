@@ -35,7 +35,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
-@ExperimentalCoroutinesApi
+
 class DictionaryQueryViewModelQueryModeChangTeest {
 
     @get:Rule

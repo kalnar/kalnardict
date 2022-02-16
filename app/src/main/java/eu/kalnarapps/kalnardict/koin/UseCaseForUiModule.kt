@@ -17,7 +17,7 @@ import eu.kalnarapps.kalnardict.presentation.interactors.words.GetTranslationUse
 import kotlinx.coroutines.FlowPreview
 import org.koin.dsl.module
 
-@FlowPreview
+
 val useCaseForUiModule = module {
     single {
         GetQueryModesForUi(

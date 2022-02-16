@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 
-@ExperimentalCoroutinesApi
+
 @RunWith(AndroidJUnit4::class)
 class SupportedDisplayTypesDaoTest {
     private lateinit var supportedDisplayTypesDao: SupportedDisplayTypesDao

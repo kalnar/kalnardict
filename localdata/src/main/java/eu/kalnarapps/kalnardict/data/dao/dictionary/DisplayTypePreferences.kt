@@ -8,7 +8,7 @@ import eu.kalnarapps.kalnardict.data.model.DisplayType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
+
 class DisplayTypePreferences(
     context: Context
 ) : DisplayTypePreferencesDao {

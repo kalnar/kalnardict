@@ -14,7 +14,7 @@ import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+
 class AppConfigRepositoryTest {
 
     @get:Rule

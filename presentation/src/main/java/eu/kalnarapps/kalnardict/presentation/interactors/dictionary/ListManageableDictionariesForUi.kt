@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 
-@FlowPreview
+
 class ListManageableDictionariesForUi(
     private val listRegisteredDictionaries: ListRegisteredDictionariesUseCase,
     private val getDictionaryWithDisplayTypeInfoUseCase: GetDictionaryWithDisplayTypeInfoUseCase,

@@ -28,7 +28,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-@ExperimentalCoroutinesApi
+
 open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
 
     override val viewModel: DictionaryManagerViewModel by viewModel()

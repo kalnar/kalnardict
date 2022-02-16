@@ -33,7 +33,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
-@ExperimentalCoroutinesApi
+
 class DictionaryQueryViewModelQueryStringChangeTest {
 
     @get:Rule

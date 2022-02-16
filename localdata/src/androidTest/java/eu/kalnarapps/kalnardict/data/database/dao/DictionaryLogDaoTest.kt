@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 
-@ExperimentalCoroutinesApi
+
 @RunWith(AndroidJUnit4::class)
 class DictionaryLogDaoTest {
     private lateinit var dictionaryLogDao: DictionaryLogDao

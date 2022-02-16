@@ -14,7 +14,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-@ExperimentalCoroutinesApi
+
 class GetDictionaryWithDisplayTypeInfoTest {
 
     @get:Rule

@@ -23,7 +23,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
-@ExperimentalCoroutinesApi
+
 class DictionaryManagerViewModelTest : KoinComponent {
 
     @get:Rule

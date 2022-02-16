@@ -9,7 +9,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+
 class QueryModeRepositoryTest {
 
     @get:Rule

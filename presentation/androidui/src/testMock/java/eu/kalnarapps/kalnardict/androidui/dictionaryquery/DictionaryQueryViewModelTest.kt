@@ -34,7 +34,7 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.Mockito.*
 
-@ExperimentalCoroutinesApi
+
 class DictionaryQueryViewModelTest {
 
     @get:Rule

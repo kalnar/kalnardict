@@ -11,7 +11,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-@FlowPreview
+
 class GetCurrentDictionaryForUi(
     private val getCurrentLanguageUseCase: GetLanguageUseCase,
     private val getDictionaryDisplayTypeInfo: GetDictionaryWithDisplayTypeUseCase,
