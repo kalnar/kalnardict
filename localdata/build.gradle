@@ -6,13 +6,10 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "29.0.2"
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -86,8 +83,6 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     kaptAndroidTest "androidx.room:room-compiler:$room_version"
 
-    implementation "android.arch.persistence.room:runtime:$room_version"
-    kapt "android.arch.persistence.room:compiler:$room_version"
     // room testing
     androidTestImplementation("androidx.room:room-testing:2.2.5") {
         exclude group: 'org.hamcrest'
