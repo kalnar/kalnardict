@@ -1,6 +1,6 @@
 package eu.kalnarapps.kalnardict.androidui.navigationscreen.model
 
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 
 data class NavigationItemView(
     val name: String,

@@ -11,7 +11,8 @@
         android:name=".KalnarDictMockApplication"
         android:label="@string/app_name_mock">
 
-        <activity android:name=".androidui.navigationscreen.TestActivity">
+        <activity android:name=".androidui.navigationscreen.TestActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

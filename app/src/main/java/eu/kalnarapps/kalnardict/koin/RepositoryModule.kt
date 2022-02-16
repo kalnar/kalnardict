@@ -18,7 +18,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val repositoryModule: Module = module {
-    // the order of LanguageRepository, DataToDomainOperationalMapper and Repository is be respected
+    // the order of LanguageRepository, DataToDomainOperationalMapper and Repository is to be respected
     single {
         KalnarLanguageRepository(
             languageDataSource = get(),
