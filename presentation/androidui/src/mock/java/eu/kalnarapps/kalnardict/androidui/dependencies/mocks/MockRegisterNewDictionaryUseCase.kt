@@ -24,8 +24,9 @@ class MockRegisterNewDictionaryUseCase() : RegisterNewDictionaryUseCase {
                 emit(
                     DataOperationResult.Success(
                         ImportProgress(
+                            0,
                             total,
-                            progressIndicator
+                            progressIndicator,
                         )
                     )
                 )
@@ -35,6 +36,7 @@ class MockRegisterNewDictionaryUseCase() : RegisterNewDictionaryUseCase {
                 emit(
                     DataOperationResult.Success(
                         ImportProgress(
+                            0,
                             total,
                             total
                         )

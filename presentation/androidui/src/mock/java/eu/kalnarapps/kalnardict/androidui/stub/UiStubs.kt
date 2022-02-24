@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.androidui.stub
 
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.ExternalTableUiInfo
-import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.model.SelectableLanguage
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 
 object UiStubs {
 

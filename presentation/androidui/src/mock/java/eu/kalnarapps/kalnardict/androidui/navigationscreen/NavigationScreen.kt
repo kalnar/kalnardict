@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.R
-import eu.kalnarapps.kalnardict.androidui.navigation.NavigationCommand
-import eu.kalnarapps.kalnardict.androidui.navigation.ScreenNavigator
 import eu.kalnarapps.kalnardict.androidui.navigationscreen.model.NavigationItemView
+import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNavigator
+import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.android.synthetic.mock.navigation_screen_fragment.list
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

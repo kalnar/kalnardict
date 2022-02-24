@@ -13,6 +13,7 @@ import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
 class MockDictionaryRepository : DictionaryRepository {
     private val dictDao = hashMapOf(
@@ -37,7 +38,8 @@ class MockDictionaryRepository : DictionaryRepository {
                 DataOperationResult.Success(
                     data = ImportProgress(
                         totalRowCount = 20,
-                        registeredCount = i
+                        registeredCount = i,
+                        dictionaryId = 1
                     )
                 )
             )
@@ -45,16 +47,20 @@ class MockDictionaryRepository : DictionaryRepository {
         }
     }
 
-    override suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase): DataOperationResult<List<ExternalDatabaseTable>> {
+    override suspend fun readMetaInfoFromExternalDb(
+        externalDatabase: ExternalDatabase
+    ): DataOperationResult<List<ExternalDatabaseTable>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun readRegisteredDictionaries(): List<Dictionary> {
-        return dictDao.keys.toList()
+    override fun readRegisteredDictionaries(): Flow<List<Dictionary>> {
+        return flowOf(dictDao.keys.toList())
     }
 
     override suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary> {
-        return Stubs.Domain.Dictionaries.englishAndFrenchDicts.find { it.id == dictionaryId }?.let {
+        return Stubs.Domain.Dictionaries.englishAndFrenchDicts.find {
+            it.id == dictionaryId
+        }?.let {
             DataOperationResult.Success(it)
         } ?: DataOperationResult.Failure(
             errorMessage = "no dictionaries found with given id: $dictionaryId"
