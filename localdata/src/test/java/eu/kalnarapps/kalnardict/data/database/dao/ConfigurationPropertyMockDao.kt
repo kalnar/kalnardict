@@ -26,7 +26,7 @@ class ConfigurationPropertyMockDao(
         return ConfigurationPropertyKey.fromString(key)?.let {
             ConfigurationProperty(
                 propertyKey = it.key,
-                propertyValue = propertyRegistry[it] ?: DataBaseConstants.UNINITIALIZED_PROPERTY
+                propertyValue = propertyRegistry[it] ?: DataBaseConstants.UNINITIALIZED_INT_PROPERTY.toString()
             )
         }
     }
