@@ -12,7 +12,7 @@ fun <T> Flow<T?>.test(scope: CoroutineScope): TestObserver<T> {
     return TestObserver(scope, this)
 }
 
-class NoEmissionException(msg: String) : Exception(p0 = msg)
+class NoEmissionException(msg: String) : Exception(msg)
 
 class TestObserver<T>(
     scope: CoroutineScope,
