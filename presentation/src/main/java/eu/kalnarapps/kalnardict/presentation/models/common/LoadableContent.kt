@@ -3,7 +3,7 @@ package eu.kalnarapps.kalnardict.presentation.models.common
 sealed class LoadableContent<out T> {
     object UnInitialized : LoadableContent<Nothing>()
     object Loading : LoadableContent<Nothing>()
-    class Completed<T>(val content: T) : LoadableContent<T>()
+    data class Completed<T>(val content: T) : LoadableContent<T>()
 }
 
 data class LoadingProgress(

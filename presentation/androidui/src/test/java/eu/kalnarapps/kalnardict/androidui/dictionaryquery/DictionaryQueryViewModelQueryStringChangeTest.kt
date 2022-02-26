@@ -16,8 +16,8 @@ import eu.kalnarapps.kalnardict.presentation.interactors.words.GetTranslationUse
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionarySelection
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.equalTo
@@ -29,9 +29,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.stub
 
 
 class DictionaryQueryViewModelQueryStringChangeTest {
@@ -83,9 +85,22 @@ class DictionaryQueryViewModelQueryStringChangeTest {
                 DictionarySelection.Current(UiStubs.Ui.Dictionaries.englishToEnglish)
             )
             `when`(getLanguageUseCase.invoke()).thenReturn(languageFlow)
-            `when`(searchQueryUseCase.invoke(Mockito.any())).thenReturn(
+            `when`(searchQueryUseCase.invoke(any())).thenReturn(
                 UiStubs.Ui.Words.words
             )
+            searchQueryUseCase.stub {
+                onBlocking {
+                    invoke(
+                        QueryUiModel(
+                            "1",
+                            UiStubs.Ui.Dictionaries.englishToEnglish,
+                            UiStubs.Ui.QueryMode.anywhere.copy(isSelected = true)
+                        )
+                    )
+                }.doReturn(
+                    UiStubs.Ui.Words.words.filter { it.baseForm.contains("1") }
+                )
+            }
             `when`(getQueryModesForUi()).thenReturn(
                 flowOf(
                     listOf(

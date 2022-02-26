@@ -3,14 +3,16 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
-import eu.kalnarapps.kalnardict.androidui.stub.Stubs
+import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.MockUpdateDictionaryUseCaseFromUi
+import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.not
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
+import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsIterableContaining
 import org.junit.After
 import org.junit.Before
@@ -43,7 +45,7 @@ class DictionaryManagerViewModelTest : KoinComponent {
                     module {
                         single {
                             DictionaryListMock().apply {
-                                addAll(Stubs.Domain.Dictionaries.englishAndFrenchDicts)
+                                addAll(UiStubs.ManageableDictionaries.manageableDictionaryViews)
                             }
                         }
                         viewModel {
@@ -51,7 +53,9 @@ class DictionaryManagerViewModelTest : KoinComponent {
                                 listRegisteredDictionariesUseCase = ListDictionariesMock(
                                     get()
                                 ),
-                                uiLogger = logger
+                                uiLogger = logger,
+                                updateRenderingStrategy = MockUpdateDictionaryUseCaseFromUi(),
+                                dispatcherProvider = TestDispatcherProvider
                             )
                         }
                     }
@@ -70,27 +74,24 @@ class DictionaryManagerViewModelTest : KoinComponent {
         testCoroutineRule.runBlockingTest {
 
             val viewModel: DictionaryManagerViewModel = getKoin().get()
-            val dicts = viewModel.getRegisteredDictionaries()
+            val dictsLiveData = viewModel.getRegisteredDictionaries()
+            dictsLiveData.observeForever {}
 
+            val content = dictsLiveData.value
             assertThat(
-                dicts,
+                content,
+                IsInstanceOf(LoadableContent.Completed::class.java)
+            )
+            assertThat(
+                (content as LoadableContent.Completed).content,
                 IsIterableContaining(
                     HasPropertyWithValue<String>(
                         "dictionaryName",
-                        containsString("english")
+                        equalTo(UiStubs.ManageableDictionaries.englishDictName)
                     )
                 )
             )
-            assertThat(
-                dicts, not(
-                    IsIterableContaining(
-                        HasPropertyWithValue<String>(
-                            "dictionaryName",
-                            containsString("russian")
-                        )
-                    )
-                )
-            )
+
         }
     }
 

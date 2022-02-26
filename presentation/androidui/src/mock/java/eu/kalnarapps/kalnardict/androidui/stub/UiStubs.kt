@@ -1,8 +1,11 @@
 package eu.kalnarapps.kalnardict.androidui.stub
 
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
+import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
+import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 
 object UiStubs {
 
@@ -46,5 +49,29 @@ object UiStubs {
             languageFrom = "ru",
             languageTo = "ru"
         )
+    }
+
+    object ManageableDictionaries {
+
+        val englishDictName = "English English dictionary"
+        val englishDict = ManageableDictionaryView(
+            dictionaryName = englishDictName,
+            sourceLanguage = "English",
+            destinationLanguage = "English",
+            currentRenderingStrategy = RenderingStrategy("html", "html"),
+            availableRenderingStrategy = listOf(
+                RenderingStrategy("html", "html"),
+                RenderingStrategy("text", "text")
+            ),
+            updateInfo = DictionaryUpdateUi.Info(
+                1,
+                RenderingStrategy("html", "html")
+            ),
+            dictionaryId = 1
+        )
+
+
+        val manageableDictionaryViews = listOf(englishDict)
+
     }
 }

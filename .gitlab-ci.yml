@@ -109,3 +109,16 @@ debugTestsLocalData:
   stage: test
   script:
     - ./gradlew -Pci --console=plain :localdata:testFullDebugUnitTest
+
+debugUnitTestAndroidui:
+  interruptible: false
+  stage: test
+  script:
+    - ./gradlew -Pci --console=plain :presentation:androidui:testFullDebugUnitTest
+
+debugUnitTestPresentation:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :presentation:test

@@ -4,7 +4,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
-import eu.kalnarapps.kalnardict.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 
 object UiUnitTestStubs {
     const val WRONG_WORD_ID_FOR_DICTIONARY: String =
