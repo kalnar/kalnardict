@@ -40,7 +40,7 @@ abstract class BaseViewModel<UiModel>(
             currentState?.let {
                 val newState = stateMapper(it)
                 logger.d("vm", "new state: $newState")
-                _state.postValue(newState)
+                _state.postValue(newState!!)
             }
         }
     }

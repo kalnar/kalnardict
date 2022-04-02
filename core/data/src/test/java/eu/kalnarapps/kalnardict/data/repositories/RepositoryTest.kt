@@ -21,7 +21,6 @@ import eu.kalnarapps.kalnardict.data.validExternalResource
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat

@@ -66,12 +66,14 @@ before_script:
 lintFullDebug:
   interruptible: true
   stage: build
+  when: manual
   script:
     - ./gradlew -Pci --console=plain :app:lintFullDebug -PbuildDir=lint
 
 lintMockDebug:
   interruptible: true
   stage: build
+  when: manual
   script:
     - ./gradlew -Pci --console=plain :app:lintMockDebug -PbuildDir=lint
 
@@ -81,14 +83,57 @@ assembleDebug:
   stage: build
   script:
     - ./gradlew assembleDebug --stacktrace
+  when: manual
   artifacts:
     paths:
       - app/build/outputs/
 
 # Run all tests, if any fails, interrupt the pipeline(fail it)
-debugTests:
+debugTestsApp:
   interruptible: false
   stage: test
+  when: manual
   script:
     - ./gradlew -Pci --console=plain :app:testFullDebugUnitTest
 
+debugTestsCoreData:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :core:data:test
+
+debugTestsCoreInteractors:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :core:interactors:test
+
+debugTestsData:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :core:data:test
+
+debugTestsLocalData:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :localdata:testFullDebugUnitTest
+
+debugUnitTestAndroidui:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :presentation:androidui:testFullDebugUnitTest
+
+debugUnitTestPresentation:
+  interruptible: false
+  stage: test
+  when: manual
+  script:
+    - ./gradlew -Pci --console=plain :presentation:test

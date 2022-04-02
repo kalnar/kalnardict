@@ -18,8 +18,8 @@ import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionarySelection
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -32,8 +32,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.stub
 
 
 class DictionaryQueryViewModelQueryModeChangTeest {
@@ -67,14 +71,16 @@ class DictionaryQueryViewModelQueryModeChangTeest {
 
     private lateinit var viewModel: DictionaryQueryViewModel
 
+    private lateinit var annotations: AutoCloseable
+
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
+        annotations = MockitoAnnotations.openMocks(this)
     }
 
     @After
     fun tearDown() {
-        MockitoAnnotations.openMocks(this).close()
+        annotations.close()
     }
 
     @Test
@@ -85,9 +91,24 @@ class DictionaryQueryViewModelQueryModeChangTeest {
                 DictionarySelection.Current(UiStubs.Ui.Dictionaries.englishToEnglish)
             )
             `when`(getLanguageUseCase.invoke()).thenReturn(languageFlow)
+
             `when`(searchQueryUseCase.invoke(any())).thenReturn(
                 UiStubs.Ui.Words.words
             )
+            searchQueryUseCase.stub {
+                onBlocking {
+                    invoke(
+                        QueryUiModel(
+                            "2",
+                            UiStubs.Ui.Dictionaries.englishToEnglish,
+                            UiStubs.Ui.QueryMode.anywhere.copy(isSelected = true)
+                        )
+                    )
+                }.doReturn(
+                    UiStubs.Ui.Words.words.filter { it.baseForm.contains("2") }
+                )
+            }
+
             `when`(getQueryModesForUi()).thenReturn(
                 flowOf(
                     listOf(

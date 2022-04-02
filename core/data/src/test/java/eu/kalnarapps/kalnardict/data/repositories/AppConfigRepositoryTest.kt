@@ -7,6 +7,7 @@ import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.repositories.configuration.AppConfigRepository
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.data.test.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.core.IsInstanceOf
@@ -30,11 +31,16 @@ class AppConfigRepositoryTest {
                     dictionaryDataSource = MockDictionaryDataSource(),
                     languageDataSource = MockLanguageDataSource()
                 )
-            val language = repository.getCurrentDictionary()
-            assertThat(
-                language,
-                IsInstanceOf(CurrentDictionary.DictionaryNotSet::class.java)
-            )
+            val testCollector = repository.getCurrentDictionary().test(scope = this)
+            try {
+                testCollector.assertThatLastValue(
+                    equalTo(
+                        CurrentDictionary.DictionaryNotSet
+                    )
+                )
+            } finally {
+                testCollector.finish()
+            }
 
         }
     }
@@ -53,10 +59,18 @@ class AppConfigRepositoryTest {
                 Stubs.Dictionaries.frenchEnglishDictionary
             )
 
-            assertThat(
-                (repository.getCurrentDictionary() as CurrentDictionary.SetDictionary).dictionary,
-                equalTo(Stubs.Dictionaries.frenchEnglishDictionary)
-            )
+            val testCollector = repository.getCurrentDictionary().test(scope = this)
+            try {
+                testCollector.assertThatLastValue(
+                    equalTo(
+                        CurrentDictionary.SetDictionary(
+                            Stubs.Dictionaries.frenchEnglishDictionary
+                        )
+                    )
+                )
+            } finally {
+                testCollector.finish()
+            }
 
         }
     }

@@ -29,7 +29,7 @@ class DictionaryMapperTest {
 
         // when mapping french dictionary
         val frenchDictionaryUiModel =
-            mapper.toUiModel(PresentationStubs.Dictionaries.frenchWithDisplayTypeInfo)
+            mapper.toUiModel(PresentationStubs.Dictionaries.frenchWithDisplayType)
 
         // then mapping result is dictionary ui model
         assertThat(

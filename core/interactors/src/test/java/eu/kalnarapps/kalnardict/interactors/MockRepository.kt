@@ -39,7 +39,7 @@ class StubDictionaryRepository : DictionaryRepository {
                 emit(
                     DataOperationResult.Success(
                         ImportProgress(
-                            10, 10
+                            0, 10, 10
                         )
                     )
                 )

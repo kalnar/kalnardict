@@ -3,13 +3,14 @@ package eu.kalnarapps.kalnardict.data.repositories
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTypeDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainMapper
+import eu.kalnarapps.kalnardict.data.mapper.DomainToDataMapper
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.test.test
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.`when`
@@ -25,6 +26,8 @@ class DictionaryDisplayTypesTest {
         mock(DictionaryDisplayTypeDataSource::class.java)
     private val displayTypeMapper =
         mock(DataToDomainMapper::class.java) as DataToDomainMapper<DictionaryDisplayTypeDataEntry, DictionaryDisplayType>
+    private val displayTypeDomainMapper =
+        mock(DomainToDataMapper::class.java) as DomainToDataMapper<DictionaryDisplayType, DictionaryDisplayTypeDataEntry>
 
     @Test
     fun return_display_type_for_dictionary() {
@@ -39,7 +42,7 @@ class DictionaryDisplayTypesTest {
             `when`(
                 dictionaryDisplayTypeDataSource.displayTypeForDictionaryById(dictionary.id)
             ).thenReturn(
-                flowOf(expectedDisplayTypeDataEntry)
+                expectedDisplayTypeDataEntry
             )
             `when`(
                 displayTypeMapper.toDomainModel(expectedDisplayTypeDataEntry)
@@ -50,18 +53,12 @@ class DictionaryDisplayTypesTest {
             // when getting display type for dictionary
             val repository = DictionaryDisplayTypes(
                 dictionaryDisplayTypeDataSource = dictionaryDisplayTypeDataSource,
-                displayTypeMapper = displayTypeMapper
+                displayTypeDataMapper = displayTypeMapper,
+                displayTypeDomainMapper = displayTypeDomainMapper
             )
             val displayType = repository.getDisplayTypeFor(dictionary)
 
-            val testCollector = displayType.test(scope = this)
-            try {
-                testCollector.assertThatLastValue(
-                    equalTo(expectedDisplayType)
-                )
-            } finally {
-                testCollector.finish()
-            }
+            assertThat(displayType, equalTo(expectedDisplayType))
         }
 
 
@@ -98,7 +95,8 @@ class DictionaryDisplayTypesTest {
             // when getting display type for dictionary
             val repository = DictionaryDisplayTypes(
                 dictionaryDisplayTypeDataSource = dictionaryDisplayTypeDataSource,
-                displayTypeMapper = displayTypeMapper
+                displayTypeDataMapper = displayTypeMapper,
+                displayTypeDomainMapper = displayTypeDomainMapper
             )
             val displayType = repository.getSupportedDisplayTypesFor(dictionary)
 

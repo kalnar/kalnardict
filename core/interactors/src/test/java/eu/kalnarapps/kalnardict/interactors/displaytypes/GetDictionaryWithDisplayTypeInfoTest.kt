@@ -6,7 +6,6 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
 import eu.kalnarapps.kalnardict.interactors.Stubs
 import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.interactors.test.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Rule
@@ -30,7 +29,7 @@ class GetDictionaryWithDisplayTypeInfoTest {
             val currentDisplayType = Stubs.Dictionaries.frenchToFrenchDictionaryDisplayType
             val supportedDisplayTypes =
                 Stubs.Dictionaries.frenchToFrenchDictionarySupportedDisplayTypes
-            `when`(displayTypeRepository.getDisplayTypeFor(dictionary)).thenReturn(
+            `when`(displayTypeRepository.getDisplayTypeFlowFor(dictionary)).thenReturn(
                 flowOf(currentDisplayType)
             )
             `when`(displayTypeRepository.getSupportedDisplayTypesFor(dictionary)).thenReturn(

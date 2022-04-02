@@ -14,13 +14,11 @@ import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryManagerState
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class DictionaryManagerViewModel(
     private val listRegisteredDictionariesUseCase: ListManageableDictionariesUseCaseForUi,

@@ -17,6 +17,6 @@ interface QueryModeConfigurationRepository {
 }
 
 sealed class CurrentDictionary {
-    class SetDictionary(val dictionary: Dictionary) : CurrentDictionary()
+    data class SetDictionary(val dictionary: Dictionary) : CurrentDictionary()
     object DictionaryNotSet : CurrentDictionary()
 }

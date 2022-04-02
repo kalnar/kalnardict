@@ -30,7 +30,7 @@ class DisplayTypeDaoAdapterTest {
 
             val dictionaryId = DaoStubs.Dictionaries.frenchToFrenchDicitonaryId
             val expectedDisplayTypeString = DaoStubs.DisplayTypes.HTML_DISPLAY_TYPE
-            `when`(displayTypePreferencesDao.getDisplayTypeForDictionary(dictionaryId))
+            `when`(displayTypePreferencesDao.getDisplayTypeForDictionaryFlow(dictionaryId))
                 .thenReturn(flowOf(expectedDisplayTypeString))
 
             // when
@@ -38,7 +38,7 @@ class DisplayTypeDaoAdapterTest {
                 displayTypePreferencesDao = displayTypePreferencesDao,
                 supportedTypesDao = supportedTypesDao
             )
-            val displayTypeData = dao.displayTypeForDictionaryById(dictionaryId)
+            val displayTypeData = dao.displayTypeForDictionaryByIdFlow(dictionaryId)
 
             val testCollector = displayTypeData.test(scope = this)
             try {
