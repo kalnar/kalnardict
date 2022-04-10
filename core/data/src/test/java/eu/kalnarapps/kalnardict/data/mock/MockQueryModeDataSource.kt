@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 
 class MockQueryModeDataSource : QueryModeConfigurationDataSource {
 
-    private val queryModeIdChannel = Channel<Int>()
+    private val queryModeIdChannel = Channel<Int>(0)
 
 
     override fun getLastQueryModeId(): Flow<Int> = flow {
