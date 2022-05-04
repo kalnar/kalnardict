@@ -16,7 +16,7 @@ fun Context.createTestTempDir(): String {
     return dirPath
 }
 
-const val TEST_TEMP_DIR_LOCAL_PATH = ".kalnardict/test/db"
+const val TEST_TEMP_DIR_LOCAL_PATH = "Download/.kalnardict/test/db"
 const val EXTERNAL_TEST_DB_NAME = "test_external.db"
 const val INVALID_EXTERNAL_TEST_DB_NAME = "test_invalid_external.db"
 const val TEST_DICT_TABLE_NAME = "test_fr_dictionary"

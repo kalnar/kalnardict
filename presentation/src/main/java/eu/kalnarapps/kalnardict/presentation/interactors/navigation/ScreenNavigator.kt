@@ -6,3 +6,7 @@ interface ScreenNavigator {
 
     fun execute(navigationCommand: NavigationCommand)
 }
+
+interface PlatformNavigator {
+    fun navigate(navigationCommand: NavigationCommand.Platform)
+}

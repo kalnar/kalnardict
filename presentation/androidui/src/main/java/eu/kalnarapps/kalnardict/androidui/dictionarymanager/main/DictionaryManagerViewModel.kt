@@ -51,15 +51,9 @@ class DictionaryManagerViewModel(
         return state.map { it.dictionaries }
     }
 
-    fun onDbSelected(uriPath: String) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.main()) {
-                postNavigationCommand(
-                    NavigationCommand.NavigateToDictionaryRegistry(
-                        uri = uriPath
-                    )
-                )
-            }
+    fun onImportDbClicked() {
+        viewModelScope.launch(dispatcherProvider.main()) {
+            postNavigationCommand(NavigationCommand.Platform.NavigateToDbBrowser)
         }
     }
 

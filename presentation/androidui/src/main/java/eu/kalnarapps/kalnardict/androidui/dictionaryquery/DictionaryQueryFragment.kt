@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import eu.kalnarapps.kalnardict.androidui.R
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
+import eu.kalnarapps.kalnardict.androidui.databinding.DictionaryQueryFragmentBinding
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleListAdapter
 import eu.kalnarapps.kalnardict.androidui.dialogs.listwindows.textlist.SimpleTextListWindowBuilder
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.model.DictionaryQueryState
@@ -29,11 +30,6 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.ListTextItem
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
-import kotlinx.android.synthetic.main.dictionary_query_fragment.dictionary_query_loader
-import kotlinx.android.synthetic.main.dictionary_query_fragment.query_result_list_view
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
-
 
 class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
 
@@ -42,6 +38,10 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
     override val viewModel: DictionaryQueryViewModel by navGraphViewModels(
         R.id.dictionary_query_navigation
     ) { DictionaryQueryViewModelFactory() }
+
+    private var _binding: DictionaryQueryFragmentBinding? = null
+    private val binding get() = _binding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,18 +58,12 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
                 LoadableContent.UnInitialized,
                 LoadableContent.Loading -> Unit
                 is LoadableContent.Completed -> {
-                    dictionary_query_loader.visibility = View.GONE
-                    query_result_list_view.visibility = View.VISIBLE
+                    binding.dictionaryQueryLoader.visibility = View.GONE
+                    binding.queryResultListView.visibility = View.VISIBLE
                     queryResultAdapter?.updateWords(wordList.content)
                 }
             }.exhaustive
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        queryResultAdapter = null
-        queryResultObserver = null
     }
 
     override fun onCreateView(
@@ -78,11 +72,8 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(
-            R.layout.dictionary_query_fragment,
-            container,
-            false
-        ).apply {
+        _binding = DictionaryQueryFragmentBinding.inflate(inflater, container, false)
+        return binding.root.apply {
             findViewById<TextInputEditText>(R.id.query_screen_input).addTextChangedListener {
                 viewModel.onQueryChanged(it.toString())
             }
@@ -118,6 +109,17 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        queryResultAdapter = null
+        queryResultObserver = null
     }
 
     private fun setUpSpinner(view: View) {

@@ -54,7 +54,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
 
     private fun listenToNavigationCommands() {
         viewModel.navigationCommand.observe(viewLifecycleOwner, Observer { navCommand ->
-            if (navCommand != NavigationCommand.DoNothing) {
+            if (navCommand != NavigationCommand.Common.DoNothing) {
                 viewModel.resetNavigation()
                 navigator.execute(navCommand)
             }

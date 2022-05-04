@@ -35,4 +35,8 @@ object Qualifiers {
         val dictionaryQueryString = StringQualifier("dictionary_query_string")
         val dictionaryRenderingStrategyStrings = StringQualifier("dictionary_rendering_string")
     }
+
+    object Platform {
+        val activity = StringQualifier("main_activity")
+    }
 }

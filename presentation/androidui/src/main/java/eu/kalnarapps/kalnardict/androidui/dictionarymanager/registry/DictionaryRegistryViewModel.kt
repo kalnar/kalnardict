@@ -110,7 +110,7 @@ class DictionaryRegistryViewModel(
         viewModelScope.launch {
             withContext(dispatcherProvider.main()) {
                 postNavigationCommand(
-                    NavigationCommand.NavigateToDictionaryRegistryDialog(
+                    NavigationCommand.Common.NavigateToDictionaryRegistryDialog(
                         uri = state.value?.dbPath.orEmpty()
                     )
                 )
@@ -222,7 +222,7 @@ class DictionaryRegistryViewModel(
     fun onDialogButtonClicked() {
         viewModelScope.launch {
             withContext(dispatcherProvider.main()) {
-                postNavigationCommand(NavigationCommand.NavigateToDictionaryQuery)
+                postNavigationCommand(NavigationCommand.Common.NavigateToDictionaryQuery)
             }
         }
     }
@@ -231,7 +231,7 @@ class DictionaryRegistryViewModel(
         viewModelScope.launch {
             withContext(dispatcherProvider.main()) {
                 postNavigationCommand(
-                    NavigationCommand.NavigateToDictionaryRegistryNewLanguageDialog
+                    NavigationCommand.Common.NavigateToDictionaryRegistryNewLanguageDialog
                 )
             }
         }
