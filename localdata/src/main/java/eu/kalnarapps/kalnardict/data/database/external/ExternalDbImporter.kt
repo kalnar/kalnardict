@@ -20,7 +20,7 @@ class ExternalDbImporter(
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-                "${context.getStorageRootPath()}/${resource.sdCardPath()}"
+                resource.sdCardPath()
             )
         val missingColumnsInMetaInfo = dbHelper.getMissingColumnsInMetaInfo()
         if (missingColumnsInMetaInfo.isEmpty()) {
@@ -52,7 +52,6 @@ class ExternalDbImporter(
             SQLiteDbReaderHelper(
                 context,
                 resource.sdCardPath()
-//                "${context.getStorageRootPath()}/${resource.sdCardPath()}"
             )
         val cursorOnMetaInfo =
             dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
@@ -91,7 +90,6 @@ class ExternalDbImporter(
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-//                "${context.getStorageRootPath()}/${importJob.externalDictionaryResource.sdCardPath()}"
                 importJob.externalDictionaryResource.sdCardPath()
             )
         val tableName = importJob.tableInfo.name
@@ -109,7 +107,6 @@ class ExternalDbImporter(
         val dbHelper =
             SQLiteDbReaderHelper(
                 context,
-//                "${context.getStorageRootPath()}/${importJob.externalDictionaryResource.sdCardPath()}"
                 importJob.externalDictionaryResource.sdCardPath()
             )
         val tableName = importJob.tableInfo.name

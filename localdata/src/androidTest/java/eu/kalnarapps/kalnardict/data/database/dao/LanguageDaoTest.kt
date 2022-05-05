@@ -24,12 +24,9 @@ import org.hamcrest.core.IsNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.IOException
 
 
-
-@RunWith(AndroidJUnit4::class)
 class LanguageDaoTest {
     private lateinit var languageDao: LanguageDao
     private var db: AppDatabase

@@ -58,7 +58,7 @@ class ExternalDbImporterTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
             override fun sdCardPath(): String =
-                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
+                "${context.getStorageRootPath()}/${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val dbValidity =
@@ -77,7 +77,7 @@ class ExternalDbImporterTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val invalidExternalResource = object : ExternalDictionaryResource {
             override fun sdCardPath(): String =
-                "$TEST_TEMP_DIR_LOCAL_PATH/$INVALID_EXTERNAL_TEST_DB_NAME"
+                "${context.getStorageRootPath()}/$TEST_TEMP_DIR_LOCAL_PATH/$INVALID_EXTERNAL_TEST_DB_NAME"
         }
         File(invalidExternalResource.sdCardPath()).apply {
             delete()
@@ -90,7 +90,7 @@ class ExternalDbImporterTest {
 
         SQLiteDbMockHelper(
             context,
-            "${context.getStorageRootPath()}/${invalidExternalResource.sdCardPath()}",
+            invalidExternalResource.sdCardPath(),
             listOf(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
         ).apply {
             // on create is called only if db is accessed
@@ -114,7 +114,7 @@ class ExternalDbImporterTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val invalidExternalResource = object : ExternalDictionaryResource {
             override fun sdCardPath(): String =
-                "${TEST_TEMP_DIR_LOCAL_PATH}/$INVALID_EXTERNAL_TEST_DB_NAME"
+                "${context.getStorageRootPath()}/${TEST_TEMP_DIR_LOCAL_PATH}/$INVALID_EXTERNAL_TEST_DB_NAME"
         }
         File(invalidExternalResource.sdCardPath()).apply {
             delete()
@@ -127,7 +127,7 @@ class ExternalDbImporterTest {
 
         SQLiteDbMockHelper(
             context,
-            "${context.getStorageRootPath()}/${invalidExternalResource.sdCardPath()}",
+            invalidExternalResource.sdCardPath(),
             missingColumnsDictionary = listOf(
                 DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_BASE
             )
@@ -151,7 +151,7 @@ class ExternalDbImporterTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
             override fun sdCardPath(): String =
-                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
+                "${context.getStorageRootPath()}/${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val tableList = externalResourceImporter.readTableInfosFrom(validExternalResource)
@@ -182,7 +182,7 @@ class ExternalDbImporterTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
             override fun sdCardPath(): String =
-                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
+                "${context.getStorageRootPath()}/${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val readingDictionaryEntriesResult = externalResourceImporter.readTableEntriesFrom(
@@ -223,7 +223,7 @@ class ExternalDbImporterTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val validExternalResource = object : ExternalDictionaryResource {
             override fun sdCardPath(): String =
-                "${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
+                "${context.getStorageRootPath()}/${TEST_TEMP_DIR_LOCAL_PATH}/$EXTERNAL_TEST_DB_NAME"
         }
 
         val readingDictionaryEntriesResult = externalResourceImporter.readTableRowCountFrom(

@@ -7,17 +7,24 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 fun <T> Flow<T>.test(scope: CoroutineScope): TestObserver<T> {
-    return TestObserver(scope, this)
+    return TestObserver(scope, flow = this)
+}
+
+fun <T> Flow<T>.test(scope: CoroutineScope, dispatcher: CoroutineContext): TestObserver<T> {
+    return TestObserver(scope,  this, dispatcher)
 }
 
 class TestObserver<T>(
     scope: CoroutineScope,
-    flow: Flow<T>
+    flow: Flow<T>,
+    dispatcher: CoroutineContext = EmptyCoroutineContext
 ) {
     private val values = mutableListOf<T>()
-    private val job: Job = scope.launch {
+    private val job: Job = scope.launch(dispatcher) {
         flow.collect { values.add(it) }
     }
 

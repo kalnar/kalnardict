@@ -4,14 +4,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.io.FileMatchers
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.File
 
-@RunWith(AndroidJUnit4::class)
 internal class TestUtilsKtTest {
 
     @Test
