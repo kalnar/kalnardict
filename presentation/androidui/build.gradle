@@ -142,7 +142,8 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
 
     // compose
-    def composeVersion = "1.1.1"
+    def composeVersion = "1.2.0-alpha08"
+
     implementation "androidx.compose.ui:ui:$composeVersion"
     // Tooling support (Previews, etc.)
     debugImplementation "androidx.compose.ui:ui-tooling:$composeVersion"
@@ -162,7 +163,8 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$composeVersion"
     implementation "androidx.compose.runtime:runtime-rxjava2:$composeVersion"
     // When using a MDC theme
-    implementation "com.google.android.material:compose-theme-adapter:$composeVersion"
+    // https://mvnrepository.com/artifact/com.google.android.material/compose-theme-adapter
+    implementation "com.google.android.material:compose-theme-adapter:1.1.7"
 
 
     // Test rules and transitive dependencies:
