@@ -3,8 +3,8 @@ package eu.kalnarapps.kalnardict.presentation.models.navigation
 sealed class NavigationCommand {
     sealed class Common: NavigationCommand() {
         object Back : NavigationCommand.Common()
-        class NavigateToDictionaryRegistry(val uri: String) : NavigationCommand.Common()
-        class NavigateToDictionaryRegistryDialog(val uri: String) : NavigationCommand.Common()
+        data class NavigateToDictionaryRegistry(val uri: String) : NavigationCommand.Common()
+        data class NavigateToDictionaryRegistryDialog(val uri: String) : NavigationCommand.Common()
         object NavigateToDictionaryRegistryNewLanguageDialog : NavigationCommand.Common()
         object NavigateToDictionaryQuery : NavigationCommand.Common()
         object NavigateToDictionaryTranslation : NavigationCommand.Common()

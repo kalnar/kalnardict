@@ -39,9 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eu.kalnarapps.kalnardict.androidui.importer.DbImporterUi
+import eu.kalnarapps.kalnardict.presentation.models.mock.DbImporterUi
 import eu.kalnarapps.kalnardict.androidui.importer.DbImporterViewModel
-import eu.kalnarapps.kalnardict.androidui.importer.ImporterFormData
+import eu.kalnarapps.kalnardict.presentation.models.mock.ImporterFormData
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import org.koin.android.ext.android.inject
 
@@ -316,8 +316,7 @@ fun PreviewMockCard() {
             emptyList(),
             availableLanguages = (1..7).map {
                 SelectableLanguage.LanguageUi("language $it", "lang$it")
-            },
-            "path"
+            }
         )
     ) {
        // empty

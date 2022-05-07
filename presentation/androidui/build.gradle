@@ -73,6 +73,7 @@ dependencies {
 
     implementation project(":core:common")
     implementation project(":presentation")
+    testImplementation project(":core:test")
     mockImplementation project(path: ':core:domain')
 
 
@@ -165,7 +166,6 @@ dependencies {
     // When using a MDC theme
     // https://mvnrepository.com/artifact/com.google.android.material/compose-theme-adapter
     implementation "com.google.android.material:compose-theme-adapter:1.1.7"
-
 
     // Test rules and transitive dependencies:
     // UI Tests
