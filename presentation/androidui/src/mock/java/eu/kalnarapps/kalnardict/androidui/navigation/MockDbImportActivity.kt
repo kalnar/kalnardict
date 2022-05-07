@@ -31,41 +31,49 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import eu.kalnarapps.kalnardict.androidui.importer.DbImporterUi
+import eu.kalnarapps.kalnardict.androidui.importer.DbImporterViewModel
+import eu.kalnarapps.kalnardict.androidui.importer.ImporterFormData
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
+import org.koin.android.ext.android.inject
 
 class MockDbImportActivity : ComponentActivity() {
+
+    val viewModel: DbImporterViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MockDbScreen()
+            val state = viewModel.getUiState().observeAsState(DbImporterUi())
+            MockDbScreen(state.value, viewModel::onFormValidation)
         }
     }
 
 }
 
 @Composable
-@Preview
-fun MockDbScreen() {
+fun MockDbScreen(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormData) -> Unit) {
     MaterialTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            MockCard()
+            MockCard(dbImporterUi, onFormValidation)
         }
     }
 
 }
 
 @Composable
-@Preview
-fun MockCard() {
+fun MockCard(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormData) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -80,14 +88,14 @@ fun MockCard() {
             style = MaterialTheme.typography.h4
         )
 
-        CardComponent()
+        CardComponent(dbImporterUi, onFormValidation)
     }
 
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CardComponent() {
+fun CardComponent(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormData) -> Unit) {
     Card(
         shape = RoundedCornerShape(5),
         modifier = Modifier
@@ -124,15 +132,15 @@ fun CardComponent() {
                 singleLine = true
             )
 
-            val databases = listOf("db1", "db2", "db3")
-
-            ChipList(
-                list = databases,
-                currentSelection = databaseName.value,
-                onSelect = {
-                    databaseName.value = it
-                }
-            )
+            if (dbImporterUi.availableDatabases.isNotEmpty()) {
+                ChipList(
+                    list = dbImporterUi.availableDatabases,
+                    currentSelection = databaseName.value,
+                    onSelect = {
+                        databaseName.value = it
+                    }
+                )
+            }
 
             val tableName = remember {
                 mutableStateOf("")
@@ -155,7 +163,7 @@ fun CardComponent() {
                 singleLine = true
             )
 
-            val sourceLanguage = remember {
+            val sourceLanguageName: MutableState<String> = remember {
                 mutableStateOf("")
             }
 
@@ -163,9 +171,9 @@ fun CardComponent() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
-                value = sourceLanguage.value,
+                value = sourceLanguageName.value,
                 onValueChange = {
-                    sourceLanguage.value = it
+                    sourceLanguageName.value = it
                 },
                 placeholder = {
                     Text(text = "choose the source language")
@@ -176,15 +184,15 @@ fun CardComponent() {
                 singleLine = true
             )
 
-            val languages = (1..20).map { "language $it" }
-
-            ChipList(
-                list = languages,
-                currentSelection = sourceLanguage.value,
-                onSelect = {
-                    sourceLanguage.value = it
-                }
-            )
+            if (dbImporterUi.availableLanguages.isNotEmpty()) {
+                ChipList(
+                    list = dbImporterUi.availableLanguages.map { it.name },
+                    currentSelection = sourceLanguageName.value,
+                    onSelect = {
+                        sourceLanguageName.value = it
+                    }
+                )
+            }
 
             val destinationLanguage = remember {
                 mutableStateOf("")
@@ -207,20 +215,31 @@ fun CardComponent() {
                 singleLine = true
             )
 
-            ChipList(
-                list = languages,
-                currentSelection = destinationLanguage.value,
-                onSelect = {
-                    destinationLanguage.value = it
-                }
-            )
+            if (dbImporterUi.availableLanguages.isNotEmpty()) {
+                ChipList(
+                    list = dbImporterUi.availableLanguages.map { it.name },
+                    currentSelection = destinationLanguage.value,
+                    onSelect = {
+                        destinationLanguage.value = it
+                    }
+                )
+            }
 
             Button(
                 enabled = databaseName.value.isNotBlank() &&
                         tableName.value.isNotBlank() &&
-                        sourceLanguage.value.isNotBlank() &&
+                        sourceLanguageName.value.isNotBlank() &&
                         destinationLanguage.value.isNotBlank(),
-                onClick = { /* ... */ },
+                onClick = {
+                        onFormValidation(
+                            ImporterFormData(
+                                databaseName = databaseName.value,
+                                tableName = tableName.value,
+                                sourceLanguage = sourceLanguageName.value,
+                                destinationLanguage = destinationLanguage.value
+                            )
+                        )
+                },
                 // Uses ButtonDefaults.ContentPadding by default
                 contentPadding = PaddingValues(
                     start = 20.dp,
@@ -286,5 +305,21 @@ fun ChipList(list: List<String>, currentSelection: String, onSelect: ((String) -
                 Text(it)
             }
         }
+    }
+}
+
+@Composable
+@Preview
+fun PreviewMockCard() {
+    MockCard(
+        dbImporterUi = DbImporterUi(
+            emptyList(),
+            availableLanguages = (1..7).map {
+                SelectableLanguage.LanguageUi("language $it", "lang$it")
+            },
+            "path"
+        )
+    ) {
+       // empty
     }
 }

@@ -18,7 +18,7 @@ class MockCardComposableTest {
 
         composeTestRule.setContent {
             MaterialTheme {
-                MockCard()
+                MockCard(dbImporterUi)
             }
         }
 

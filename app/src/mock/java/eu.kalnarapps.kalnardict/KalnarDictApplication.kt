@@ -1,14 +1,10 @@
 package eu.kalnarapps.kalnardict
 
 import android.app.Application
-import eu.kalnarapps.kalnardict.androidui.dependencies.androidUiKoinMockModules
-import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.androidui.dependencies.navigationScreenKoinMockModule
-import eu.kalnarapps.kalnardict.di.useCaseMockModule
+import eu.kalnarapps.kalnardict.androidui.dependencies.uiMockModules
 import eu.kalnarapps.kalnardict.koin.dataModule
 import eu.kalnarapps.kalnardict.koin.mapperModule
-import eu.kalnarapps.kalnardict.koin.mockRepositoryKoinModule
-import eu.kalnarapps.kalnardict.koin.mockUseCaseModule
 import eu.kalnarapps.kalnardict.koin.navigationKoinModule
 import eu.kalnarapps.kalnardict.koin.queryExecutorModule
 import eu.kalnarapps.kalnardict.koin.repositoryModule
@@ -41,6 +37,7 @@ class KalnarDictMockApplication : Application() {
             modules(useCaseFromUiModule)
             modules(viewModuleModule)
             modules(viewModule)
+            modules(uiMockModules)
         }
     }
 
