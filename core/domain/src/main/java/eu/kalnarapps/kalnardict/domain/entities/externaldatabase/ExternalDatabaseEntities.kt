@@ -21,7 +21,7 @@ data class ImportJob(
 )
 
 sealed class ExternalDatabase(val uri: String) {
-    class LocalFile(val localPath: String) : ExternalDatabase(localPath)
+    data class LocalFile(val localPath: String) : ExternalDatabase(localPath)
 }
 
 data class ImportProgress(

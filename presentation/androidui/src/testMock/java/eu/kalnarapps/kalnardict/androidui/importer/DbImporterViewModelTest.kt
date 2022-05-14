@@ -229,7 +229,7 @@ class DbImporterViewModelTest {
         viewModel.navigationCommand.removeObserver(navigationObserver)
         assertThat(
             navigationCommand.value,
-            equalTo(NavigationCommand.Common.NavigateToDictionaryRegistry(givenDbPath))
+            equalTo(expectedNavigation)
         )
     }
 
