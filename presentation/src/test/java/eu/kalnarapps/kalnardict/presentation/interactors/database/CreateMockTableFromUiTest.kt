@@ -93,4 +93,111 @@ class CreateMockTableFromUiTest {
         }
 
     }
+
+
+    @Test
+    fun `Given mock database settings are not valid, when creating external table successfully, then operation fails`() {
+
+        testCoroutineRule.runBlockingTest {
+
+            // given we have a valid mock database info path
+            val givenDirPath = "mock://path/dir"
+            val givenError = DataOperationResult.Failure<MockDatabaseInfo>("error msg")
+            getMockDatabaseInfo.stub {
+                onBlocking { invoke() }.doReturn(givenError)
+            }
+
+            val givenUiModel = ImporterFormData(
+                databaseName = "dbName",
+                tableName = "tableName",
+                sourceLanguage = "sourceLanguage",
+                destinationLanguage = "destinationLanguage"
+            )
+
+            val useCase = CreateMockTableFromUi(
+                getMockDatabaseInfo = getMockDatabaseInfo,
+                createExternalTableUseCase = createExternalTableUseCase,
+                uiToDomainConverter = uiToDomainConverter
+            )
+
+            val createMockTableFromUiResult = useCase.invoke(givenUiModel)
+
+            assertThat(
+                createMockTableFromUiResult,
+                equalTo(
+                    DataOperationResult.Failure(
+                        errorMessage = "GetMockDatabaseSettingsUseCase failed",
+                        cause = givenError
+                    )
+                )
+            )
+
+        }
+    }
+
+    @Test
+    fun `Given mock database settings are valid, when creating external table fails, then operation fails`() {
+
+        testCoroutineRule.runBlockingTest {
+
+            // given we have a valid mock database info path
+            val givenDirPath = "mock://path/dir"
+            getMockDatabaseInfo.stub {
+                onBlocking { invoke() }.doReturn(
+                    DataOperationResult.Success(
+                        MockDatabaseInfo(
+                            givenDirPath
+                        )
+                    )
+                )
+            }
+
+            val givenUiModel = ImporterFormData(
+                databaseName = "dbName",
+                tableName = "tableName",
+                sourceLanguage = "sourceLanguage",
+                destinationLanguage = "destinationLanguage"
+            )
+
+            val mappedModel = ExternalTableCreationJobInfo(
+                dbPath = ExternalDatabase.LocalFile("$givenDirPath/dbName"),
+                table = ExternalDatabaseTable(
+                    name = "tableName",
+                    languageFrom = "sourceLanguage",
+                    languageTo = "destinationLanguage"
+                ),
+                size = 5000
+            )
+
+            `when`(
+                with(uiToDomainConverter) {
+                    givenUiModel.toDomain(givenDirPath)
+                }
+            ).thenReturn(mappedModel)
+
+            val givenError = OperationResult.Failure( errorMessage = "error msg" )
+            createExternalTableUseCase.stub {
+                onBlocking { invoke(mappedModel) }.thenReturn(givenError)
+            }
+
+            val useCase = CreateMockTableFromUi(
+                getMockDatabaseInfo = getMockDatabaseInfo,
+                createExternalTableUseCase = createExternalTableUseCase,
+                uiToDomainConverter = uiToDomainConverter
+            )
+
+            val createMockTableFromUiResult = useCase.invoke(givenUiModel)
+
+            assertThat(
+                createMockTableFromUiResult,
+                equalTo(
+                    DataOperationResult.Failure(
+                        errorMessage = "CreateExternalTableUseCase failed with arguments: $mappedModel",
+                        cause = givenError
+                    )
+                )
+            )
+
+        }
+    }
 }

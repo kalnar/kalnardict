@@ -18,7 +18,7 @@ class CreateMockTableFromUi(
     ): DataOperationResult<String> {
         return when (val getPath = getMockDatabaseInfo.invoke()) {
             is DataOperationResult.Failure -> DataOperationResult.Failure(
-                errorMessage = "GetMockDatabaseSettingsUseCase failed",
+                errorMessage = "${GetMockDatabaseSettingsUseCase::class.java.simpleName} failed",
                 cause = getPath
             )
             is DataOperationResult.Success -> {
@@ -27,7 +27,7 @@ class CreateMockTableFromUi(
                 }
                 when (val createTable = createExternalTableUseCase.invoke(jobInfo)) {
                     is OperationResult.Failure -> DataOperationResult.Failure(
-                        errorMessage = "CreateExternalTableUseCase failed",
+                        errorMessage = "${CreateExternalTableUseCase::class.java.simpleName} failed with arguments: $jobInfo",
                         cause = createTable
                     )
                     is OperationResult.Success -> DataOperationResult.Success(jobInfo.dbPath.localPath)
