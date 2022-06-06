@@ -2,6 +2,8 @@ package eu.kalnarapps.kalnardict.koin
 
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.database.GetMockDatabasesForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.database.GetMockDatabasesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesForUi
@@ -64,6 +66,9 @@ val useCaseForUiModule = module {
             languageDomainMapper = get(Qualifiers.languageDomainUiMapper),
             listRegisteredLanguagesUseCase = get()
         ) as ListRegisteredLanguagesUseCaseForUi
+    }
+    single {
+        GetMockDatabasesForUi() as GetMockDatabasesUseCaseForUi
     }
 
 }

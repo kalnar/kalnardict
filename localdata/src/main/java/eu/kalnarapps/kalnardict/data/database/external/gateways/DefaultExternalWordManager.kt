@@ -20,7 +20,6 @@ class DefaultExternalWordManager(
         return try {
             val dbHelper = SQLiteDbReaderHelper(context, externalTranslationCreation.dbPath)
             dbHelper.use { dbHelper ->
-                dbHelper.writableDatabase.beginTransaction()
                 for (entry in externalTranslationCreation.externalTranslationEntries) {
                     val contentValues = ContentValues().apply {
                         put(DatabaseReaderContract.DictionaryEntry.COLUMN_NAME_ID, entry.id)
@@ -41,7 +40,6 @@ class DefaultExternalWordManager(
                         SQLiteDatabase.CONFLICT_ROLLBACK
                     )
                 }
-                dbHelper.writableDatabase.endTransaction()
             }
             OperationResult.Success
         } catch (exception: Exception) {

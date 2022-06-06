@@ -192,8 +192,8 @@ class DefaultExternalWordManagerTest {
 
             dbHelper.close()
 
-            assertThat(baseList, IsCollectionWithSize(equalTo(0)))
-            assertThat(translationList, IsCollectionWithSize(equalTo(0)))
+            assertThat(baseList, IsCollectionWithSize(equalTo(1)))
+            assertThat(translationList, IsCollectionWithSize(equalTo(1)))
 
             // then
             assertThat(

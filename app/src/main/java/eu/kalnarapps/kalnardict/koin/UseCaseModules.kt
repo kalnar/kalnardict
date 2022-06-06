@@ -33,6 +33,7 @@ import eu.kalnarapps.kalnardict.interactors.database.CreateExternalTable
 import eu.kalnarapps.kalnardict.interactors.dictionary.GetDictionaryById
 import eu.kalnarapps.kalnardict.interactors.displaytypes.GetDictionaryWithDisplayType
 import eu.kalnarapps.kalnardict.interactors.displaytypes.GetDictionaryWithDisplayTypeInfo
+import eu.kalnarapps.kalnardict.interactors.settings.GetMockDatabaseSettings
 import org.koin.dsl.module
 
 
@@ -115,6 +116,9 @@ val useCaseModule = module {
         ) as GetDictionaryWithDisplayTypeUseCase
     }
 
+    single {
+        GetMockDatabaseSettings() as GetMockDatabaseSettingsUseCase
+    }
     single {
         CreateExternalTable(
             databaseRepository = get(),
