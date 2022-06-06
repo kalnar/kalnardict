@@ -25,6 +25,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalTableCreationJobInfo
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
 import eu.kalnarapps.kalnardict.presentation.mappers.DictionaryDisplayTypeDomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.DictionaryMapper
@@ -32,8 +33,10 @@ import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.ManageableDictionaryMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.QueryModeMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.RenderingStrategyMapper
+import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainConverter
 import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapperWithExtras
+import eu.kalnarapps.kalnardict.presentation.mappers.database.ImporterFormDataMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.query.QueryModeUiToDomainMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.query.QueryUiToDomainMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.query.WordDomainToUiMapper
@@ -42,6 +45,7 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
+import eu.kalnarapps.kalnardict.presentation.models.mock.ImporterFormData
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -125,6 +129,10 @@ val mapperModule: Module = module {
         QueryUiToDomainMapper(
             queryModeUiToDomainMapper = get(Qualifiers.UiToDomain.queryModeUiToDomainMapper)
         ) as UiToDomainMapperWithExtras<QueryUiModel, DictQuery, Dictionary>
+    }
+
+    single(Qualifiers.UiToDomain.importerDataUiToDomainMapper) {
+        ImporterFormDataMapper() as UiToDomainConverter<ImporterFormData, ExternalTableCreationJobInfo, String>
     }
 }
 
