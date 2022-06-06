@@ -3,6 +3,7 @@ package eu.kalnarapps.kalnardict.androidui.navigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -81,6 +83,7 @@ fun MockCard(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormData) ->
             .verticalScroll(rememberScrollState())
     ) {
 
+
         Text(
             text = "Mock DB creator",
             modifier = Modifier
@@ -89,6 +92,7 @@ fun MockCard(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormData) ->
         )
 
         CardComponent(dbImporterUi, onFormValidation)
+
     }
 
 }
@@ -229,16 +233,17 @@ fun CardComponent(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormDat
                 enabled = databaseName.value.isNotBlank() &&
                         tableName.value.isNotBlank() &&
                         sourceLanguageName.value.isNotBlank() &&
-                        destinationLanguage.value.isNotBlank(),
+                        destinationLanguage.value.isNotBlank() &&
+                        !dbImporterUi.showLoader,
                 onClick = {
-                        onFormValidation(
-                            ImporterFormData(
-                                databaseName = databaseName.value,
-                                tableName = tableName.value,
-                                sourceLanguage = sourceLanguageName.value,
-                                destinationLanguage = destinationLanguage.value
-                            )
+                    onFormValidation(
+                        ImporterFormData(
+                            databaseName = databaseName.value,
+                            tableName = tableName.value,
+                            sourceLanguage = sourceLanguageName.value,
+                            destinationLanguage = destinationLanguage.value
                         )
+                    )
                 },
                 // Uses ButtonDefaults.ContentPadding by default
                 contentPadding = PaddingValues(
@@ -253,11 +258,15 @@ fun CardComponent(dbImporterUi: DbImporterUi, onFormValidation: (ImporterFormDat
 
             ) {
                 // Inner content including an icon and a text label
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "Add",
-                    modifier = Modifier.size(ButtonDefaults.IconSize)
-                )
+                if (dbImporterUi.showLoader) {
+                    CircularProgressIndicator(modifier = Modifier.size(ButtonDefaults.IconSize))
+                } else {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "Add",
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
+                }
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text("Add mock table")
             }
@@ -316,9 +325,10 @@ fun PreviewMockCard() {
             emptyList(),
             availableLanguages = (1..7).map {
                 SelectableLanguage.LanguageUi("language $it", "lang$it")
-            }
+            },
+            showLoader = true
         )
     ) {
-       // empty
+        // empty
     }
 }
