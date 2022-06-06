@@ -133,14 +133,3 @@ fun Context.getDatabasePath(): String {
     return (getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath) + "/kalnardict.db"
 }
 
-fun Context.getAppDir(): String {
-    return (getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath)
-}
-
-fun Context.getStorageRootPath(): String {
-    return (getExternalFilesDir(null)?.absolutePath
-        ?: filesDir.absolutePath).substringBefore("Android")
-}
-// getExternalFilesDir(null)?.absolutePath
-// - /storage/emulated/0/Android/data/eu.kalnarapps.kalnardict.localdata.test/files
-
