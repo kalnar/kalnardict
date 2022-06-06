@@ -21,12 +21,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.IOException
 
-
-
-@RunWith(AndroidJUnit4::class)
 class SupportedDisplayTypesDaoTest {
     private lateinit var supportedDisplayTypesDao: SupportedDisplayTypesDao
     private lateinit var dictionaryLogDao: DictionaryLogDao
@@ -49,6 +45,7 @@ class SupportedDisplayTypesDaoTest {
     fun createDb() {
         supportedDisplayTypesDao = db.supportedDisplayTypesDao()
         dictionaryLogDao = db.dictionaryLogDao()
+        db.clearAllTables()
     }
 
     @After

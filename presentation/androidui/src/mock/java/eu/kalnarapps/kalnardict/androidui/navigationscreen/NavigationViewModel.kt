@@ -22,21 +22,25 @@ class NavigationViewModel : ViewModel() {
         return listOf(
             NavigationItemView(
                 name = "DictionaryQuery",
-                navCommand = NavigationCommand.NavigateToDictionaryQuery
+                navCommand = NavigationCommand.Common.NavigateToDictionaryQuery
             ),
             NavigationItemView(
                 name = "DictionaryManager",
-                navCommand = NavigationCommand.NavigateToDictionaryManager
+                navCommand = NavigationCommand.Common.NavigateToDictionaryManager
+            ),
+            NavigationItemView(
+                name = "MockDbImport",
+                navCommand = NavigationCommand.Platform.NavigateToDbBrowser
             ),
             NavigationItemView(
                 name = "DictionaryRegistry - valid db",
-                navCommand = NavigationCommand.NavigateToDictionaryRegistry(
+                navCommand = NavigationCommand.Common.NavigateToDictionaryRegistry(
                     uri = UiStubs.Uris.validUri
                 )
             ),
             NavigationItemView(
                 name = "DictionaryRegistry - invalid db",
-                navCommand = NavigationCommand.NavigateToDictionaryRegistry(
+                navCommand = NavigationCommand.Common.NavigateToDictionaryRegistry(
                     uri = UiStubs.Uris.invalidUri
                 )
             )
@@ -54,7 +58,7 @@ class NavigationViewModel : ViewModel() {
     fun resetNavigation() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _navigationCommand.postValue(NavigationCommand.DoNothing)
+                _navigationCommand.postValue(NavigationCommand.Common.DoNothing)
             }
         }
     }

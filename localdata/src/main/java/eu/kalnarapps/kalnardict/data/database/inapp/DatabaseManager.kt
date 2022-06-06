@@ -14,9 +14,11 @@ import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyDao
 import eu.kalnarapps.kalnardict.data.dao.dictionary.SupportedDisplayTypesDao
+import eu.kalnarapps.kalnardict.data.dao.external.database.ExternalDbDao
 import eu.kalnarapps.kalnardict.data.database.inapp.converters.DisplayTypeConverters
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import eu.kalnarapps.kalnardict.data.entities.ExternalDatabase
 import eu.kalnarapps.kalnardict.data.entities.Language
 import eu.kalnarapps.kalnardict.data.entities.SupportedDictionaryDisplayType
 import eu.kalnarapps.kalnardict.data.entities.Word
@@ -32,15 +34,17 @@ import kotlinx.coroutines.withContext
         DictionaryLogEntry::class,
         Language::class,
         ConfigurationProperty::class,
-        SupportedDictionaryDisplayType::class
+        SupportedDictionaryDisplayType::class,
+        ExternalDatabase::class
     ],
-    version = 8
+    version = 9
 )
 @TypeConverters(DisplayTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun languageDao(): LanguageDao
     abstract fun dictionaryLogDao(): DictionaryLogDao
+    abstract fun databasesDao(): ExternalDbDao
     abstract fun configurationPropertyDao(): ConfigurationPropertyDao
     abstract fun supportedDisplayTypesDao(): SupportedDisplayTypesDao
 
@@ -73,7 +77,8 @@ abstract class AppDatabase : RoomDatabase() {
                         MIGRATION_4_5,
                         MIGRATION_5_6,
                         MIGRATION_6_7,
-                        MIGRATION_7_8
+                        MIGRATION_7_8,
+                        MIGRATION_8_9
                     )
                     .build()
             }
@@ -132,15 +137,4 @@ private class RoomDatabaseInitializer(
 fun Context.getDatabasePath(): String {
     return (getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath) + "/kalnardict.db"
 }
-
-fun Context.getAppDir(): String {
-    return (getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath)
-}
-
-fun Context.getStorageRootPath(): String {
-    return (getExternalFilesDir(null)?.absolutePath
-        ?: filesDir.absolutePath).substringBefore("Android")
-}
-// getExternalFilesDir(null)?.absolutePath
-// - /storage/emulated/0/Android/data/eu.kalnarapps.kalnardict.localdata.test/files
 

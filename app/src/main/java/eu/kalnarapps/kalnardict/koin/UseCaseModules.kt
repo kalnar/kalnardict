@@ -15,6 +15,8 @@ import eu.kalnarapps.kalnardict.domain.usecases.SearchQueryUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.UpdateQueryModeUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeInfoUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.mockdatabase.CreateExternalTableUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.mockdatabase.GetMockDatabaseSettingsUseCase
 import eu.kalnarapps.kalnardict.interactors.GetCurrentLanguageUseCase
 import eu.kalnarapps.kalnardict.interactors.GetQueryMode
 import eu.kalnarapps.kalnardict.interactors.GetQueryModes
@@ -27,9 +29,11 @@ import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
 import eu.kalnarapps.kalnardict.interactors.RegisterNewLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateQueryMode
+import eu.kalnarapps.kalnardict.interactors.database.CreateExternalTable
 import eu.kalnarapps.kalnardict.interactors.dictionary.GetDictionaryById
 import eu.kalnarapps.kalnardict.interactors.displaytypes.GetDictionaryWithDisplayType
 import eu.kalnarapps.kalnardict.interactors.displaytypes.GetDictionaryWithDisplayTypeInfo
+import eu.kalnarapps.kalnardict.interactors.settings.GetMockDatabaseSettings
 import org.koin.dsl.module
 
 
@@ -110,5 +114,15 @@ val useCaseModule = module {
         GetDictionaryWithDisplayType(
             displayTypeRepository = get()
         ) as GetDictionaryWithDisplayTypeUseCase
+    }
+
+    single {
+        GetMockDatabaseSettings() as GetMockDatabaseSettingsUseCase
+    }
+    single {
+        CreateExternalTable(
+            databaseRepository = get(),
+            tableRepository = get()
+        ) as CreateExternalTableUseCase
     }
 }

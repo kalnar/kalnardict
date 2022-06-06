@@ -24,6 +24,7 @@ object Qualifiers {
     object UiToDomain {
         val queryUiToDomainMapper = StringQualifier("query_ui_domain")
         val queryModeUiToDomainMapper = StringQualifier("query_mode_ui_domain")
+        val importerDataUiToDomainMapper = StringQualifier("import_data_ui_domain")
     }
 
     object DomainToUi {
@@ -34,5 +35,9 @@ object Qualifiers {
 
         val dictionaryQueryString = StringQualifier("dictionary_query_string")
         val dictionaryRenderingStrategyStrings = StringQualifier("dictionary_rendering_string")
+    }
+
+    object Platform {
+        val activity = StringQualifier("main_activity")
     }
 }

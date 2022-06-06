@@ -25,11 +25,8 @@ import org.hamcrest.core.IsNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.IOException
 
-
-@RunWith(AndroidJUnit4::class)
 class WordDaoTest {
     private lateinit var wordDao: WordDao
     private lateinit var dictionaryLogDao: DictionaryLogDao
@@ -54,6 +51,7 @@ class WordDaoTest {
     fun createDb() {
         wordDao = db.wordDao()
         dictionaryLogDao = db.dictionaryLogDao()
+        db.clearAllTables()
     }
 
     @After

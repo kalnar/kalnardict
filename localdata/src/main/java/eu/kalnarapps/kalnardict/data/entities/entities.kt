@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import eu.kalnarapps.kalnardict.data.entities.DbColumns.EXTERNAL_DATABASE_COLUMN_PATH
 import eu.kalnarapps.kalnardict.data.model.DisplayType
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
 
@@ -100,6 +101,14 @@ data class SupportedDictionaryDisplayType(
     val id: DisplayType
 )
 
+@Entity(
+    tableName = DataBaseConstants.EXTERNAL_DATABASE_TABLE_NAME
+)
+data class ExternalDatabase(
+    @PrimaryKey
+    @ColumnInfo(name = "$EXTERNAL_DATABASE_COLUMN_PATH") val databasePath: String
+)
+
 data class DictionaryDisplayTypeData(
     @ColumnInfo(name = DbColumns.DISPLAY_TYPE_COLUMN)
     override val id: String
@@ -111,10 +120,12 @@ object DataBaseConstants {
     const val UNINITIALIZED_INT_PROPERTY: Int = -1
     const val CONFIGURATION_PROPERTY_TABLE_NAME = "configuration_property"
     const val DISPLAY_TYPE_TABLE_NAME = "dictionary_display_types"
+    const val EXTERNAL_DATABASE_TABLE_NAME = "databases"
 }
 
 object DbColumns {
     const val DISPLAY_TYPE_COLUMN = "display_type"
     const val DICTIONARY_ID = "dictionary_id"
     const val DICTIONARY_LOG_ENTRY_ID = "id"
+    const val EXTERNAL_DATABASE_COLUMN_PATH = "database_path"
 }

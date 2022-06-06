@@ -4,6 +4,11 @@ interface UiToDomainMapper<UiModel, DomainModel> {
 
     fun toDomainModel(uiModel: UiModel): DomainModel
 
+
+}
+
+interface UiToDomainConverter<UiModel, DomainModel, ComplementaryData> {
+    fun UiModel.toDomain(complementaryData: ComplementaryData): DomainModel
 }
 
 interface UiToDomainMapperWithExtras<UiModel, DomainModel, Extra> {

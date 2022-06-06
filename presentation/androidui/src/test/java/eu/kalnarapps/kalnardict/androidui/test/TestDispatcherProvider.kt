@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.androidui.test
 
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
+import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 
 
@@ -15,5 +15,15 @@ object TestDispatcherProvider : DispatcherProvider {
         return TestCoroutineDispatcher()
     }
 
+}
+
+class TestCoroutineDispatcherProvider(private val coroutineRule: TestCoroutineRule): DispatcherProvider {
+    override fun io(): CoroutineDispatcher {
+        return coroutineRule.testCoroutineDispatcher
+    }
+
+    override fun main(): CoroutineDispatcher {
+        return coroutineRule.testCoroutineDispatcher
+    }
 }
 

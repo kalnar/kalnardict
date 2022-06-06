@@ -2,7 +2,6 @@ package eu.kalnarapps.kalnardict.data.database.dao
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.android.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.android.test.test
@@ -11,7 +10,6 @@ import eu.kalnarapps.kalnardict.data.dao.configuration.ConfigurationPropertyKey
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.entities.ConfigurationProperty
 import eu.kalnarapps.kalnardict.data.entities.DataBaseConstants
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
@@ -20,12 +18,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.IOException
 
-
-
-@RunWith(AndroidJUnit4::class)
 class ConfigurationPropertyDaoTest {
     private lateinit var configurationPropertyDao: ConfigurationPropertyDao
     private var db: AppDatabase
@@ -41,6 +35,7 @@ class ConfigurationPropertyDaoTest {
             testCoroutineRule.testCoroutineScope
         )
         db = AppDatabase.getInstance(context, testCoroutineRule.testCoroutineScope)
+        db.clearAllTables()
     }
 
     @Before

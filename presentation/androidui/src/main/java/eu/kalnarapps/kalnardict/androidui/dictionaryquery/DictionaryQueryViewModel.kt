@@ -80,7 +80,7 @@ class DictionaryQueryViewModel(
                         DictionarySelection.NotAvailable -> {
                             withContext(dispatcherProvider.main()) {
                                 postNavigationCommand(
-                                    NavigationCommand.NavigateToDictionaryManager
+                                    NavigationCommand.Common.NavigateToDictionaryManager
                                 )
                             }
                         }
@@ -112,7 +112,7 @@ class DictionaryQueryViewModel(
             currentWord.collect {
                 if (it is CurrentWord.Selected) {
                     withContext(dispatcherProvider.main()) {
-                        postNavigationCommand(NavigationCommand.NavigateToDictionaryTranslation)
+                        postNavigationCommand(NavigationCommand.Common.NavigateToDictionaryTranslation)
                     }
                     withContext(dispatcherProvider.io()) {
                         loadTranslation(it.word)
@@ -198,7 +198,7 @@ class DictionaryQueryViewModel(
     fun onDictionaryManagerMenu() {
         viewModelScope.launch {
             withContext(dispatcherProvider.main()) {
-                postNavigationCommand(NavigationCommand.NavigateToDictionaryManager)
+                postNavigationCommand(NavigationCommand.Common.NavigateToDictionaryManager)
             }
         }
     }

@@ -1,5 +1,7 @@
 package eu.kalnarapps.kalnardict.koin
 
+import eu.kalnarapps.kalnardict.presentation.interactors.database.CreateMockTableFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.database.CreateMockTableUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewDictionaryFromUi
@@ -52,6 +54,13 @@ val useCaseFromUiModule = module {
         UpdateQueryModeFromUi(
             updateQueryModeUseCase = get()
         ) as UpdateQueryModeUseCaseFromUi
+    }
+    single {
+        CreateMockTableFromUi(
+            getMockDatabaseInfo = get(),
+            createExternalTableUseCase = get(),
+            uiToDomainConverter = get(Qualifiers.UiToDomain.importerDataUiToDomainMapper)
+        ) as CreateMockTableUseCaseFromUi
     }
 
 }

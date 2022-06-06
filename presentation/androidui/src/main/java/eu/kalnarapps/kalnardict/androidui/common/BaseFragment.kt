@@ -34,7 +34,9 @@ abstract class BaseFragment<UiModel> : Fragment() {
         viewModel.error.observe(viewLifecycleOwner, Observer {
             uiLogger.logErrorFromUi(it)
             when (val feedBack = it.errorFeedback) {
-                is ErrorUiFeedBack.ShowSnackBar -> TODO()
+                is ErrorUiFeedBack.ShowSnackBar -> {
+                    // TODO(need to show snackbar)
+                }
                 ErrorUiFeedBack.OnlyLog -> Unit
                 is ErrorUiFeedBack.ShowToast -> showToast(feedBack.msg)
                 is ErrorUiFeedBack.Navigate -> navigator.execute(feedBack.navCommand)
@@ -54,7 +56,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
 
     private fun listenToNavigationCommands() {
         viewModel.navigationCommand.observe(viewLifecycleOwner, Observer { navCommand ->
-            if (navCommand != NavigationCommand.DoNothing) {
+            if (navCommand != NavigationCommand.Common.DoNothing) {
                 viewModel.resetNavigation()
                 navigator.execute(navCommand)
             }

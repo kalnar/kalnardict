@@ -5,7 +5,11 @@
     <application
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:replace="android:theme">
-        <activity android:name=".navigationscreen.TestActivity"
+        <activity android:name="androidx.compose.ui.tooling.PreviewActivity" android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity
+            android:name=".navigationscreen.TestActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -13,5 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".navigation.MockDbImportActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
     </application>
 </manifest>

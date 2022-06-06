@@ -15,7 +15,12 @@ import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypeDaoAdapter
 import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypePreferences
 import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypePreferencesDao
 import eu.kalnarapps.kalnardict.data.dao.dictionary.SupportedDisplayTypesDao
+import eu.kalnarapps.kalnardict.data.dao.external.database.ExternalDbDao
+import eu.kalnarapps.kalnardict.data.dao.external.database.ExternalDbDaoAdapter
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
+import eu.kalnarapps.kalnardict.data.database.external.gateways.DefaultExternalDatabaseGateway
+import eu.kalnarapps.kalnardict.data.database.external.gateways.DefaultExternalTableCreator
+import eu.kalnarapps.kalnardict.data.database.external.gateways.DefaultExternalWordManager
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDbDataInitializer
 import eu.kalnarapps.kalnardict.data.database.inapp.DefaultDbInitializer
@@ -24,7 +29,9 @@ import eu.kalnarapps.kalnardict.data.datasources.LanguageDataSource
 import eu.kalnarapps.kalnardict.data.datasources.WordDataSource
 import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.configuration.QueryModeConfigurationDataSource
+import eu.kalnarapps.kalnardict.data.datasources.database.DatabaseMetaDataSource
 import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTypeDataSource
+import eu.kalnarapps.kalnardict.data.gateways.ExternalDatabaseGateway
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,6 +51,7 @@ val dataModule: Module = module {
     single { get<AppDatabase>().wordDao() as WordDao }
     single { get<AppDatabase>().languageDao() as LanguageDao }
     single { get<AppDatabase>().dictionaryLogDao() as DictionaryLogDao }
+    single { get<AppDatabase>().databasesDao() as ExternalDbDao }
     single { get<AppDatabase>().configurationPropertyDao() as ConfigurationPropertyDao }
     single { get<AppDatabase>().supportedDisplayTypesDao() as SupportedDisplayTypesDao }
     single {
@@ -90,5 +98,27 @@ val dataModule: Module = module {
             displayTypePreferencesDao = get(),
             supportedTypesDao = get()
         ) as DictionaryDisplayTypeDataSource
+    }
+
+    single {
+        ExternalDbDaoAdapter(
+            externalDbDao = get()
+        ) as DatabaseMetaDataSource
+    }
+
+    single {
+        DefaultExternalDatabaseGateway(
+            context = get()
+        ) as ExternalDatabaseGateway
+    }
+    single {
+        DefaultExternalTableCreator(
+            context = get()
+        ) as ExternalDatabaseGateway.TableManager
+    }
+    single {
+        DefaultExternalWordManager(
+            context = get()
+        ) as ExternalDatabaseGateway.WordManager
     }
 }

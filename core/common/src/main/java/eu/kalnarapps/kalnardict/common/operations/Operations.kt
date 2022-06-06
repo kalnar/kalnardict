@@ -1,5 +1,7 @@
 package eu.kalnarapps.kalnardict.common.operations
 
+import java.lang.Exception
+
 
 sealed class OperationResult {
     object Success : OperationResult()
@@ -46,5 +48,11 @@ sealed class DataOperationResult<T> {
                 Failure<T>("tried to combine failures when there were none")
             }
         }
+    }
+}
+
+data class OperationException(val exception: Exception): OperationFailure {
+    override fun errorMessage(): String {
+        return exception.localizedMessage
     }
 }

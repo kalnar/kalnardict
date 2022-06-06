@@ -10,10 +10,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 
-@RunWith(AndroidJUnit4::class)
 @LargeTest
 class NavigationScreenTest {
 
