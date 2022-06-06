@@ -1,13 +1,13 @@
 package eu.kalnarapps.kalnardict.data.database.external
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.ImportEntryBatch
-import eu.kalnarapps.kalnardict.data.database.inapp.getStorageRootPath
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
 import eu.kalnarapps.kalnardict.data.model.TableImportInfo
 import eu.kalnarapps.kalnardict.data.model.TranslatedWordImportInfo
@@ -175,7 +175,8 @@ private fun SQLiteDbReaderHelper.getMissingColumnsInDictionaryTable(
     }
 }
 
-private fun SQLiteDbReaderHelper.getMissingColumnsInMetaInfo(): List<ColumnName> {
+@VisibleForTesting
+fun SQLiteDbReaderHelper.getMissingColumnsInMetaInfo(): List<ColumnName> {
     val cursorOnMetaInfo =
         readableDatabase.rawQuery("select * from meta_info LIMIT 1", emptyArray())
     val requiredColumns = listOf<ColumnName>(

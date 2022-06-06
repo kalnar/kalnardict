@@ -20,7 +20,7 @@ object DatabaseReaderContract {
     }
 }
 
-private const val SQL_CREATE_META_INFO =
+const val SQL_CREATE_META_INFO =
     "CREATE TABLE ${DatabaseReaderContract.DictionaryLog.TABLE_NAME} (" +
             "${BaseColumns._ID} INTEGER PRIMARY KEY NOT NULL," +
             "${DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME} TEXT NOT NULL," +
