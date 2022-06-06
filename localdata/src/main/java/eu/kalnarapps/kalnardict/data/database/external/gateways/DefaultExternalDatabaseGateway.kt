@@ -12,9 +12,9 @@ class DefaultExternalDatabaseGateway(
     private val context: Context
 ) : ExternalDatabaseGateway {
     override suspend fun createDatabase(path: String): OperationResult {
-        val dbHelper = SQLiteDbReaderHelper(context, path)
 
         try {
+            val dbHelper = SQLiteDbReaderHelper(context, path)
             dbHelper.use { dbHelper ->
                 dbHelper.writableDatabase.execSQL(SQL_CREATE_META_INFO)
             }

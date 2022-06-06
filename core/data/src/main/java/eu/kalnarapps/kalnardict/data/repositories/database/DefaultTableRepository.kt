@@ -19,7 +19,9 @@ class DefaultTableRepository(
         when (
             val createTableResult = tableManager.createEmptyTable(
                 tableCreationJobInfo.dbPath.localPath,
-                tableCreationJobInfo.table.name
+                tableCreationJobInfo.table.name,
+                tableCreationJobInfo.table.languageFrom,
+                tableCreationJobInfo.table.languageTo,
             )
         ) {
             is OperationResult.Failure -> return OperationResult.Failure(

@@ -51,7 +51,7 @@ class DefaultTableRepositoryTest {
             // given that table doesn't exist, creating empty table succeeds
             tableManager.stub {
                 onBlocking {
-                    createEmptyTable(givenDbPath, "givenName")
+                    createEmptyTable(givenDbPath, "givenName", "givenLanguageFrom", "givenLanguageTo")
                 }.thenReturn(OperationResult.Success)
             }
 
@@ -81,7 +81,12 @@ class DefaultTableRepositoryTest {
 
             verify(randomWordRepository, times(4000)).getRandomWord(any())
             verify(wordManager, times(10)).addWords(any())
-            verify(tableManager).createEmptyTable(givenDbPath, "givenName")
+            verify(tableManager).createEmptyTable(
+                givenDbPath,
+                "givenName",
+                "givenLanguageFrom",
+                "givenLanguageTo"
+            )
 
         }
 
@@ -109,7 +114,7 @@ class DefaultTableRepositoryTest {
             val tableAlreadyExistsError = OperationResult.Failure("table already exists")
             tableManager.stub {
                 onBlocking {
-                    createEmptyTable(givenDbPath, "givenName")
+                    createEmptyTable(givenDbPath, "givenName", "givenLanguageFrom", "givenLanguageTo")
                 }.thenReturn(tableAlreadyExistsError)
             }
 
@@ -142,7 +147,12 @@ class DefaultTableRepositoryTest {
                 )
             )
 
-            verify(tableManager).createEmptyTable(givenDbPath, "givenName")
+            verify(tableManager).createEmptyTable(
+                givenDbPath,
+                "givenName",
+                "givenLanguageFrom",
+                "givenLanguageTo"
+            )
 
         }
     }
@@ -167,7 +177,7 @@ class DefaultTableRepositoryTest {
             // given that table doesn't exist, creating empty table succeeds
             tableManager.stub {
                 onBlocking {
-                    createEmptyTable(givenDbPath, "givenName")
+                    createEmptyTable(givenDbPath, "givenName", "givenLanguageFrom", "givenLanguageTo")
                 }.thenReturn(OperationResult.Success)
             }
 
@@ -207,7 +217,12 @@ class DefaultTableRepositoryTest {
                 )
             )
 
-            verify(tableManager).createEmptyTable(givenDbPath, "givenName")
+            verify(tableManager).createEmptyTable(
+                givenDbPath,
+                "givenName",
+                "givenLanguageFrom",
+                "givenLanguageTo"
+            )
 
         }
     }

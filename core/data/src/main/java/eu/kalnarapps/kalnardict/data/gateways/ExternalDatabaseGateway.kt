@@ -7,7 +7,12 @@ interface ExternalDatabaseGateway {
     suspend fun createDatabase(path: String): OperationResult
 
     interface TableManager {
-        suspend fun createEmptyTable(path: String, tableName: String): OperationResult
+        suspend fun createEmptyTable(
+            path: String,
+            tableName: String,
+            sourceLanguage: String,
+            targetLanguage: String
+        ): OperationResult
         suspend fun deleteTable(path: String, tableName: String): OperationResult
     }
 
