@@ -14,6 +14,7 @@ import eu.kalnarapps.kalnardict.presentation.models.mock.DbImporterUi
 import eu.kalnarapps.kalnardict.presentation.models.mock.ImporterFormData
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DbImporterViewModel(
     private val dispatcherProvider: DispatcherProvider,
@@ -31,8 +32,12 @@ class DbImporterViewModel(
         viewModelScope.launch(dispatcherProvider.io()) {
             val availableLanguages = getAvailableLanguages.invoke()
             val databases = when (val databaseFetch = getDatabases.invoke()) {
-                is DataOperationResult.Failure -> { emptyList() }
-                is DataOperationResult.Success -> { databaseFetch.data }
+                is DataOperationResult.Failure -> {
+                    emptyList()
+                }
+                is DataOperationResult.Success -> {
+                    databaseFetch.data
+                }
             }
             postUiStateOnMainThread {
                 this.copy(
@@ -61,9 +66,11 @@ class DbImporterViewModel(
                         errorFeedback = ErrorUiFeedBack.ShowSnackBar("An error has occurred")
                     )
                 )
-                is DataOperationResult.Success -> postNavigationCommand(
-                    NavigationCommand.Common.NavigateToDictionaryRegistry(result.data)
-                )
+                is DataOperationResult.Success -> withContext(dispatcherProvider.main()) {
+                    postNavigationCommand(
+                        NavigationCommand.Common.NavigateToDictionaryRegistry(result.data)
+                    )
+                }
             }
         }
     }
