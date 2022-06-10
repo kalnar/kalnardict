@@ -4,7 +4,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictTranslation
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.words.DictWord
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModeUiModel
 
 object UiUnitTestStubs {
     const val WRONG_WORD_ID_FOR_DICTIONARY: String =
@@ -90,11 +90,11 @@ object UiUnitTestStubs {
 
     object Ui {
         object QueryMode {
-            val anywhere = QueryModelUiModel(
+            val anywhere = QueryModeUiModel(
                 id = 0,
                 displayString = "anywhere"
             )
-            val beginning = QueryModelUiModel(
+            val beginning = QueryModeUiModel(
                 id = 1,
                 displayString = "beginning"
             )

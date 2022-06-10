@@ -42,7 +42,7 @@ import eu.kalnarapps.kalnardict.presentation.mappers.query.QueryUiToDomainMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.query.WordDomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModeUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.presentation.models.mock.ImporterFormData
@@ -64,7 +64,7 @@ val mapperModule: Module = module {
     single(Qualifiers.queryModeDomainUiMapper) {
         QueryModeMapper(
             stringResolver = get(Qualifiers.StringResolvers.dictionaryQueryString)
-        ) as DomainToUiMapper<QueryMode, QueryModelUiModel>
+        ) as DomainToUiMapper<QueryMode, QueryModeUiModel>
     }
 
     single { LanguageDataMapper() }
@@ -118,7 +118,7 @@ val mapperModule: Module = module {
     }
 
     single(Qualifiers.UiToDomain.queryModeUiToDomainMapper) {
-        QueryModeUiToDomainMapper() as UiToDomainMapper<QueryModelUiModel, QueryMode>
+        QueryModeUiToDomainMapper() as UiToDomainMapper<QueryModeUiModel, QueryMode>
     }
 
     single(Qualifiers.DomainToUi.wordDomainToUiMapper) {

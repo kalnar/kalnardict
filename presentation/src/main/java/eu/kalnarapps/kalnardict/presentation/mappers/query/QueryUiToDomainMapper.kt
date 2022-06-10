@@ -6,11 +6,11 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
 import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapper
 import eu.kalnarapps.kalnardict.presentation.mappers.UiToDomainMapperWithExtras
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModeUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 
 class QueryUiToDomainMapper(
-    private val queryModeUiToDomainMapper: UiToDomainMapper<QueryModelUiModel, QueryMode>
+    private val queryModeUiToDomainMapper: UiToDomainMapper<QueryModeUiModel, QueryMode>
 ) : UiToDomainMapperWithExtras<QueryUiModel, DictQuery, Dictionary> {
     override fun toDomainModel(uiModel: QueryUiModel, extra: Dictionary): DictQuery {
         return DictQuery(

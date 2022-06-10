@@ -16,7 +16,7 @@ import eu.kalnarapps.kalnardict.presentation.interactors.query.UpdateQueryModeUs
 import eu.kalnarapps.kalnardict.presentation.interactors.words.GetTranslationUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionarySelection
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModeUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
@@ -158,7 +158,7 @@ class DictionaryQueryViewModelQueryModeChangTeest {
 
 
                 viewModel.onQueryModeChanged(
-                    QueryModelUiModel(
+                    QueryModeUiModel(
                         id = UiStubs.Ui.QueryMode.anywhere.id,
                         displayString = "hello"
                     )
