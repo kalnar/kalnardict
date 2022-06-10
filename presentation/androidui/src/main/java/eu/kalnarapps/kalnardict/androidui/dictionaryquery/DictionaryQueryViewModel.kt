@@ -29,10 +29,10 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
+@OptIn(InternalCoroutinesApi::class)
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: SearchQueryUseCaseFromUi,
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi,
@@ -65,27 +66,26 @@ class DictionaryQueryViewModel(
 
     init {
         setUiState(DictionaryQueryState())
-        viewModelScope.launch {
-            getCurrentDictionary()
-                .collect {
-                    when (it) {
-                        is DictionarySelection.Current -> {
-                            postUiStateOnMainThread {
-                                copy(
-                                    currentDictionaryItemView =
-                                    LoadableContent.Completed(it.uiModel)
-                                )
-                            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            getCurrentDictionary().collect(FlowCollector { dictionarySelection ->
+                when (dictionarySelection) {
+                    is DictionarySelection.Current -> {
+                        postUiStateOnMainThread {
+                            copy(
+                                currentDictionaryItemView =
+                                LoadableContent.Completed(dictionarySelection.uiModel)
+                            )
                         }
-                        DictionarySelection.NotAvailable -> {
-                            withContext(dispatcherProvider.main()) {
-                                postNavigationCommand(
-                                    NavigationCommand.Common.NavigateToDictionaryManager
-                                )
-                            }
+                    }
+                    DictionarySelection.NotAvailable -> {
+                        withContext(dispatcherProvider.main()) {
+                            postNavigationCommand(
+                                NavigationCommand.Common.NavigateToDictionaryManager
+                            )
                         }
-                    }.exhaustive
-                }
+                    }
+                }.exhaustive
+            })
         }
         viewModelScope.launch {
             combine(
