@@ -1,7 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.stubs
 
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModeUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
@@ -11,12 +11,12 @@ object UiStubs {
     object Ui {
         object QueryMode {
             val anywhere =
-                QueryModelUiModel(
+                QueryModeUiModel(
                     id = 0,
                     displayString = "anywhere"
                 )
             val beginning =
-                QueryModelUiModel(
+                QueryModeUiModel(
                     id = 1,
                     displayString = "beginning"
                 )

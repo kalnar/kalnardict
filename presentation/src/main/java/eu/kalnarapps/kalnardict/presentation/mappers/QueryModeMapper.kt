@@ -1,16 +1,15 @@
 package eu.kalnarapps.kalnardict.presentation.mappers
 
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
-import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModelUiModel
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryModeUiModel
 import eu.kalnarapps.kalnardict.presentation.models.strings.StringResolver
 import eu.kalnarapps.kalnardict.presentation.models.strings.StringResources
-import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 
 class QueryModeMapper(
     private val stringResolver: StringResolver<StringResources.DictionaryQueryString>
-) : DomainToUiMapper<QueryMode, QueryModelUiModel> {
-    override fun toUiModel(domainModel: QueryMode): QueryModelUiModel {
-        return QueryModelUiModel(
+) : DomainToUiMapper<QueryMode, QueryModeUiModel> {
+    override fun toUiModel(domainModel: QueryMode): QueryModeUiModel {
+        return QueryModeUiModel(
             id = domainModel.value,
             displayString = when (domainModel) {
                 QueryMode.MATCH_ANYWHERE -> stringResolver.lookUpString(

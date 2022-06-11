@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
@@ -35,13 +36,27 @@ abstract class BaseFragment<UiModel> : Fragment() {
             uiLogger.logErrorFromUi(it)
             when (val feedBack = it.errorFeedback) {
                 is ErrorUiFeedBack.ShowSnackBar -> {
-                    // TODO(need to show snackbar)
+                    showSnackBar(feedBack)
                 }
                 ErrorUiFeedBack.OnlyLog -> Unit
                 is ErrorUiFeedBack.ShowToast -> showToast(feedBack.msg)
                 is ErrorUiFeedBack.Navigate -> navigator.execute(feedBack.navCommand)
             }.exhaustive
         })
+    }
+
+    private fun showSnackBar(feedBack: ErrorUiFeedBack.ShowSnackBar) {
+        view?.let {
+            val snackBar = Snackbar.make(
+                it,
+                feedBack.msg,
+                Snackbar.LENGTH_INDEFINITE
+            )
+            snackBar.setAction("Dismiss") {
+                snackBar.dismiss()
+            }
+            snackBar.show()
+        }
     }
 
     private fun showToast(msg: String) {

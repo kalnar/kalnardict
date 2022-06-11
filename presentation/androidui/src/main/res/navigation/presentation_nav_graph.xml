@@ -22,6 +22,11 @@
         tools:layout="@layout/dictionary_manager_fragment"
         android:label="Dictionary Manager" />
 
+    <fragment
+        android:id="@+id/mockDbCreator"
+        android:name="eu.kalnarapps.kalnardict.androidui.navigation.MockDbImportFragment"
+        android:label="Mock db creator" />
+
     <dialog
         android:id="@+id/simpleDialog"
         android:name="eu.kalnarapps.kalnardict.androidui.dialogs.SimpleDialog"

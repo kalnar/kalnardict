@@ -5,10 +5,10 @@ import eu.kalnarapps.kalnardict.androidui.dependencies.mockRepositoryModule
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.MockUpdateDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
-import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
+import eu.kalnarapps.kalnardict.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
+import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue

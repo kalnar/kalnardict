@@ -10,11 +10,14 @@ import eu.kalnarapps.kalnardict.presentation.interactors.navigation.PlatformNavi
 import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNavigator
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import org.koin.core.KoinComponent
+import org.koin.core.inject
+import org.koin.core.parameter.parametersOf
 
 class AndroidScreenNavigator(
-    private val navController: NavController,
-    private val platformNavigator: PlatformNavigator
+    private val navController: NavController
 ) : ScreenNavigator, KoinComponent {
+
+    private val platformNavigator: PlatformNavigator by inject { parametersOf(navController) }
 
     override fun execute(navigationCommand: NavigationCommand) {
         when (navigationCommand) {

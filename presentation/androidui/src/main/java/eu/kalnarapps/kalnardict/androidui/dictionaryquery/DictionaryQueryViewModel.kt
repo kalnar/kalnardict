@@ -29,10 +29,10 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
+@OptIn(InternalCoroutinesApi::class)
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: SearchQueryUseCaseFromUi,
     private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi,
@@ -65,29 +66,28 @@ class DictionaryQueryViewModel(
 
     init {
         setUiState(DictionaryQueryState())
-        viewModelScope.launch {
-            getCurrentDictionary()
-                .collect {
-                    when (it) {
-                        is DictionarySelection.Current -> {
-                            postUiStateOnMainThread {
-                                copy(
-                                    currentDictionaryItemView =
-                                    LoadableContent.Completed(it.uiModel)
-                                )
-                            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            getCurrentDictionary().collect(FlowCollector { dictionarySelection ->
+                when (dictionarySelection) {
+                    is DictionarySelection.Current -> {
+                        postUiStateOnMainThread {
+                            copy(
+                                currentDictionaryItemView =
+                                LoadableContent.Completed(dictionarySelection.uiModel)
+                            )
                         }
-                        DictionarySelection.NotAvailable -> {
-                            withContext(dispatcherProvider.main()) {
-                                postNavigationCommand(
-                                    NavigationCommand.Common.NavigateToDictionaryManager
-                                )
-                            }
+                    }
+                    DictionarySelection.NotAvailable -> {
+                        withContext(dispatcherProvider.main()) {
+                            postNavigationCommand(
+                                NavigationCommand.Common.NavigateToDictionaryManager
+                            )
                         }
-                    }.exhaustive
-                }
+                    }
+                }.exhaustive
+            })
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io()) {
             combine(
                 getQueryModesForUi()
                     .filter { list -> list.any { it.isSelected } }
@@ -108,7 +108,7 @@ class DictionaryQueryViewModel(
                     updateQueryResults(it)
                 }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io()) {
             currentWord.collect {
                 if (it is CurrentWord.Selected) {
                     withContext(dispatcherProvider.main()) {
@@ -120,7 +120,7 @@ class DictionaryQueryViewModel(
                 }
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io()) {
             listRegisteredDictionariesUseCase().map { dictionaries ->
                 LoadableContent.Completed(
                     dictionaries
@@ -188,34 +188,27 @@ class DictionaryQueryViewModel(
 
 
     fun onDictionaryChanged(dictionaryItem: DictionaryUiModel) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                updateCurrentLanguageUseCase(dictionaryItem.id)
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            updateCurrentLanguageUseCase(dictionaryItem.id)
         }
     }
 
     fun onDictionaryManagerMenu() {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.main()) {
-                postNavigationCommand(NavigationCommand.Common.NavigateToDictionaryManager)
-            }
+        viewModelScope.launch(dispatcherProvider.main()) {
+            postNavigationCommand(NavigationCommand.Common.NavigateToDictionaryManager)
         }
     }
 
     fun onQueryChanged(newQuery: String) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                typedQuery.value = newQuery
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            typedQuery.value = newQuery
+//            typedQuery.emit(newQuery)
         }
     }
 
     fun onWordSelected(wordView: WordView) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                currentWord.value = CurrentWord.Selected(wordView)
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            currentWord.value = CurrentWord.Selected(wordView)
         }
     }
 
@@ -224,10 +217,8 @@ class DictionaryQueryViewModel(
     }
 
     fun onQueryModeChanged(it: ListTextItem) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                updateQueryModeUseCase(it.id)
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            updateQueryModeUseCase(it.id)
         }
     }
 

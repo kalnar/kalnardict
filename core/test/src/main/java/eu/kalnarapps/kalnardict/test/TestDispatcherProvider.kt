@@ -1,7 +1,6 @@
-package eu.kalnarapps.kalnardict.androidui.test
+package eu.kalnarapps.kalnardict.test
 
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
-import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 

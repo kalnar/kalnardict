@@ -8,13 +8,13 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionar
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionarySuccessfullyMock
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.MockRegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
-import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
+import eu.kalnarapps.kalnardict.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
+import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
