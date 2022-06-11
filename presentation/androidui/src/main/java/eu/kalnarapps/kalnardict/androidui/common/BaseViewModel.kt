@@ -9,6 +9,7 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.withContext
+import org.apache.commons.lang3.StringUtils
 import org.koin.core.KoinComponent
 
 abstract class BaseViewModel<UiModel>(
@@ -28,8 +29,10 @@ abstract class BaseViewModel<UiModel>(
     protected suspend fun postUiState(state: UiModel?) {
         withContext(dispatcherProvider.io()) {
             if (state != null) {
+                val diff = StringUtils.difference(_state.value.toString(), state.toString())
                 logger.d("vm", "new state: $state")
-                _state.postValue(state)
+                logger.d("vm", "state diff: $diff")
+                _state.postValue(state!!)
             }
         }
     }
@@ -39,7 +42,9 @@ abstract class BaseViewModel<UiModel>(
             val currentState = state.value
             currentState?.let {
                 val newState = stateMapper(it)
+                val diff = StringUtils.difference(_state.value.toString(), newState.toString())
                 logger.d("vm", "new state: $newState")
+                logger.d("vm", "state diff: $diff")
                 _state.postValue(newState!!)
             }
         }
@@ -50,7 +55,9 @@ abstract class BaseViewModel<UiModel>(
             val currentState = state.value
             currentState?.let {
                 val newState = stateMapper(it)
+                val diff = StringUtils.difference(_state.value.toString(), newState.toString())
                 logger.d("vm", "new state: $newState")
+                logger.d("vm", "state diff: $diff")
                 _state.value = newState
             }
         }
