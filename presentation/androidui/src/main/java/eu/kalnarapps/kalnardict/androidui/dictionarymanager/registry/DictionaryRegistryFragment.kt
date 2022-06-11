@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.Dictionar
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.OnRegisterInfoUpdateListener
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.table.info.TableInfoListAdapter
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import org.koin.android.ext.android.getKoin
 import org.koin.core.parameter.parametersOf
 
@@ -44,6 +47,20 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getUiState().map { it.registerDictionaryUiModels }.observe(viewLifecycleOwner) {
+            when (it) {
+                LoadableContent.Failed -> {
+                    binding.invalidDbGroup.isVisible = true
+                    binding.validDbGroup.isVisible = false
+                }
+                is LoadableContent.Completed -> {
+                    binding.invalidDbGroup.isVisible = false
+                    binding.validDbGroup.isVisible = true
+                }
+            }
+        }
+
         viewModel.getLiveIsTableListInitialized().observe(viewLifecycleOwner, ChangeObserver {
             if (it) {
                 setUpTableInfoList()

@@ -55,6 +55,7 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
             viewModel.getRegisteredDictionaries().observe(viewLifecycleOwner, Observer {
                 when (it) {
                     LoadableContent.UnInitialized,
+                    LoadableContent.Failed,
                     LoadableContent.Loading -> Unit
                     is LoadableContent.Completed -> {
                         binding.dictionaryManagerLoader.visibility = View.GONE

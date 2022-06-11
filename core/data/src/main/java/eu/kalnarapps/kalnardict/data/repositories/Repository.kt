@@ -84,7 +84,7 @@ class Repository(
         when (
             val readRowCountResult =
                 externalDbHandler.readTableRowCountFrom(importJob.toImportEntry())
-            ) {
+        ) {
             is DataOperationResult.Success -> {
                 if (readRowCountResult.data != 0) {
                     val dictionaryId = dictionaryDataSource.insertDictionary(
@@ -181,11 +181,23 @@ class Repository(
     }
 
     override suspend fun readMetaInfoFromExternalDb(externalDatabase: ExternalDatabase): DataOperationResult<List<ExternalDatabaseTable>> {
+        val dbValidityCheck = externalDbHandler.checkDatabaseStructure(
+            externalDatabase.toExternalDictionaryResource()
+        )
+        when (dbValidityCheck) {
+            is OperationResult.Failure -> return DataOperationResult.Failure(
+                errorMessage = "an error has occurred while reading ${externalDatabase.uri}",
+                cause = dbValidityCheck
+            )
+            OperationResult.Success -> {
+                // continue
+            }
+        }
         return when (
             val tableInfoFetch = externalDbHandler.readTableInfosFrom(
                 externalDatabase.toExternalDictionaryResource()
             )
-            ) {
+        ) {
             is DataOperationResult.Success -> {
                 DataOperationResult.Success(
                     tableInfoFetch.data.map {

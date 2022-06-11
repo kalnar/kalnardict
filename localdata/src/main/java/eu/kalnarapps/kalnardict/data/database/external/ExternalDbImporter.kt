@@ -3,7 +3,8 @@ package eu.kalnarapps.kalnardict.data.database.external
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.data.DatabaseValidity
+import eu.kalnarapps.kalnardict.common.operations.OperationException
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
@@ -11,38 +12,45 @@ import eu.kalnarapps.kalnardict.data.ImportEntryBatch
 import eu.kalnarapps.kalnardict.data.mapper.TranslatedWordImportEntry
 import eu.kalnarapps.kalnardict.data.model.TableImportInfo
 import eu.kalnarapps.kalnardict.data.model.TranslatedWordImportInfo
+import java.lang.Exception
 
 
 class ExternalDbImporter(
     val context: Context
 ) : ExternalDatabaseHandler {
-    override fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity {
-        val dbHelper =
-            SQLiteDbReaderHelper(
-                context,
-                resource.sdCardPath()
-            )
-        val missingColumnsInMetaInfo = dbHelper.getMissingColumnsInMetaInfo()
-        if (missingColumnsInMetaInfo.isEmpty()) {
-            val readingResultOfMetaInfo = readTableInfosFrom(resource)
-            if (readingResultOfMetaInfo is DataOperationResult.Success) {
-                val tableInfos = readingResultOfMetaInfo.data
-                val missingColumnsInDictionaryTables = tableInfos.mapNotNull {
-                    MissingColumns(
-                        it.name,
-                        dbHelper.getMissingColumnsInDictionaryTable(it).ifEmpty {
-                            return@mapNotNull null
-                        }
-                    )
-                }
-                if (missingColumnsInDictionaryTables.isEmpty()) {
-                    dbHelper.close()
-                    return DatabaseValidity.VALID
+    override fun checkDatabaseStructure(resource: ExternalDictionaryResource): OperationResult {
+        val dbHelper = SQLiteDbReaderHelper(context, resource.sdCardPath())
+        try {
+            val missingColumnsInMetaInfo = dbHelper.getMissingColumnsInMetaInfo()
+            if (missingColumnsInMetaInfo.isEmpty()) {
+                val readingResultOfMetaInfo = readTableInfosFrom(resource)
+                if (readingResultOfMetaInfo is DataOperationResult.Success) {
+                    val tableInfos = readingResultOfMetaInfo.data
+                    val missingColumnsInDictionaryTables = tableInfos.mapNotNull {
+                        MissingColumns(
+                            it.name,
+                            dbHelper.getMissingColumnsInDictionaryTable(it).ifEmpty {
+                                return@mapNotNull null
+                            }
+                        )
+                    }
+                    if (missingColumnsInDictionaryTables.isEmpty()) {
+                        dbHelper.close()
+                        return OperationResult.Success
+                    }
                 }
             }
+            return OperationResult.Failure(
+                errorMessage = "invalid database"
+            )
+        } catch (exception: Exception) {
+            return OperationResult.Failure(
+                errorMessage = "invalid database: ${exception.localizedMessage}",
+                cause = OperationException(exception)
+            )
+        } finally {
+            dbHelper.close()
         }
-        dbHelper.close()
-        return DatabaseValidity.INVALID
     }
 
     override fun readTableInfosFrom(
@@ -53,37 +61,45 @@ class ExternalDbImporter(
                 context,
                 resource.sdCardPath()
             )
-        val cursorOnMetaInfo =
-            dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
-        if (cursorOnMetaInfo.count == 0) {
-            return DataOperationResult.Success(emptyList())
+        try {
+            val cursorOnMetaInfo =
+                dbHelper.readableDatabase.rawQuery("select * from meta_info", emptyArray())
+            if (cursorOnMetaInfo.count == 0) {
+                return DataOperationResult.Success(emptyList())
+            }
+            val entriesBeingRead = ArrayList<TableImportInfo>()
+            while (cursorOnMetaInfo.moveToNext()) {
+                val dictionaryName = cursorOnMetaInfo.getString(
+                    cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
+                )
+                val languageFrom = cursorOnMetaInfo.getString(
+                    cursorOnMetaInfo.getColumnIndex(
+                        DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_FROM
+                    )
+                )
+                val languageTo = cursorOnMetaInfo.getString(
+                    cursorOnMetaInfo.getColumnIndex(
+                        DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_TO
+                    )
+                )
+                entriesBeingRead.add(
+                    TableImportInfo(
+                        name = dictionaryName,
+                        languageFrom = languageFrom,
+                        languageTo = languageTo
+                    )
+                )
+            }
+            cursorOnMetaInfo.close()
+            return DataOperationResult.Success(entriesBeingRead)
+        } catch (exception: Exception) {
+            return DataOperationResult.Failure(
+                errorMessage = "readTableInfosFrom failed: ${exception.localizedMessage}",
+                cause = OperationException(exception)
+            )
+        } finally {
+            dbHelper.close()
         }
-        val entriesBeingRead = ArrayList<TableImportInfo>()
-        while (cursorOnMetaInfo.moveToNext()) {
-            val dictionaryName = cursorOnMetaInfo.getString(
-                cursorOnMetaInfo.getColumnIndex(DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME)
-            )
-            val languageFrom = cursorOnMetaInfo.getString(
-                cursorOnMetaInfo.getColumnIndex(
-                    DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_FROM
-                )
-            )
-            val languageTo = cursorOnMetaInfo.getString(
-                cursorOnMetaInfo.getColumnIndex(
-                    DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_TO
-                )
-            )
-            entriesBeingRead.add(
-                TableImportInfo(
-                    name = dictionaryName,
-                    languageFrom = languageFrom,
-                    languageTo = languageTo
-                )
-            )
-        }
-        cursorOnMetaInfo.close()
-        dbHelper.close()
-        return DataOperationResult.Success(entriesBeingRead)
     }
 
     override fun readTableRowCountFrom(importJob: ImportEntry): DataOperationResult<Int> {

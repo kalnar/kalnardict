@@ -9,7 +9,7 @@ class GetExternalDbInfoForUi(
     private val loadDbMetaInfoOnDb: ReadExternalDbUseCase
 ) : GetExternalDbInfoUseCaseForUi {
     override suspend operator fun invoke(uri: String): DataOperationResult<List<ExternalTableUiInfo>> {
-        return loadDbMetaInfoOnDb(uri).map { list ->
+        return loadDbMetaInfoOnDb.invoke(uri).map { list ->
             list.map { it.toExternalTableUiInfo() }
         }
     }

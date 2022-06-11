@@ -24,4 +24,5 @@
     <string name="language_registry_dialog_cta">register language</string>
     <string name="dictionary_manager_update_rendering_type">update rendering type:</string>
     <string name="dictionary_update_submit_cta_title">update</string>
+    <string name="invalid_db_message">Invalid database file selected. No dictionaries found.</string>
 </resources>

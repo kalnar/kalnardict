@@ -3,7 +3,16 @@ package eu.kalnarapps.kalnardict.presentation.models.common
 sealed class LoadableContent<out T> {
     object UnInitialized : LoadableContent<Nothing>()
     object Loading : LoadableContent<Nothing>()
+    object Failed : LoadableContent<Nothing>()
     data class Completed<T>(val content: T) : LoadableContent<T>()
+}
+
+fun <T> LoadableContent<T>.contentOrNull(): T? {
+    return if (this is LoadableContent.Completed) {
+        content
+    } else {
+        null
+    }
 }
 
 data class LoadingProgress(

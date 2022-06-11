@@ -56,6 +56,7 @@ class DictionaryQueryFragment : BaseFragment<DictionaryQueryState>() {
             uiLogger.log("updating list: $it")
             when (val wordList = it.wordList) {
                 LoadableContent.UnInitialized,
+                LoadableContent.Failed,
                 LoadableContent.Loading -> Unit
                 is LoadableContent.Completed -> {
                     binding.dictionaryQueryLoader.visibility = View.GONE
