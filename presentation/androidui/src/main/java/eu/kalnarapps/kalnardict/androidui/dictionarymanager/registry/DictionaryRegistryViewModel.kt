@@ -16,8 +16,11 @@ import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewD
 import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.RegisterLanguageUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
+import eu.kalnarapps.kalnardict.presentation.models.common.contentOrNull
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.DictionaryRegistryState
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ExternalTableUiInfo
+import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableProgress
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableStatus
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.NewDictionaryInfoUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.RegisterDictionaryUi
@@ -26,10 +29,12 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.Selectabl
 import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
 import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@OptIn(InternalCoroutinesApi::class)
 class DictionaryRegistryViewModel(
     dbPath: String,
     loadDbMetaInfoOnDb: GetExternalDbInfoUseCaseForUi,
@@ -49,22 +54,29 @@ class DictionaryRegistryViewModel(
 
     init {
         viewModelScope.launch {
-            val metaInfoFetch = loadDbMetaInfoOnDb(dbPath)
+            val metaInfoFetch = loadDbMetaInfoOnDb.invoke(dbPath)
             val availableLanguages = listAvailableLanguages()
             setUiState(
                 DictionaryRegistryState(
                     dbPath = dbPath,
                     registerDictionaryUiModels = when (metaInfoFetch) {
-                        is DataOperationResult.Success -> metaInfoFetch.data.map {
-                            RegisterDictionaryUi(it, availableLanguages)
-                        }
+                        is DataOperationResult.Success -> LoadableContent.Completed(
+                            metaInfoFetch.data.map {
+                                RegisterDictionaryUi(it, availableLanguages)
+                            }
+                        )
                         is DataOperationResult.Failure -> {
                             postError(
                                 ErrorFromUi(
-                                    logMessage = metaInfoFetch.errorMessage
+                                    logMessage = metaInfoFetch.errorMessage,
+                                    errorFeedback = ErrorUiFeedBack.ShowSnackBarWithAction(
+                                        msg = "An error has occurred. Go back to dictionary manager.",
+                                        actionLabel = "OK",
+                                        action = NavigationCommand.Common.Back
+                                    )
                                 )
                             )
-                            emptyList()
+                            LoadableContent.Failed
                         }
                     },
                     availableLanguages = listAvailableLanguages()
@@ -74,12 +86,12 @@ class DictionaryRegistryViewModel(
     }
 
     fun getRegisterDictionaryUiModels(): List<RegisterDictionaryUi> {
-        return state.value?.registerDictionaryUiModels.orEmpty()
+        return state.value?.registerDictionaryUiModels?.contentOrNull().orEmpty()
     }
 
     fun getLiveIsTableListInitialized(): LiveData<Boolean> {
         return Transformations.map(state) {
-            it.registerDictionaryUiModels.isNotEmpty()
+            it.registerDictionaryUiModels.contentOrNull()?.isNotEmpty() ?: false
         }
     }
 
@@ -88,19 +100,20 @@ class DictionaryRegistryViewModel(
             val currentState = state.value
             postUiState(
                 currentState?.copy(
-                    registerDictionaryUiModels =
-                    currentState.registerDictionaryUiModels.map {
-                        it.copy(
-                            tableUiInfo = if (
-                                it.tableUiInfo.originalTableName
-                                == newTableInfoUiModel.originalTableName
-                            ) {
-                                newTableInfoUiModel
-                            } else {
-                                it.tableUiInfo
-                            }
-                        )
-                    }
+                    registerDictionaryUiModels = LoadableContent.Completed(
+                        currentState.registerDictionaryUiModels.contentOrNull().orEmpty().map {
+                            it.copy(
+                                tableUiInfo = if (
+                                    it.tableUiInfo.originalTableName
+                                    == newTableInfoUiModel.originalTableName
+                                ) {
+                                    newTableInfoUiModel
+                                } else {
+                                    it.tableUiInfo
+                                }
+                            )
+                        }
+                    )
                 )
             )
         }
@@ -123,7 +136,7 @@ class DictionaryRegistryViewModel(
 
     private suspend fun importTables() {
         val tableInfoUiModels =
-            state.value?.registerDictionaryUiModels?.map { it.tableUiInfo }.orEmpty()
+            state.value?.registerDictionaryUiModels?.contentOrNull().orEmpty().map { it.tableUiInfo }
         tableInfoUiModels.filter { it.isSelected }.forEach {
             registerDictionary(it)
         }
@@ -133,20 +146,8 @@ class DictionaryRegistryViewModel(
         // TODO: this check should happen in registerDictionaries or onRegisterDictionariesClicked
         val languageFrom = externalTableUiInfo.languageFromUi
         val languageTo = externalTableUiInfo.languageToUi
-        if (languageFrom is SelectableLanguage.LanguageUi &&
-            languageTo is SelectableLanguage.LanguageUi
-        ) {
-            registerNewDictionary(
-                NewDictionaryInfoUi(
-                    state.value?.dbPath.orEmpty(),
-                    originalTableName = externalTableUiInfo.originalTableName,
-                    originalLanguageFrom = externalTableUiInfo.originalLanguageFrom,
-                    originalLanguageTo = externalTableUiInfo.originalLanguageTo,
-                    dictionaryName = externalTableUiInfo.dictionaryName,
-                    languageFromUi = languageFrom,
-                    languageToUi = languageTo
-                )
-            ).collect {
+        val importTableProgressCollector: FlowCollector<DataOperationResult<ImportTableProgress>> =
+            FlowCollector {
                 when (it) {
                     is DataOperationResult.Success -> {
                         postUiStateOnMainThread {
@@ -174,6 +175,20 @@ class DictionaryRegistryViewModel(
                     }
                 }.exhaustive
             }
+        if (languageFrom is SelectableLanguage.LanguageUi &&
+            languageTo is SelectableLanguage.LanguageUi
+        ) {
+            registerNewDictionary(
+                NewDictionaryInfoUi(
+                    state.value?.dbPath.orEmpty(),
+                    originalTableName = externalTableUiInfo.originalTableName,
+                    originalLanguageFrom = externalTableUiInfo.originalLanguageFrom,
+                    originalLanguageTo = externalTableUiInfo.originalLanguageTo,
+                    dictionaryName = externalTableUiInfo.dictionaryName,
+                    languageFromUi = languageFrom,
+                    languageToUi = languageTo
+                )
+            ).collect(importTableProgressCollector)
         } else {
             handleLanguageNotSetError(externalTableUiInfo)
         }
@@ -266,11 +281,13 @@ class DictionaryRegistryViewModel(
             postUiState(
                 state = state.copy(
                     availableLanguages = availableLanguages,
-                    registerDictionaryUiModels = state.registerDictionaryUiModels.map {
-                        it.copy(
-                            availableLanguages = availableLanguages
-                        )
-                    }
+                    registerDictionaryUiModels = LoadableContent.Completed(
+                        state.registerDictionaryUiModels.contentOrNull().orEmpty().map {
+                            it.copy(
+                                availableLanguages = availableLanguages
+                            )
+                        }
+                    )
                 )
             )
         }

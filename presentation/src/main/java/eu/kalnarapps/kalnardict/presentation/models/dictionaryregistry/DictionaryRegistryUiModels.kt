@@ -2,10 +2,11 @@ package eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 
 data class DictionaryRegistryState(
     val dbPath: String,
-    val registerDictionaryUiModels: List<RegisterDictionaryUi>,
+    val registerDictionaryUiModels: LoadableContent<List<RegisterDictionaryUi>>,
     val availableLanguages: List<SelectableLanguage.LanguageUi> = emptyList(),
     val importResults: List<ImportTableResult> = emptyList(),
     val importProgress: Map<ExternalTableUiInfo, DataOperationResult<ImportTableProgress>> = emptyMap()

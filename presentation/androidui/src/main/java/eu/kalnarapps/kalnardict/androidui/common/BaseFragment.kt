@@ -23,12 +23,19 @@ abstract class BaseFragment<UiModel> : Fragment() {
     private val navigator: ScreenNavigator by inject { parametersOf(findNavController()) }
     protected val uiLogger: UiLogger by inject()
 
+    private var snackBar: Snackbar? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         uiLogger.d(FRAGMENT_CYCLE, "onViewCreated")
         listenToNavigationCommands()
         listenToUiStateChanges()
         listenToErrors()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        snackBar?.dismiss()
     }
 
     private fun listenToErrors() {
@@ -41,21 +48,39 @@ abstract class BaseFragment<UiModel> : Fragment() {
                 ErrorUiFeedBack.OnlyLog -> Unit
                 is ErrorUiFeedBack.ShowToast -> showToast(feedBack.msg)
                 is ErrorUiFeedBack.Navigate -> navigator.execute(feedBack.navCommand)
+                is ErrorUiFeedBack.ShowSnackBarWithAction -> {
+                    showSnackBar(feedBack)
+                }
             }.exhaustive
         })
     }
 
-    private fun showSnackBar(feedBack: ErrorUiFeedBack.ShowSnackBar) {
+    private fun showSnackBar(feedBack: ErrorUiFeedBack.ShowSnackBarWithAction) {
         view?.let {
-            val snackBar = Snackbar.make(
+            snackBar = Snackbar.make(
                 it,
                 feedBack.msg,
                 Snackbar.LENGTH_INDEFINITE
             )
-            snackBar.setAction("Dismiss") {
-                snackBar.dismiss()
+            snackBar?.setAction(feedBack.actionLabel) {
+                snackBar?.dismiss()
+                navigator.execute(feedBack.action)
             }
-            snackBar.show()
+            snackBar?.show()
+        }
+    }
+
+    private fun showSnackBar(feedBack: ErrorUiFeedBack.ShowSnackBar) {
+        view?.let {
+            snackBar = Snackbar.make(
+                it,
+                feedBack.msg,
+                Snackbar.LENGTH_INDEFINITE
+            )
+            snackBar?.setAction("Dismiss") {
+                snackBar?.dismiss()
+            }
+            snackBar?.show()
         }
     }
 
