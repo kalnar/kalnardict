@@ -2,12 +2,9 @@ package eu.kalnarapps.kalnardict.androidui.importer
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import androidx.navigation.navOptions
-import eu.kalnarapps.kalnardict.androidui.test.TestCoroutineDispatcherProvider
-import eu.kalnarapps.kalnardict.androidui.test.TestDispatcherProvider
+import eu.kalnarapps.kalnardict.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.presentation.interactors.database.CreateMockTableUseCaseFromUi
-import eu.kalnarapps.kalnardict.presentation.interactors.database.GetMockDatabaseInfoUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetMockDatabasesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
@@ -28,16 +25,12 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.reset
-import org.mockito.kotlin.argThat
-import org.mockito.kotlin.argWhere
 import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.stub
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
-import org.mockito.verification.VerificationMode
 
 class DbImporterViewModelTest {
 
