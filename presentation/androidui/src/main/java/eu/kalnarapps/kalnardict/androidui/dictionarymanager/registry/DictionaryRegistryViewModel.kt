@@ -76,7 +76,7 @@ class DictionaryRegistryViewModel(
                                     )
                                 )
                             )
-                            LoadableContent.Failed
+                            LoadableContent.Failed(metaInfoFetch)
                         }
                     },
                     availableLanguages = listAvailableLanguages()
