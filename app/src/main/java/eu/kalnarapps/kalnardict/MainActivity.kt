@@ -10,6 +10,7 @@ import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNaviga
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
@@ -25,33 +26,33 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        registerActivityResults()
-
+        loadKoinModules(platformNavigationModule)
     }
 
-    private fun registerActivityResults() {
-        val dbBrowserLauncher = registerForActivityResult(
-            ActivityResultContracts.GetContent()
-        ) { uri ->
-            // Warning: navigator is initialized after onCreate of main activity
-            navigator.execute(
-                NavigationCommand.Common.NavigateToDictionaryRegistry(
-                    uriAdapter.convertUriToSdcardPath(uri)
-                )
-            )
-        }
+    override fun onStop() {
+        super.onStop()
+        unloadKoinModules(platformNavigationModule)
+    }
 
-        loadKoinModules(
-            module {
-                single {
-                    { _: NavigationCommand.Platform.NavigateToDbBrowser ->
-                        dbBrowserLauncher.launch(
-                            "*/*"
-                        )
-                    } as ((NavigationCommand.Platform.NavigateToDbBrowser) -> Unit)
-                }
-            }
+    private val dbBrowserLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        // Warning: navigator is initialized after onCreate of main activity
+        navigator.execute(
+            NavigationCommand.Common.NavigateToDictionaryRegistry(
+                uriAdapter.convertUriToSdcardPath(uri)
+            )
         )
+    }
+
+    private val platformNavigationModule = module {
+        single {
+            { _: NavigationCommand.Platform.NavigateToDbBrowser ->
+                dbBrowserLauncher.launch(
+                    "*/*"
+                )
+            } as ((NavigationCommand.Platform.NavigateToDbBrowser) -> Unit)
+        }
     }
 
     override fun onBackPressed() {
