@@ -8,12 +8,12 @@ import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionar
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.RegisterNewDictionarySuccessfullyMock
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.mocks.MockRegisterLanguageUseCase
 import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
-import eu.kalnarapps.kalnardict.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
+import eu.kalnarapps.kalnardict.test.TestCoroutineDispatcherProvider
 import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsCollectionWithSize
@@ -97,7 +97,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -135,7 +135,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.invalidUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -150,7 +150,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
         assertThat<String>(
             viewModel.error.value?.logMessage,
             equalTo(
-                "uri not correct"
+                "uri not correct\ncause: source cause"
             )
         )
     }
@@ -180,7 +180,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -240,7 +240,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -292,7 +292,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionaryMockWithFailures(listOf(2)),
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger

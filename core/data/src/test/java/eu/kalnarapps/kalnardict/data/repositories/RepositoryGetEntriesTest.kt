@@ -13,14 +13,11 @@ import eu.kalnarapps.kalnardict.data.mock.model.MockTranslatedWordEntry
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
 import org.junit.Rule
 import org.junit.Test
-
-
 
 class RepositoryGetEntriesTest {
 

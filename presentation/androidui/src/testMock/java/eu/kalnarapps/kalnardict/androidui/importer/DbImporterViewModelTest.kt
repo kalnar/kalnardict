@@ -2,7 +2,6 @@ package eu.kalnarapps.kalnardict.androidui.importer
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import eu.kalnarapps.kalnardict.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.presentation.interactors.database.CreateMockTableUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetMockDatabasesUseCaseForUi
@@ -12,6 +11,7 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.Selectabl
 import eu.kalnarapps.kalnardict.presentation.models.mock.DbImporterUi
 import eu.kalnarapps.kalnardict.presentation.models.mock.ImporterFormData
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
+import eu.kalnarapps.kalnardict.test.TestCoroutineDispatcherProvider
 import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -79,7 +79,7 @@ class DbImporterViewModelTest {
         }
 
         viewModel = DbImporterViewModel(
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             logger,
             mockTableUseCaseFromUi,
             getAvailableLanguages,
@@ -132,7 +132,7 @@ class DbImporterViewModelTest {
         }
 
         viewModel = DbImporterViewModel(
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             logger,
             mockTableUseCaseFromUi,
             getAvailableLanguages,
@@ -194,7 +194,7 @@ class DbImporterViewModelTest {
         }
 
         viewModel = DbImporterViewModel(
-            dispatcherProvider = TestDispatcherProvider,
+            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
             logger,
             mockTableUseCaseFromUi,
             getAvailableLanguages,

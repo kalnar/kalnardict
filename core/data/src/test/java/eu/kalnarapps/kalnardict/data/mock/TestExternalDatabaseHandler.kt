@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.mock
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DatabaseValidity
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
@@ -14,8 +15,13 @@ import eu.kalnarapps.kalnardict.data.validExternalResource
 
 class TestExternalDatabaseHandler :
     ExternalDatabaseHandler {
-    override fun checkDatabaseStructure(resource: ExternalDictionaryResource): DatabaseValidity {
-        return DatabaseValidity.INVALID
+    override fun checkDatabaseStructure(resource: ExternalDictionaryResource): OperationResult {
+        return when (
+            resource.sdCardPath()
+        ) {
+            Stubs.Db.validExternalDatabase.localPath -> OperationResult.Success
+            else -> OperationResult.Failure("error")
+        }
     }
 
     override fun readTableInfosFrom(resource: ExternalDictionaryResource): DataOperationResult<List<ImportEntry.TableInfo>> {
