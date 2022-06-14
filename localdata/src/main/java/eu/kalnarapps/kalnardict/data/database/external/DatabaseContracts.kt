@@ -38,7 +38,7 @@ fun sqlCreateTable(name: String) =
             ")"
 
 const val SQL_CREATE_META_INFO =
-    "CREATE TABLE ${DatabaseReaderContract.DictionaryLog.TABLE_NAME} (" +
+    "CREATE TABLE IF NOT EXISTS ${DatabaseReaderContract.DictionaryLog.TABLE_NAME} (" +
             "${BaseColumns._ID} INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
             "${DatabaseReaderContract.DictionaryLog.COLUMN_NAME_NAME} TEXT NOT NULL," +
             "${DatabaseReaderContract.DictionaryLog.COLUMN_NAME_LANGUAGE_FROM} TEXT NOT NULL," +
