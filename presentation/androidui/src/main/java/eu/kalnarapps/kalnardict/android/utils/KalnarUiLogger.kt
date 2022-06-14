@@ -43,6 +43,6 @@ class KalnarUiLogger : UiLogger {
     }
 
     companion object {
-        const val ERROR_FROM_UI_TAG = "kd.error.ui"
+        const val ERROR_FROM_UI_TAG = "kalnarDict-kd.error.ui"
     }
 }
