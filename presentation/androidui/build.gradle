@@ -73,6 +73,7 @@ dependencies {
 
     implementation project(":core:common")
     implementation project(":presentation")
+    implementation project(":platform:android:common")
     testImplementation project(":core:test")
     mockImplementation project(path: ':core:domain')
 

@@ -117,7 +117,9 @@ val useCaseModule = module {
     }
 
     single {
-        GetMockDatabaseSettings() as GetMockDatabaseSettingsUseCase
+        GetMockDatabaseSettings(
+            mockDatabaseSettingsRepository = get()
+        ) as GetMockDatabaseSettingsUseCase
     }
     single {
         CreateExternalTable(

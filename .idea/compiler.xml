@@ -8,6 +8,7 @@
       <module name="kalnarDict.core.domain" target="1.8" />
       <module name="kalnarDict.core.interactors" target="1.8" />
       <module name="kalnarDict.localdata" target="11" />
+      <module name="kalnarDict.platform.android.common" target="11" />
       <module name="kalnarDict.platform.androidtest" target="11" />
       <module name="kalnarDict.presentation" target="1.8" />
       <module name="kalnarDict.presentation.androidui" target="11" />

@@ -1,6 +1,5 @@
 package eu.kalnarapps.kalnardict.koin
 
-import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.data.ExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDaoAdapter
@@ -17,6 +16,7 @@ import eu.kalnarapps.kalnardict.data.dao.dictionary.DisplayTypePreferencesDao
 import eu.kalnarapps.kalnardict.data.dao.dictionary.SupportedDisplayTypesDao
 import eu.kalnarapps.kalnardict.data.dao.external.database.ExternalDbDao
 import eu.kalnarapps.kalnardict.data.dao.external.database.ExternalDbDaoAdapter
+import eu.kalnarapps.kalnardict.data.dao.settings.SettingsDaoAdapter
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.data.database.external.gateways.DefaultExternalDatabaseGateway
 import eu.kalnarapps.kalnardict.data.database.external.gateways.DefaultExternalTableCreator
@@ -31,10 +31,11 @@ import eu.kalnarapps.kalnardict.data.datasources.configuration.ConfigurationData
 import eu.kalnarapps.kalnardict.data.datasources.configuration.QueryModeConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.datasources.database.DatabaseMetaDataSource
 import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTypeDataSource
+import eu.kalnarapps.kalnardict.data.datasources.settings.SettingsDataSource
 import eu.kalnarapps.kalnardict.data.gateways.ExternalDatabaseGateway
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -120,5 +121,10 @@ val dataModule: Module = module {
         DefaultExternalWordManager(
             context = get()
         ) as ExternalDatabaseGateway.WordManager
+    }
+    single {
+        SettingsDaoAdapter(
+            androidApplication()
+        ) as SettingsDataSource
     }
 }

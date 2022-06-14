@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.database.external.SQL_CREATE_META_INFO
 import eu.kalnarapps.kalnardict.data.database.external.SQLiteDbReaderHelper
 import eu.kalnarapps.kalnardict.data.gateways.ExternalDatabaseGateway
+import java.io.File
 import java.lang.Exception
 
 class DefaultExternalDatabaseGateway(
@@ -14,6 +15,9 @@ class DefaultExternalDatabaseGateway(
     override suspend fun createDatabase(path: String): OperationResult {
 
         try {
+
+            File(File(path).parent).mkdirs()
+
             val dbHelper = SQLiteDbReaderHelper(context, path)
             dbHelper.use { dbHelper ->
                 dbHelper.writableDatabase.execSQL(SQL_CREATE_META_INFO)

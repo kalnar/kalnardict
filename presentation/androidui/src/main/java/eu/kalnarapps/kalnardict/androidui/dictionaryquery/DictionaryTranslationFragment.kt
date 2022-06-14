@@ -42,7 +42,7 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
 
         viewModel.getTranslation().distinctUntilChanged().observe(viewLifecycleOwner, Observer {
             when (it) {
-                LoadableContent.Failed,
+                is LoadableContent.Failed,
                 LoadableContent.UnInitialized,
                 is LoadableContent.Loading -> {
                     // do nothing?

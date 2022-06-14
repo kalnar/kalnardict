@@ -51,8 +51,8 @@ sealed class DataOperationResult<T> {
     }
 }
 
-data class OperationException(val exception: Exception): OperationFailure {
+data class OperationException(val exception: Exception) : OperationFailure {
     override fun errorMessage(): String {
-        return exception.localizedMessage
+        return exception.stackTraceToString()
     }
 }

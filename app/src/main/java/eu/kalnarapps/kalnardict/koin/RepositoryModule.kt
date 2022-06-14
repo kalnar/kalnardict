@@ -4,6 +4,7 @@ import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.DatabaseRepository
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
+import eu.kalnarapps.kalnardict.data.GetMockDatabaseSettingsRepository
 import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.data.QueryModeConfigurationRepository
 import eu.kalnarapps.kalnardict.data.datasources.words.RandomWordRepository
@@ -17,10 +18,10 @@ import eu.kalnarapps.kalnardict.data.repositories.configuration.AppConfigReposit
 import eu.kalnarapps.kalnardict.data.repositories.configuration.QueryModeRepository
 import eu.kalnarapps.kalnardict.data.repositories.database.DefaultDatabaseRepository
 import eu.kalnarapps.kalnardict.data.repositories.database.DefaultTableRepository
+import eu.kalnarapps.kalnardict.data.repositories.settings.DefaultGetMockDatabaseSettingsRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import kotlin.math.sin
 
 val repositoryModule: Module = module {
     // the order of LanguageRepository, DataToDomainOperationalMapper and Repository is to be respected
@@ -82,6 +83,11 @@ val repositoryModule: Module = module {
     }
     factory {
         RandomWordRepository()
+    }
+    factory {
+        DefaultGetMockDatabaseSettingsRepository(
+            settingsDataSource = get()
+        ) as GetMockDatabaseSettingsRepository
     }
 }
 

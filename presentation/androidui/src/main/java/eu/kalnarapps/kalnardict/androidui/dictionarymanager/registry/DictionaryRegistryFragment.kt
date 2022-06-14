@@ -50,9 +50,10 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
 
         viewModel.getUiState().map { it.registerDictionaryUiModels }.observe(viewLifecycleOwner) {
             when (it) {
-                LoadableContent.Failed -> {
+                is LoadableContent.Failed -> {
                     binding.invalidDbGroup.isVisible = true
                     binding.validDbGroup.isVisible = false
+                    uiLogger.d("fragment", it.failure.errorMessage())
                 }
                 is LoadableContent.Completed -> {
                     binding.invalidDbGroup.isVisible = false
