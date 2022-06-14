@@ -62,7 +62,7 @@ class DbImporterViewModel(
             when (result) {
                 is DataOperationResult.Failure -> postError(
                     ErrorFromUi(
-                        logMessage = result.errorMessage,
+                        logMessage = result.errorMessage(),
                         errorFeedback = ErrorUiFeedBack.ShowSnackBar("An error has occurred")
                     )
                 )

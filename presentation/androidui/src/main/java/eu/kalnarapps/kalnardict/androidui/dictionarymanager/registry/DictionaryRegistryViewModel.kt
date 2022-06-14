@@ -68,7 +68,7 @@ class DictionaryRegistryViewModel(
                         is DataOperationResult.Failure -> {
                             postError(
                                 ErrorFromUi(
-                                    logMessage = metaInfoFetch.errorMessage,
+                                    logMessage = metaInfoFetch.errorMessage(),
                                     errorFeedback = ErrorUiFeedBack.ShowSnackBarWithAction(
                                         msg = "An error has occurred. Go back to dictionary manager.",
                                         actionLabel = "OK",
@@ -159,7 +159,7 @@ class DictionaryRegistryViewModel(
                         }
                     }
                     is DataOperationResult.Failure -> {
-                        postError(ErrorFromUi(it.errorMessage))
+                        postError(ErrorFromUi(it.errorMessage()))
                         postUiStateOnMainThread {
                             this.copy(
                                 importProgress = this.importProgress.toMutableMap().apply {

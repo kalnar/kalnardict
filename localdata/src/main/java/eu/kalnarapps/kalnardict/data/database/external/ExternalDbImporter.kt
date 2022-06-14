@@ -45,7 +45,7 @@ class ExternalDbImporter(
             )
         } catch (exception: Exception) {
             return OperationResult.Failure(
-                errorMessage = "invalid database: ${exception.localizedMessage}",
+                errorMessage = "invalid database: ${exception.stackTraceToString()}",
                 cause = OperationException(exception)
             )
         } finally {
@@ -94,7 +94,7 @@ class ExternalDbImporter(
             return DataOperationResult.Success(entriesBeingRead)
         } catch (exception: Exception) {
             return DataOperationResult.Failure(
-                errorMessage = "readTableInfosFrom failed: ${exception.localizedMessage}",
+                errorMessage = "readTableInfosFrom failed: ${exception.stackTraceToString()}",
                 cause = OperationException(exception)
             )
         } finally {
