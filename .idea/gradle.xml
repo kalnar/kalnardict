@@ -21,6 +21,8 @@
             <option value="$PROJECT_DIR$/core/test" />
             <option value="$PROJECT_DIR$/localdata" />
             <option value="$PROJECT_DIR$/platform" />
+            <option value="$PROJECT_DIR$/platform/android" />
+            <option value="$PROJECT_DIR$/platform/android/common" />
             <option value="$PROJECT_DIR$/platform/androidtest" />
             <option value="$PROJECT_DIR$/presentation" />
             <option value="$PROJECT_DIR$/presentation/androidui" />
