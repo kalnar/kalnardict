@@ -3,7 +3,6 @@ package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import eu.kalnarapps.kalnardict.androidui.stubs.UiStubs
-import eu.kalnarapps.kalnardict.test.TestDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
@@ -17,6 +16,7 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionarySe
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
+import eu.kalnarapps.kalnardict.test.TestCoroutineDispatcherProvider
 import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -118,7 +118,7 @@ class DictionaryQueryViewModelQueryStringChangeTest {
                 listQueryResultsUseCase = searchQueryUseCase,
                 updateCurrentLanguageUseCase = changeDictLanguageUseCase,
                 getCurrentDictionary = getLanguageUseCase,
-                dispatcherProvider = TestDispatcherProvider,
+                dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
                 getTranslation = getTranslationUseCase,
                 updateQueryModeUseCase = updateQueryModeUseCase,
                 getQueryModesForUi = getQueryModesForUi,
@@ -135,6 +135,7 @@ class DictionaryQueryViewModelQueryStringChangeTest {
                 }
             }
             viewModel.onQueryChanged("")
+            testCoroutineRule.testCoroutineDispatcher.advanceUntilIdle()
             queryResult.observeForever(testObserver)
             try {
                 assertThat(
@@ -148,6 +149,7 @@ class DictionaryQueryViewModelQueryStringChangeTest {
 
 
                 viewModel.onQueryChanged("1")
+                testCoroutineRule.testCoroutineDispatcher.advanceUntilIdle()
 
                 assertThat(
                     words,
