@@ -202,7 +202,6 @@ class DictionaryQueryViewModel(
     fun onQueryChanged(newQuery: String) {
         viewModelScope.launch(dispatcherProvider.io()) {
             typedQuery.value = newQuery
-//            typedQuery.emit(newQuery)
         }
     }
 
