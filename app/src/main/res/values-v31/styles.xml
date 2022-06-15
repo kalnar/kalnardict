@@ -11,8 +11,9 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryDark</item>
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
-<!--        <item name="android:windowSplashScreenBackground">#004d28</item>-->
         <item name="android:windowSplashScreenBackground">@color/colorPrimary</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/colorPrimaryDark</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_launcher</item>
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
 </resources>
