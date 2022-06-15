@@ -35,7 +35,7 @@ class DictionaryManagerViewModel(
             setUiState(DictionaryManagerState())
         }
         viewModelScope.launch {
-            listRegisteredDictionariesUseCase().map {
+            listRegisteredDictionariesUseCase.invoke().map {
                 LoadableContent.Completed(it) as LoadableContent<List<ManageableDictionaryView>>
             }.onStart {
                 emit(LoadableContent.Loading)
