@@ -109,7 +109,7 @@ class Repository(
                         val readResult =
                             externalDbHandler.readTableEntriesFrom(
                                 importJob.toImportEntry(
-                                    fromId = processedRowNumbers + 1,
+                                    fromId = processedRowNumbers,
                                     tillId = processedRowNumbers + importJob.batchSize
                                 )
                             )

@@ -59,7 +59,7 @@ class RepositoryTest {
     val testCoroutineRule = TestCoroutineRule()
 
     @Test
-    fun import_one_tables_from_valid_external_db() {
+    fun import_one_table_from_valid_external_db() {
         // given a correct path of a valid external db
         testCoroutineRule.runBlockingTest {
             assertThat(

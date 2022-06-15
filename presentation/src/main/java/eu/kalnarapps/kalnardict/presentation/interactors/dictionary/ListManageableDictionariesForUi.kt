@@ -18,10 +18,10 @@ class ListManageableDictionariesForUi(
     private val dictionaryMapper: DomainToUiMapper<DictionaryWithDisplayTypeInfo, ManageableDictionaryView>
 ) : ListManageableDictionariesUseCaseForUi {
     override operator fun invoke(): Flow<List<ManageableDictionaryView>> {
-        return listRegisteredDictionaries()
+        return listRegisteredDictionaries.invoke()
             .flatMapConcat { dictionaryList ->
                 combine(dictionaryList.map { dictionary ->
-                    getDictionaryWithDisplayTypeInfoUseCase(dictionary).map {
+                    getDictionaryWithDisplayTypeInfoUseCase.invoke(dictionary).map {
                         dictionaryMapper.toUiModel(it)
                     }
                 }) {

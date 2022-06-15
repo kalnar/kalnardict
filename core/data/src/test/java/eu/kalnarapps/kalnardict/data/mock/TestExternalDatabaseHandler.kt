@@ -56,7 +56,7 @@ class TestExternalDatabaseHandler :
         return if (resource == validExternalResource.localPath) {
             DataOperationResult.Success(
                 data = newWordsInFrench.subList(
-                    importJob.fromRowId - 1,
+                    importJob.fromRowId,
                     importJob.tillRowId
                 )
             )

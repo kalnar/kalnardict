@@ -178,7 +178,7 @@ class DictionaryRegistryViewModel(
         if (languageFrom is SelectableLanguage.LanguageUi &&
             languageTo is SelectableLanguage.LanguageUi
         ) {
-            registerNewDictionary(
+            registerNewDictionary.invoke(
                 NewDictionaryInfoUi(
                     state.value?.dbPath.orEmpty(),
                     originalTableName = externalTableUiInfo.originalTableName,

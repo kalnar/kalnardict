@@ -13,7 +13,7 @@ class RegisterNewDictionaryFromUi(
     override suspend operator fun invoke(
         newDictionaryInfoUi: NewDictionaryInfoUi
     ): Flow<DataOperationResult<ImportTableProgress>> {
-        return registerNewDictionaryUseCase(
+        return registerNewDictionaryUseCase.invoke(
             dbUri = newDictionaryInfoUi.dbPath,
             originalName = newDictionaryInfoUi.originalTableName,
             savingName = newDictionaryInfoUi.dictionaryName,
