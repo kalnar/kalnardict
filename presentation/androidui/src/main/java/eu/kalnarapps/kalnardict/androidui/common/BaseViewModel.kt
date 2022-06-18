@@ -7,6 +7,7 @@ import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.models.errors.UiFeedback
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
@@ -25,6 +26,10 @@ abstract class BaseViewModel<UiModel>(
     private val _error: MutableLiveData<ErrorFromUi> = MutableLiveData()
     internal val error: LiveData<ErrorFromUi>
         get() = _error
+
+    private val _feedback: MutableLiveData<UiFeedback> = MutableLiveData()
+    internal val feedback: LiveData<UiFeedback>
+        get() = _feedback
 
     protected suspend fun postUiState(state: UiModel?) {
         withContext(dispatcherProvider.io()) {
@@ -65,6 +70,10 @@ abstract class BaseViewModel<UiModel>(
 
     protected fun postError(errorFromUi: ErrorFromUi) {
         _error.postValue(errorFromUi)
+    }
+
+    protected fun postFeedback(uiFeedback: UiFeedback) {
+        _feedback.postValue(uiFeedback)
     }
 
     protected fun setUiState(state: UiModel) {

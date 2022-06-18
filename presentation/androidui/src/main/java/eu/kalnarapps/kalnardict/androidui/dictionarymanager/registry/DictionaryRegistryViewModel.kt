@@ -69,7 +69,7 @@ class DictionaryRegistryViewModel(
                             postError(
                                 ErrorFromUi(
                                     logMessage = metaInfoFetch.errorMessage(),
-                                    errorFeedback = ErrorUiFeedBack.ShowSnackBarWithAction(
+                                    errorFeedback = ErrorUiFeedBack.ShowSnackBarWithNavigation(
                                         msg = "An error has occurred. Go back to dictionary manager.",
                                         actionLabel = "OK",
                                         action = NavigationCommand.Common.Back
