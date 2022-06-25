@@ -4,6 +4,8 @@ import eu.kalnarapps.kalnardict.presentation.interactors.database.CreateMockTabl
 import eu.kalnarapps.kalnardict.presentation.interactors.database.CreateMockTableUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryUseCaseFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.DeleteDictionaryFromUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.DeleteDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewDictionaryFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.UpdateDictionaryFromUi
@@ -24,6 +26,11 @@ val useCaseFromUiModule = module {
             displayTypeRepository = get(),
             renderingStrategyMapper = get(Qualifiers.renderingStrategyUiDomainMapper)
         ) as UpdateDictionaryUseCaseFromUi
+    }
+    single {
+        DeleteDictionaryFromUi(
+            deleteDictionaryUseCase = get()
+        ) as DeleteDictionaryUseCaseFromUi
     }
 
     single {

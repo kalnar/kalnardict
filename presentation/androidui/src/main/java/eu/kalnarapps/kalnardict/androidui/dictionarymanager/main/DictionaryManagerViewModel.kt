@@ -7,6 +7,8 @@ import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.common.BaseViewModel
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.DeleteDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.UpdateDictionaryUseCaseFromUi
@@ -14,15 +16,16 @@ import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryManagerState
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
-import kotlinx.coroutines.flow.collect
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
+import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
+import eu.kalnarapps.kalnardict.presentation.models.errors.UiFeedback
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DictionaryManagerViewModel(
     private val listRegisteredDictionariesUseCase: ListManageableDictionariesUseCaseForUi,
     private val updateRenderingStrategy: UpdateDictionaryUseCaseFromUi,
+    private val deleteDictionary: DeleteDictionaryUseCaseFromUi,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     uiLogger: UiLogger
 ) : BaseViewModel<DictionaryManagerState>(
@@ -31,17 +34,42 @@ class DictionaryManagerViewModel(
 ) {
 
     init {
-        viewModelScope.launch {
-            setUiState(DictionaryManagerState())
-        }
-        viewModelScope.launch {
+        setUiState(DictionaryManagerState())
+        viewModelScope.launch(dispatcherProvider.io()) {
             listRegisteredDictionariesUseCase.invoke().map {
+                registerClickListeners(it)
                 LoadableContent.Completed(it) as LoadableContent<List<ManageableDictionaryView>>
-            }.onStart {
-                emit(LoadableContent.Loading)
             }.collect {
                 postUiState {
                     copy(dictionaries = it)
+                }
+            }
+        }
+    }
+
+    private fun registerClickListeners(it: List<ManageableDictionaryView>) {
+        it.forEach {
+            it.onDeleteAction = { dictionaryId ->
+                viewModelScope.launch(dispatcherProvider.io()) {
+                    when (val runDelete = deleteDictionary.invoke(dictionaryId)) {
+                        is OperationResult.Failure -> {
+                            postError(ErrorFromUi(runDelete.errorMessage()))
+                            postError(
+                                ErrorFromUi(
+                                    logMessage = "Delete dictionary failed for dictionary with id: $dictionaryId",
+                                    ErrorUiFeedBack.ShowSnackBarWithAction(
+                                        "Delete has failed",
+                                        "Retry"
+                                    ) {
+                                        it.onDeleteAction?.invoke(dictionaryId)
+                                    }
+                                )
+                            )
+                        }
+                        OperationResult.Success -> {
+                            postFeedback(UiFeedback.ShowSuccessSnackBar("Dictionary deleted successfully"))
+                        }
+                    }
                 }
             }
         }
@@ -58,12 +86,9 @@ class DictionaryManagerViewModel(
     }
 
     fun updateDictionary(dictionaryUpdate: DictionaryUpdateUi.Info) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                updateRenderingStrategy(dictionaryUpdate)
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            updateRenderingStrategy(dictionaryUpdate)
         }
-
     }
 }
 

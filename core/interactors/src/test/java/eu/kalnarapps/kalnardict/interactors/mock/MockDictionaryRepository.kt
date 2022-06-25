@@ -70,4 +70,8 @@ class MockDictionaryRepository : DictionaryRepository {
             DataOperationResult.Success(translation)
         }
     }
+
+    override suspend fun deleteDictionaryById(dictionaryId: Int): OperationResult {
+        TODO("Not yet implemented")
+    }
 }

@@ -2,6 +2,7 @@ package eu.kalnarapps.kalnardict.androidui.dependencies.mocks
 
 import eu.kalnarapps.kalnardict.androidui.stub.Stubs
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
@@ -72,5 +73,13 @@ class MockDictionaryRepository : DictionaryRepository {
         dictionaryId: Int
     ): DataOperationResult<String> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteDictionaryById(dictionaryId: Int): OperationResult {
+        dictDao.keys.find { it.id == dictionaryId }?.let {
+            dictDao.remove(it)
+            return OperationResult.Success
+        }
+        return OperationResult.Failure("error")
     }
 }

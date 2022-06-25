@@ -2,6 +2,8 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.DictionaryUpdateUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
@@ -9,9 +11,7 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.Manageable
 class ManageableDictionaryListAdapter(
     private val onDictionaryUpdateListener: OnDictionaryUpdateListener,
     private val onNewButtonAction: OnNewButtonAction
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private var list: List<ManageableDictionaryView> = emptyList()
+) : ListAdapter<ManageableDictionaryView, RecyclerView.ViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +30,7 @@ class ManageableDictionaryListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (list.size == position) {
+        return if (currentList.size == position) {
             DictionaryListViewType.NEW_BUTTON_VIEW.id
         } else {
             DictionaryListViewType.MANAGEABLE_DICTIONARY_VIEW.id
@@ -38,20 +38,38 @@ class ManageableDictionaryListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position < list.size) {
+        if (position < currentList.size) {
             val manageableDictionaryViewHolder = holder as ManageableDictionaryViewHolder
-            manageableDictionaryViewHolder.bind(list[position])
+            manageableDictionaryViewHolder.bind(currentList[position])
         } else {
             val newButtonViewHolder = holder as NewButtonViewHolder
             newButtonViewHolder.bind(onNewButtonAction)
         }
     }
 
-    override fun getItemCount(): Int = list.size + 1
+    override fun getItemCount(): Int = currentList.size + 1
 
     fun updateList(content: List<ManageableDictionaryView>) {
-        list = content
-        notifyDataSetChanged()
+        submitList(content)
+    }
+
+    companion object {
+        private val diffCallback = object : DiffUtil.ItemCallback<ManageableDictionaryView>() {
+            override fun areItemsTheSame(
+                oldItem: ManageableDictionaryView,
+                newItem: ManageableDictionaryView
+            ): Boolean {
+                return oldItem.dictionaryId == newItem.dictionaryId
+            }
+
+            override fun areContentsTheSame(
+                oldItem: ManageableDictionaryView,
+                newItem: ManageableDictionaryView
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }
+
     }
 
 }

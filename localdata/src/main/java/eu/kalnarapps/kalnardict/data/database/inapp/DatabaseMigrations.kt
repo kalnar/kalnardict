@@ -56,7 +56,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             """
-                DROP INDEX index_Word_dictionary_id;
+                DROP INDEX IF EXISTS index_Word_dictionary_id;
                 """
         )
         database.execSQL(
@@ -74,6 +74,53 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
                 CREATE TABLE "databases" (
                     "database_path"	TEXT PRIMARY KEY NOT NULL
                 )                
+                """
+        )
+    }
+}
+
+val MIGRATION_9_10 = object : Migration(9, 10) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS `Word_tmp` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `base_form` TEXT NOT NULL,
+                     `base_form_alt` TEXT NOT NULL,
+                    `translation` TEXT NOT NULL,
+                     `dictionary_id` INTEGER NOT NULL,
+                    FOREIGN KEY(`dictionary_id`) REFERENCES `dictionary_log`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE 
+                )
+                """
+        )
+        database.execSQL(
+            """
+            INSERT INTO Word_tmp 
+                (`id`, `base_form`, `base_form_alt`, `translation`, `dictionary_id`)
+            SELECT 
+                `id`, `base_form`, `base_form_alt`, `translation`, `dictionary_id` 
+            FROM 
+                Word
+            """.trimIndent()
+        )
+        database.execSQL(
+            """
+               DROP TABLE Word; 
+            """.trimIndent()
+        )
+        database.execSQL(
+            """
+               ALTER TABLE Word_tmp RENAME TO Word;
+            """.trimIndent()
+        )
+        database.execSQL(
+            """
+                DROP INDEX IF EXISTS word_dictionary_form_index;
+                """
+        )
+        database.execSQL(
+            """
+                CREATE INDEX IF NOT EXISTS word_dictionary_form_index ON Word (dictionary_id,base_form,base_form_alt)
                 """
         )
     }

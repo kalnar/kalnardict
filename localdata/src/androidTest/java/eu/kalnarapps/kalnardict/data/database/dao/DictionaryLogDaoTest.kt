@@ -6,45 +6,47 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
+import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
-import kotlinx.coroutines.Dispatchers
+import eu.kalnarapps.kalnardict.data.entities.DictionaryLogId
+import eu.kalnarapps.kalnardict.data.entities.Word
+import eu.kalnarapps.kalnardict.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.test.test
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
 
 class DictionaryLogDaoTest {
+
     private lateinit var dictionaryLogDao: DictionaryLogDao
+    private lateinit var dictionaryWordsDao: WordDao
     private var db: AppDatabase
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setTransactionExecutor(testCoroutineDispatcher.asExecutor())
-            .setQueryExecutor(testCoroutineDispatcher.asExecutor())
+            .setTransactionExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
+            .setQueryExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
             .fallbackToDestructiveMigration()
             .build()
     }
 
     @Before
-    fun setUp() {
-        Dispatchers.setMain(testCoroutineDispatcher)
-    }
-
-    @Before
     fun createDb() {
         dictionaryLogDao = db.dictionaryLogDao()
+        dictionaryWordsDao = db.wordDao()
         db.clearAllTables()
     }
 
@@ -57,7 +59,7 @@ class DictionaryLogDaoTest {
     @Test
     @Throws(Exception::class)
     fun readEntryFromDatabase() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             // given there is an entry of a dictionary in dictionary_log
             insertDictionaryLogEntry()
 
@@ -76,7 +78,7 @@ class DictionaryLogDaoTest {
     }
 
     private fun insertDictionaryLogEntry() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             dictionaryLogDao.insertDictionary(
                 TestFixtures.sampleDictionaryLogEntry
             )
@@ -85,8 +87,7 @@ class DictionaryLogDaoTest {
 
     @Test
     fun insert_entry_into_table() {
-        // TODO: use test rule as in other modules
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
 
             val dictionaries = dictionaryLogDao.getDictionaries().first()
             assertThat(
@@ -118,9 +119,104 @@ class DictionaryLogDaoTest {
         }
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testCoroutineDispatcher.cleanupTestCoroutines()
+    @Test
+    fun when_calling_delete_dictionary_with_valid_id_then_delete_log_table_and_words_in_db() {
+        testCoroutineRule.runBlockingTest {
+
+            val givenId = 1
+            val words = dictionaryWordsDao.getByQuery("%", givenId)
+            assertThat(
+                words, IsEmptyCollection()
+            )
+            val dictionaryObserver = dictionaryLogDao.getDictionaries().test(this)
+            dictionaryObserver.assertThat(
+                { it.last() },
+                IsEmptyCollection()
+            )
+            insertDictionaryLogEntry()
+            dictionaryObserver.assertThat(
+                { it.last() },
+                IsCollectionWithSize(equalTo(1))
+            )
+            dictionaryWordsDao.insertWords(
+                (1..20).map {
+                    Word(
+                        it,
+                        "word#$it",
+                        "alt word#$it",
+                        "translation#$it",
+                        givenId
+                    )
+                }
+            )
+            val wordsAfterInsert = dictionaryWordsDao.getByQuery("%", givenId)
+            assertThat(
+                wordsAfterInsert, IsCollectionWithSize(equalTo(20))
+            )
+
+            dictionaryLogDao.deleteDictionary(DictionaryLogId(givenId))
+
+            dictionaryObserver.assertThat(
+                { it.last() },
+                IsEmptyCollection()
+            )
+
+            val wordsAfterDelete = dictionaryWordsDao.getByQuery("%", givenId)
+            assertThat(
+                wordsAfterDelete, IsEmptyCollection()
+            )
+            dictionaryObserver.finish()
+
+        }
     }
+
+    @Test
+    fun when_calling_delete_dictionary_with_invalid_id_then_dao_returns_flag() {
+        testCoroutineRule.runBlockingTest {
+
+            val givenInvalidId = 4
+            val givenValidId = 1
+            val words = dictionaryWordsDao.getByQuery("%", givenValidId)
+            assertThat(
+                words, IsEmptyCollection()
+            )
+            val dictionaryObserver = dictionaryLogDao.getDictionaries().test(this)
+            dictionaryObserver.assertThat(
+                { it.last() },
+                IsEmptyCollection()
+            )
+            insertDictionaryLogEntry()
+            dictionaryObserver.assertThat(
+                { it.last() },
+                IsCollectionWithSize(equalTo(1))
+            )
+            dictionaryWordsDao.insertWords(
+                (1..20).map {
+                    Word(
+                        it,
+                        "word#$it",
+                        "alt word#$it",
+                        "translation#$it",
+                        givenValidId
+                    )
+                }
+            )
+            val wordsAfterInsert = dictionaryWordsDao.getByQuery("%", givenValidId)
+            assertThat(
+                wordsAfterInsert, IsCollectionWithSize(equalTo(20))
+            )
+
+            val numberOfDictionariesDeleted = dictionaryLogDao.deleteDictionary(DictionaryLogId(givenInvalidId))
+
+            dictionaryObserver.assertThat(
+                { it.last() },
+                IsCollectionWithSize(equalTo(1))
+            )
+            assertThat(numberOfDictionariesDeleted, equalTo(0))
+
+            dictionaryObserver.finish()
+
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data.mock
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
@@ -56,6 +57,10 @@ open class MockDictionaryDataSource(
         } ?: DataOperationResult.Failure(
             errorMessage = "no dictionary found by the id: $id"
         )
+    }
+
+    override suspend fun deleteDictionaryById(id: Int): OperationResult {
+        TODO("Not yet implemented")
     }
 
 }

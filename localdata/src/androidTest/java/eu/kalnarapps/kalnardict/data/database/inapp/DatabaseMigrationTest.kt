@@ -11,7 +11,7 @@ class DatabaseMigrationTest {
     private val TEST_DB = "migration-test"
 
     // Array of all migrations starting from START_VERSION
-    private val ALL_MIGRATIONS = arrayOf(MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
+    private val ALL_MIGRATIONS = arrayOf(MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
 
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
@@ -29,7 +29,7 @@ class DatabaseMigrationTest {
 
         // Open latest version of the database. Room will validate the schema
         // once all migrations execute.
-        Room.databaseBuilder(
+        val appDatabase = Room.databaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
             AppDatabase::class.java,
             TEST_DB

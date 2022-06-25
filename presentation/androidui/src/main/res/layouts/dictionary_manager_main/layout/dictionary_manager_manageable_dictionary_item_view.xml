@@ -124,8 +124,25 @@
                 android:text="@string/dictionary_update_submit_cta_title"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dictionary_delete_cta"
+                app:layout_constraintTop_toBottomOf="@id/dictionary_update_rendering_value" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dictionary_delete_cta"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:backgroundTint="@color/colorSecondaryDark"
+                app:backgroundTint="@color/colorSecondaryDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_background"
+                android:paddingHorizontal="30dp"
+                android:text="@string/dictionary_delete_cta_title"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/dictionary_update_submit_cta"
                 app:layout_constraintTop_toBottomOf="@id/dictionary_update_rendering_value" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

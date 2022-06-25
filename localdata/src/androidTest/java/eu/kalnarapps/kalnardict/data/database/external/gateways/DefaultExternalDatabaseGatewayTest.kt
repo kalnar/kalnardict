@@ -81,7 +81,7 @@ class DefaultExternalDatabaseGatewayTest {
 
             val gateway = DefaultExternalDatabaseGateway(context)
 
-            val dbPath = context.testDbPath()
+            val dbPath = "/file/invalid_db_path.sql"
 
             gateway.createDatabase(dbPath)
 

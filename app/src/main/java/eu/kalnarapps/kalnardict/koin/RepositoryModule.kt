@@ -20,6 +20,8 @@ import eu.kalnarapps.kalnardict.data.repositories.database.DefaultDatabaseReposi
 import eu.kalnarapps.kalnardict.data.repositories.database.DefaultTableRepository
 import eu.kalnarapps.kalnardict.data.repositories.settings.DefaultGetMockDatabaseSettingsRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
+import eu.kalnarapps.kalnardict.domain.usecases.DeleteDictionaryUseCase
+import eu.kalnarapps.kalnardict.interactors.dictionary.DeleteDictionary
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -88,6 +90,11 @@ val repositoryModule: Module = module {
         DefaultGetMockDatabaseSettingsRepository(
             settingsDataSource = get()
         ) as GetMockDatabaseSettingsRepository
+    }
+    factory {
+        DeleteDictionary(
+            dictionaryRepository = get()
+        ) as DeleteDictionaryUseCase
     }
 }
 

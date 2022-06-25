@@ -35,6 +35,8 @@ class ManageableDictionaryViewHolder(
         itemView.findViewById(R.id.dictionary_update_rendering_value)
     private val submitUpdateCta: AppCompatButton =
         itemView.findViewById(R.id.dictionary_update_submit_cta)
+    private val deleteCta: AppCompatButton =
+        itemView.findViewById(R.id.dictionary_delete_cta)
 
 
     fun bind(manageableDictionaryView: ManageableDictionaryView) {
@@ -66,5 +68,10 @@ class ManageableDictionaryViewHolder(
                 )
             )
         }
+
+        deleteCta.setOnClickListener {
+            manageableDictionaryView.onDeleteAction?.invoke(manageableDictionaryView.dictionaryId)
+        }
+
     }
 }

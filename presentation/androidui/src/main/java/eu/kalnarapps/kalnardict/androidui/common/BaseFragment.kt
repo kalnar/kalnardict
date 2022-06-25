@@ -14,6 +14,7 @@ import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import eu.kalnarapps.kalnardict.presentation.interactors.navigation.ScreenNavigator
 import eu.kalnarapps.kalnardict.common.extentions.exhaustive
+import eu.kalnarapps.kalnardict.presentation.models.errors.UiFeedback
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
@@ -31,6 +32,7 @@ abstract class BaseFragment<UiModel> : Fragment() {
         listenToNavigationCommands()
         listenToUiStateChanges()
         listenToErrors()
+        listenToFeedbacks()
     }
 
     override fun onDestroyView() {
@@ -41,21 +43,41 @@ abstract class BaseFragment<UiModel> : Fragment() {
     private fun listenToErrors() {
         viewModel.error.observe(viewLifecycleOwner, Observer {
             uiLogger.logErrorFromUi(it)
-            when (val feedBack = it.errorFeedback) {
+            when (val errorUiFeedBack = it.errorFeedback) {
                 is ErrorUiFeedBack.ShowSnackBar -> {
-                    showSnackBar(feedBack)
+                    showSnackBarWithNavigation(errorUiFeedBack)
                 }
                 ErrorUiFeedBack.OnlyLog -> Unit
-                is ErrorUiFeedBack.ShowToast -> showToast(feedBack.msg)
-                is ErrorUiFeedBack.Navigate -> navigator.execute(feedBack.navCommand)
+                is ErrorUiFeedBack.ShowToast -> showToast(errorUiFeedBack.msg)
+                is ErrorUiFeedBack.Navigate -> navigator.execute(errorUiFeedBack.navCommand)
+                is ErrorUiFeedBack.ShowSnackBarWithNavigation -> {
+                    showSnackBarWithNavigation(errorUiFeedBack)
+                }
                 is ErrorUiFeedBack.ShowSnackBarWithAction -> {
-                    showSnackBar(feedBack)
+                    showSnackBarWithAction(errorUiFeedBack)
                 }
             }.exhaustive
         })
     }
 
-    private fun showSnackBar(feedBack: ErrorUiFeedBack.ShowSnackBarWithAction) {
+    private fun listenToFeedbacks() {
+        viewModel.feedback.observe(viewLifecycleOwner, Observer {
+            when (val feedBack = it) {
+                is UiFeedback.ShowSuccessSnackBar -> {
+                    view?.let { view ->
+                        snackBar = Snackbar.make(
+                            view,
+                            feedBack.msg,
+                            Snackbar.LENGTH_SHORT
+                        )
+                        snackBar?.show()
+                    }
+                }
+            }.exhaustive
+        })
+    }
+
+    private fun showSnackBarWithNavigation(feedBack: ErrorUiFeedBack.ShowSnackBarWithNavigation) {
         view?.let {
             snackBar = Snackbar.make(
                 it,
@@ -70,7 +92,22 @@ abstract class BaseFragment<UiModel> : Fragment() {
         }
     }
 
-    private fun showSnackBar(feedBack: ErrorUiFeedBack.ShowSnackBar) {
+    private fun showSnackBarWithAction(feedBack: ErrorUiFeedBack.ShowSnackBarWithAction) {
+        view?.let {
+            snackBar = Snackbar.make(
+                it,
+                feedBack.msg,
+                Snackbar.LENGTH_INDEFINITE
+            )
+            snackBar?.setAction(feedBack.actionLabel) {
+                snackBar?.dismiss()
+                feedBack.action.invoke()
+            }
+            snackBar?.show()
+        }
+    }
+
+    private fun showSnackBarWithNavigation(feedBack: ErrorUiFeedBack.ShowSnackBar) {
         view?.let {
             snackBar = Snackbar.make(
                 it,

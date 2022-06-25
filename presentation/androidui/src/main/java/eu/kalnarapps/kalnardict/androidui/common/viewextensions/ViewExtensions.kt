@@ -11,10 +11,3 @@ fun View.visibleXorGone(condition: Boolean) {
     }
 }
 
-fun View.visibleXorInvisible(condition: Boolean) {
-    visibility = if (condition) {
-        View.VISIBLE
-    } else {
-        View.INVISIBLE
-    }
-}

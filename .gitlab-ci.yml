@@ -110,13 +110,6 @@ debugTestsCoreInteractors:
   script:
     - ./gradlew -Pci --console=plain :core:interactors:test
 
-debugTestsData:
-  interruptible: false
-  stage: test
-  when: manual
-  script:
-    - ./gradlew -Pci --console=plain :core:data:test
-
 debugTestsLocalData:
   interruptible: false
   stage: test

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kalnarapps.kalnardict.androidui.common.BaseFragment
@@ -56,10 +57,13 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
                 when (it) {
                     LoadableContent.UnInitialized,
                     is LoadableContent.Failed,
-                    LoadableContent.Loading -> Unit
+                    LoadableContent.Loading -> {
+                        binding.dictionaryManagerLoader.isVisible = true
+                    }
                     is LoadableContent.Completed -> {
                         binding.dictionaryManagerLoader.visibility = View.GONE
-                        binding.dictionaryManagerNoDictionaryDescription.visibleXorGone(it.content.isEmpty())
+                        binding.dictionaryManagerNoDictionaryDescription.isVisible =
+                            it.content.isEmpty()
 
                         (adapter as ManageableDictionaryListAdapter).updateList(it.content)
 

@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.data.database.dao
 
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import eu.kalnarapps.kalnardict.data.entities.DictionaryLogId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -41,6 +41,11 @@ class DictionaryLogDaoMock : DictionaryLogDao {
         dictionaryChannel.consumeEach {
             emit(mockDictionaryInfoMap.values.toList())
         }
+    }
+
+    override suspend fun deleteDictionary(id: DictionaryLogId): Int {
+        mockDictionaryInfoMap.remove(id.value)
+        return 1
     }
 
 }

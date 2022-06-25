@@ -16,7 +16,8 @@ val dictionaryManagerKoinMockModule: Module = module {
                 get()
             ),
             uiLogger = get(),
-            updateRenderingStrategy = get()
+            updateRenderingStrategy = get(),
+            deleteDictionary = get()
         )
     }
 }

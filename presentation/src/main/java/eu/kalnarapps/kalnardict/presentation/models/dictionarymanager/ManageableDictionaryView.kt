@@ -10,7 +10,10 @@ data class ManageableDictionaryView(
     val availableRenderingStrategy: List<RenderingStrategy>,
     val updateInfo: DictionaryUpdateUi = DictionaryUpdateUi.None,
     val dictionaryId: Int
-)
+) {
+    var onDeleteAction: ((Int) -> Unit)? = null
+}
+
 
 sealed class DictionaryUpdateUi {
     object None : DictionaryUpdateUi()
@@ -18,5 +21,4 @@ sealed class DictionaryUpdateUi {
         val dictionaryId: Int,
         val renderingStrategy: RenderingStrategy
     ) : DictionaryUpdateUi()
-
 }

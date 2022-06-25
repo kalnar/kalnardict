@@ -19,14 +19,23 @@ import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEn
                 "dictionary_id", "base_form", "base_form_alt"
             ]
         )
-    ]
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = DictionaryLogEntry::class,
+            parentColumns = [DbColumns.DICTIONARY_LOG_ENTRY_ID],
+            childColumns = [DbColumns.WORD_DICTIONARY_ID],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
 )
 data class Word(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = DbColumns.WORD_ID) val id: Int = 0,
     @ColumnInfo(name = "base_form") val baseForm: String,
     @ColumnInfo(name = "base_form_alt") val alternativeBaseForm: String,
     @ColumnInfo(name = "translation") val translation: String,
-    @ColumnInfo(name = "dictionary_id") val dictionaryId: Int
+    @ColumnInfo(name = DbColumns.WORD_DICTIONARY_ID) val dictionaryId: Int
 ) {
     data class WordInfo(
         @ColumnInfo(name = "id") val id: Int,
@@ -64,6 +73,10 @@ data class DictionaryLogEntry(
     @ColumnInfo(name = "language_to") val languageTo: String,
     @ColumnInfo(name = "description") val description: String = "$languageFrom to $languageTo dictionary",
     @ColumnInfo(name = "version") val version: String = "0.01"
+)
+
+data class DictionaryLogId(
+    @ColumnInfo(name = DbColumns.DICTIONARY_LOG_ENTRY_ID) val value: Int = 0,
 )
 
 data class DictionaryLogWithWords(
@@ -127,5 +140,7 @@ object DbColumns {
     const val DISPLAY_TYPE_COLUMN = "display_type"
     const val DICTIONARY_ID = "dictionary_id"
     const val DICTIONARY_LOG_ENTRY_ID = "id"
+    const val WORD_ID = "id"
+    const val WORD_DICTIONARY_ID = "dictionary_id"
     const val EXTERNAL_DATABASE_COLUMN_PATH = "database_path"
 }
