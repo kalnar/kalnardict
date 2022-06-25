@@ -220,5 +220,9 @@ class Repository(
         }
     }
 
+    override suspend fun deleteDictionaryById(dictionaryId: Int): OperationResult {
+        return dictionaryDataSource.deleteDictionaryById(dictionaryId)
+    }
+
 }
 

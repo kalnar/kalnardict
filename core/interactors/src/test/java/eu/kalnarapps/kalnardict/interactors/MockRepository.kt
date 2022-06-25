@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
@@ -79,6 +80,10 @@ class StubDictionaryRepository : DictionaryRepository {
         wordId: Int,
         dictionaryId: Int
     ): DataOperationResult<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteDictionaryById(dictionaryId: Int): OperationResult {
         TODO("Not yet implemented")
     }
 

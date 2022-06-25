@@ -1,13 +1,17 @@
 package eu.kalnarapps.kalnardict.data.dao
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationException
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.datasources.DictionaryDataSource
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogEntry
+import eu.kalnarapps.kalnardict.data.entities.DictionaryLogId
 import eu.kalnarapps.kalnardict.data.mapper.DictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.NewDictionaryLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.toDictionaryLogEntryData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.lang.Exception
 
 class DictionaryLogDaoAdapter(
     private val dictionaryMetaDao: DictionaryLogDao
@@ -40,6 +44,22 @@ class DictionaryLogDaoAdapter(
                     errorMessage = "no dictionary in data source with id $id"
                 )
             }
+        }
+    }
+
+    override suspend fun deleteDictionaryById(id: Int): OperationResult {
+        return try {
+            when (dictionaryMetaDao.deleteDictionary(DictionaryLogId(id))) {
+                0 -> OperationResult.Failure(
+                    "Failed to delete dictionary with id: $id"
+                )
+                else -> OperationResult.Success
+            }
+        } catch (exception: Exception) {
+            OperationResult.Failure(
+                errorMessage = "Failed to delete dictionary with id: $id",
+                cause = OperationException(exception)
+            )
         }
     }
 }

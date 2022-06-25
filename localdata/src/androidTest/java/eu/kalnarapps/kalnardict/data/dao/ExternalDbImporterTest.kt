@@ -17,6 +17,7 @@ import eu.kalnarapps.kalnardict.data.database.copyTestDbFromAssetsToTempTestDir
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
 import eu.kalnarapps.kalnardict.androidtest.getStorageRootPath
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.model.TestImportEntry
 import eu.kalnarapps.kalnardict.data.model.TestImportEntryBatch
 import org.hamcrest.CoreMatchers.*
@@ -66,7 +67,7 @@ class ExternalDbImporterTest {
 
         assertThat(
             dbValidity,
-            equalTo(DatabaseValidity.VALID)
+            equalTo(OperationResult.Success)
         )
 
     }
@@ -103,7 +104,9 @@ class ExternalDbImporterTest {
 
         assertThat(
             dbValidity,
-            equalTo(DatabaseValidity.INVALID)
+            equalTo(
+                OperationResult.Failure(errorMessage = "invalid database")
+            )
         )
 
     }
@@ -141,7 +144,9 @@ class ExternalDbImporterTest {
 
         assertThat(
             dbValidity,
-            equalTo(DatabaseValidity.INVALID)
+            equalTo(
+                OperationResult.Failure(errorMessage = "invalid database")
+            )
         )
     }
 

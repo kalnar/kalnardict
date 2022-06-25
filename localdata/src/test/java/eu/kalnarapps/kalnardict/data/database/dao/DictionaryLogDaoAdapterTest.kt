@@ -4,18 +4,10 @@ import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDaoAdapter
 import eu.kalnarapps.kalnardict.data.model.toNewDictionaryEntry
 import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.test.test
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,22 +18,9 @@ class DictionaryLogDaoAdapterTest {
     private val dataSource = DictionaryLogDaoAdapter(
         dictLogDaoMock
     )
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testCoroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testCoroutineDispatcher.cleanupTestCoroutines()
-    }
-
 
     @Test
     fun list_registered_dictionaries() = testCoroutineRule.runBlockingTest {
@@ -80,8 +59,7 @@ class DictionaryLogDaoAdapterTest {
     }
 
     @Test
-    fun find_no_dictionary_if_there_are_none_registered() = testCoroutineDispatcher
-        .runBlockingTest {
+    fun find_no_dictionary_if_there_are_none_registered() = testCoroutineRule.runBlockingTest {
             // given there is no dictionary registered
 
             // when listing the dictionaries

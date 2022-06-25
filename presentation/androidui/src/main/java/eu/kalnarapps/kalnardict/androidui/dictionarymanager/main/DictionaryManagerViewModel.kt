@@ -22,7 +22,6 @@ import eu.kalnarapps.kalnardict.presentation.models.errors.UiFeedback
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DictionaryManagerViewModel(
     private val listRegisteredDictionariesUseCase: ListManageableDictionariesUseCaseForUi,
@@ -36,10 +35,10 @@ class DictionaryManagerViewModel(
 ) {
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.main()) {
             setUiState(DictionaryManagerState())
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io()) {
             listRegisteredDictionariesUseCase.invoke().map {
                 registerClickListeners(it)
                 LoadableContent.Completed(it) as LoadableContent<List<ManageableDictionaryView>>
@@ -67,9 +66,7 @@ class DictionaryManagerViewModel(
                                         "Delete has failed",
                                         "Retry"
                                     ) {
-                                        viewModelScope.launch(dispatcherProvider.io()) {
-                                            deleteDictionary.invoke(dictionaryId)
-                                        }
+                                        it.onDeleteAction?.invoke(dictionaryId)
                                     }
                                 )
                             )
@@ -94,12 +91,9 @@ class DictionaryManagerViewModel(
     }
 
     fun updateDictionary(dictionaryUpdate: DictionaryUpdateUi.Info) {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.io()) {
-                updateRenderingStrategy(dictionaryUpdate)
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            updateRenderingStrategy(dictionaryUpdate)
         }
-
     }
 }
 

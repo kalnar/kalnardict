@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.data
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
@@ -21,5 +22,6 @@ interface DictionaryRepository {
     fun readRegisteredDictionaries(): Flow<List<Dictionary>>
     suspend fun getDictionaryById(dictionaryId: Int): DataOperationResult<Dictionary>
     suspend fun getTranslationById(wordId: Int, dictionaryId: Int): DataOperationResult<String>
+    suspend fun deleteDictionaryById(dictionaryId: Int): OperationResult
 
 }

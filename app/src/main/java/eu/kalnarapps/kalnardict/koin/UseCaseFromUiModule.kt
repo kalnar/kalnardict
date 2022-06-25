@@ -29,6 +29,7 @@ val useCaseFromUiModule = module {
     }
     single {
         DeleteDictionaryFromUi(
+            deleteDictionaryUseCase = get()
         ) as DeleteDictionaryUseCaseFromUi
     }
 

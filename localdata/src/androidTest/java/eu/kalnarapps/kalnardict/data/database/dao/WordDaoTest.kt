@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.database.HUNGARIAN_ENGLISH_DICT_ID
@@ -13,17 +12,14 @@ import eu.kalnarapps.kalnardict.data.database.newWordToInsert
 import eu.kalnarapps.kalnardict.data.database.sampleDictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.database.sampleTableInHungarian
 import eu.kalnarapps.kalnardict.data.entities.Word
-import kotlinx.coroutines.Dispatchers
+import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.core.IsNull
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
@@ -31,20 +27,17 @@ class WordDaoTest {
     private lateinit var wordDao: WordDao
     private lateinit var dictionaryLogDao: DictionaryLogDao
     private var db: AppDatabase
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setTransactionExecutor(testCoroutineDispatcher.asExecutor())
-            .setQueryExecutor(testCoroutineDispatcher.asExecutor())
+            .setTransactionExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
+            .setQueryExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
             .fallbackToDestructiveMigration()
             .build()
-    }
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testCoroutineDispatcher)
     }
 
     @Before
@@ -62,7 +55,7 @@ class WordDaoTest {
 
     @Test
     fun readEntryFromDatabase() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
@@ -94,14 +87,17 @@ class WordDaoTest {
     }
 
     private fun insertTableInHungarian() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
+            dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
             wordDao.insertWord(sampleTableInHungarian)
         }
     }
 
     @Test
     fun insert_entry_into_table() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
+
+            dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
             val searchResultForEye = wordDao.getByQuery(
                 "szem",
                 newWordToInsert.dictionaryId
@@ -121,9 +117,8 @@ class WordDaoTest {
 
     @Test
     fun read_a_word_with_its_dictionary_joint() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             insertTableInHungarian()
-            dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
 
             val dictionaryLogWithWords =
                 wordDao.getWordsByQueryInDictionary("asztal", sampleDictionaryLogEntry.id)
@@ -142,7 +137,7 @@ class WordDaoTest {
 
     @Test
     fun get_translation_from_word_that_is_in_the_table() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
@@ -169,7 +164,7 @@ class WordDaoTest {
 
     @Test
     fun get_null_translation_from_invalid_id() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
@@ -195,11 +190,6 @@ class WordDaoTest {
         }
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testCoroutineDispatcher.cleanupTestCoroutines()
-    }
 }
 
 private fun Word.toWordInfo(): Word.WordInfo {
