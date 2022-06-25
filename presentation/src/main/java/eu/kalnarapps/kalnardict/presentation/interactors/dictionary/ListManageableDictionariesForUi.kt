@@ -6,11 +6,10 @@ import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDi
 import eu.kalnarapps.kalnardict.presentation.mappers.DomainToUiMapper
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 
@@ -23,12 +22,16 @@ class ListManageableDictionariesForUi(
     override operator fun invoke(): Flow<List<ManageableDictionaryView>> {
         return listRegisteredDictionaries.invoke()
             .flatMapLatest { dictionaryList ->
-                combine(dictionaryList.map { dictionary ->
-                    getDictionaryWithDisplayTypeInfoUseCase.invoke(dictionary).map {
-                        dictionaryMapper.toUiModel(it)
+                if (dictionaryList.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    combine(dictionaryList.map { dictionary ->
+                        getDictionaryWithDisplayTypeInfoUseCase.invoke(dictionary).map {
+                            dictionaryMapper.toUiModel(it)
+                        }
+                    }) {
+                        it.toList()
                     }
-                }) {
-                    it.toList()
                 }
             }
     }

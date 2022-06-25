@@ -182,4 +182,179 @@ class ListManageableDictionariesForUiTest {
 
     }
 
+    @Test
+    fun when_deleting_last_dictionary_then_update_flow_with_empty_list() {
+
+        testCoroutineRule.runBlockingTest {
+
+            val firstDictionaryDomain = Dictionary(
+                1,
+                DictLanguage("from", "from"),
+                DictLanguage("to", "to"),
+                "from <from> to <to>"
+            )
+
+            val firstDictionaryDisplayType = DisplayTypeInfo(
+                displayType = DictionaryDisplayType.HTML,
+                supportedDisplayTypes = listOf(
+                    DictionaryDisplayType.HTML,
+                    DictionaryDisplayType.TEXT
+                )
+            )
+
+            val firstDictionaryWithDisplayTypeInfo = DictionaryWithDisplayTypeInfo(
+                firstDictionaryDomain,
+                firstDictionaryDisplayType
+            )
+
+            val firstDictionary = ManageableDictionaryView(
+                dictionaryName = "name1",
+                sourceLanguage = "from",
+                destinationLanguage = "to",
+                currentRenderingStrategy = RenderingStrategy("html", "html"),
+                availableRenderingStrategy = listOf(RenderingStrategy("html", "html")),
+                updateInfo = DictionaryUpdateUi.None,
+                dictionaryId = 1
+            )
+
+            val registeredDictionaries = MutableStateFlow(
+                listOf(firstDictionaryDomain)
+            )
+
+            whenever(listRegisteredDictionaries.invoke()).thenReturn(registeredDictionaries)
+
+            whenever(
+                dictionaryMapper.toUiModel(
+                    DictionaryWithDisplayTypeInfo(
+                        dictionary = firstDictionaryDomain,
+                        displayTypeInfo = firstDictionaryDisplayType
+                    )
+                )
+            ).thenReturn(
+                firstDictionary
+            )
+
+            whenever(
+                getDictionaryWithDisplayTypeInfoUseCase.invoke(firstDictionaryDomain)
+            ).thenReturn(
+                flowOf(firstDictionaryWithDisplayTypeInfo)
+            )
+
+            val observer = listManageableDictionariesUseCaseForUi.invoke().test(this)
+
+            verify(listRegisteredDictionaries).invoke()
+            verify(getDictionaryWithDisplayTypeInfoUseCase).invoke(firstDictionaryDomain)
+            verify(dictionaryMapper).toUiModel(
+                DictionaryWithDisplayTypeInfo(
+                    firstDictionaryDomain,
+                    firstDictionaryDisplayType
+                )
+            )
+
+            observer.assertThat(
+                { it.last() },
+                equalTo(
+                    listOf(firstDictionary)
+                )
+            )
+
+            registeredDictionaries.value = emptyList()
+
+            observer.assertThat(
+                { it.last() },
+                equalTo(
+                    emptyList()
+                )
+            )
+
+            observer.finish()
+        }
+
+
+    }
+
+    @Test
+    fun when_starting_with_empty_list_then_emit_empty_list() {
+
+        testCoroutineRule.runBlockingTest {
+
+            val registeredDictionaries = MutableStateFlow<List<Dictionary>>(
+                emptyList()
+            )
+
+            val firstDictionaryDomain = Dictionary(
+                1,
+                DictLanguage("from", "from"),
+                DictLanguage("to", "to"),
+                "from <from> to <to>"
+            )
+
+            val firstDictionaryDisplayType = DisplayTypeInfo(
+                displayType = DictionaryDisplayType.HTML,
+                supportedDisplayTypes = listOf(
+                    DictionaryDisplayType.HTML,
+                    DictionaryDisplayType.TEXT
+                )
+            )
+
+            val firstDictionaryWithDisplayTypeInfo = DictionaryWithDisplayTypeInfo(
+                firstDictionaryDomain,
+                firstDictionaryDisplayType
+            )
+
+            val firstDictionary = ManageableDictionaryView(
+                dictionaryName = "name1",
+                sourceLanguage = "from",
+                destinationLanguage = "to",
+                currentRenderingStrategy = RenderingStrategy("html", "html"),
+                availableRenderingStrategy = listOf(RenderingStrategy("html", "html")),
+                updateInfo = DictionaryUpdateUi.None,
+                dictionaryId = 1
+            )
+
+            whenever(listRegisteredDictionaries.invoke()).thenReturn(registeredDictionaries)
+
+            whenever(
+                dictionaryMapper.toUiModel(
+                    DictionaryWithDisplayTypeInfo(
+                        dictionary = firstDictionaryDomain,
+                        displayTypeInfo = firstDictionaryDisplayType
+                    )
+                )
+            ).thenReturn(
+                firstDictionary
+            )
+
+            whenever(
+                getDictionaryWithDisplayTypeInfoUseCase.invoke(firstDictionaryDomain)
+            ).thenReturn(
+                flowOf(firstDictionaryWithDisplayTypeInfo)
+            )
+
+            val observer = listManageableDictionariesUseCaseForUi.invoke().test(this)
+
+            verify(listRegisteredDictionaries).invoke()
+
+            observer.assertThat(
+                { it.last() },
+                equalTo(
+                    emptyList()
+                )
+            )
+
+            registeredDictionaries.value = listOf(firstDictionaryDomain)
+
+            observer.assertThat(
+                { it.last() },
+                equalTo(
+                    listOf(firstDictionary)
+                )
+            )
+
+            observer.finish()
+        }
+
+
+    }
+
 }

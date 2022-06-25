@@ -62,7 +62,8 @@ open class DictionaryManagerFragment : BaseFragment<DictionaryManagerState>() {
                     }
                     is LoadableContent.Completed -> {
                         binding.dictionaryManagerLoader.visibility = View.GONE
-                        binding.dictionaryManagerNoDictionaryDescription.visibleXorGone(it.content.isEmpty())
+                        binding.dictionaryManagerNoDictionaryDescription.isVisible =
+                            it.content.isEmpty()
 
                         (adapter as ManageableDictionaryListAdapter).updateList(it.content)
 

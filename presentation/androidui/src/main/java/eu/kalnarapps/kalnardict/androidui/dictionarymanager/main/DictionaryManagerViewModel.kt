@@ -20,7 +20,6 @@ import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorFromUi
 import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.presentation.models.errors.UiFeedback
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class DictionaryManagerViewModel(
@@ -35,15 +34,11 @@ class DictionaryManagerViewModel(
 ) {
 
     init {
-        viewModelScope.launch(dispatcherProvider.main()) {
-            setUiState(DictionaryManagerState())
-        }
+        setUiState(DictionaryManagerState())
         viewModelScope.launch(dispatcherProvider.io()) {
             listRegisteredDictionariesUseCase.invoke().map {
                 registerClickListeners(it)
                 LoadableContent.Completed(it) as LoadableContent<List<ManageableDictionaryView>>
-            }.onStart {
-                emit(LoadableContent.Loading)
             }.collect {
                 postUiState {
                     copy(dictionaries = it)
