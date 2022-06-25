@@ -59,6 +59,7 @@ dependencies {
     implementation project(":core:common")
     implementation project(":platform:android:common")
     androidTestImplementation project(":platform:androidtest")
+    androidTestImplementation project(":core:test")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'

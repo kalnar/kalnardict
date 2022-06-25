@@ -7,39 +7,34 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
-import kotlinx.coroutines.Dispatchers
+import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.collection.IsEmptyCollection
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
 
 class DictionaryLogDaoTest {
+
     private lateinit var dictionaryLogDao: DictionaryLogDao
     private var db: AppDatabase
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setTransactionExecutor(testCoroutineDispatcher.asExecutor())
-            .setQueryExecutor(testCoroutineDispatcher.asExecutor())
+            .setTransactionExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
+            .setQueryExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
             .fallbackToDestructiveMigration()
             .build()
-    }
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testCoroutineDispatcher)
     }
 
     @Before
@@ -57,7 +52,7 @@ class DictionaryLogDaoTest {
     @Test
     @Throws(Exception::class)
     fun readEntryFromDatabase() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             // given there is an entry of a dictionary in dictionary_log
             insertDictionaryLogEntry()
 
@@ -76,7 +71,7 @@ class DictionaryLogDaoTest {
     }
 
     private fun insertDictionaryLogEntry() {
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
             dictionaryLogDao.insertDictionary(
                 TestFixtures.sampleDictionaryLogEntry
             )
@@ -86,7 +81,7 @@ class DictionaryLogDaoTest {
     @Test
     fun insert_entry_into_table() {
         // TODO: use test rule as in other modules
-        testCoroutineDispatcher.runBlockingTest {
+        testCoroutineRule.runBlockingTest {
 
             val dictionaries = dictionaryLogDao.getDictionaries().first()
             assertThat(
@@ -118,9 +113,4 @@ class DictionaryLogDaoTest {
         }
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testCoroutineDispatcher.cleanupTestCoroutines()
-    }
 }
