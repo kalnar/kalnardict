@@ -27,6 +27,10 @@ class UiEvent<T : Any>(
         return hasBeenHandled
     }
 
+    override fun toString(): String {
+        return "UiEvent($mContent; hasBeenHandled: $hasBeenHandled)"
+    }
+
 }
 
 sealed class EventContent {

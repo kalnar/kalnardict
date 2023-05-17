@@ -7,8 +7,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface ConfigurationRepository {
     fun getCurrentDictionary(): Flow<CurrentDictionary>
+    suspend fun getCurrentDictionaryOneShot(): CurrentDictionary
     suspend fun getCurrentAccentMode(): AccentMode
     suspend fun updateCurrentDictionary(dictionary: Dictionary)
+    suspend fun updateCurrentDictionaryWithFirst()
 }
 
 interface QueryModeConfigurationRepository {

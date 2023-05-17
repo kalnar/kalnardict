@@ -20,6 +20,9 @@ interface DictionaryLogDao {
     @Query("SELECT * FROM dictionary_log")
     fun getDictionaries(): Flow<List<DictionaryLogEntry>>
 
+    @Query("SELECT * FROM dictionary_log")
+    suspend fun getDictionariesOneShot(): List<DictionaryLogEntry>
+
     @Delete(entity = DictionaryLogEntry::class)
     suspend fun deleteDictionary(id: DictionaryLogId): Int
 }

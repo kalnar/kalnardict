@@ -220,6 +220,14 @@ class Repository(
         }
     }
 
+    override suspend fun getDictionaries(): DataOperationResult<List<Dictionary>> {
+        return DataOperationResult.Success(
+            dictionaryDataSource.getDictionariesOneShot().map { dictLogEntryData ->
+                dictLogEntryData.toDictionary()
+            }
+        )
+    }
+
     override suspend fun deleteDictionaryById(dictionaryId: Int): OperationResult {
         return dictionaryDataSource.deleteDictionaryById(dictionaryId)
     }

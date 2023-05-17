@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface DictionaryDataSource {
     suspend fun insertDictionary(newDictionary: NewDictionaryLogEntryData): Long
     fun getDictionaries(): Flow<List<DictionaryLogEntryData>>
+    suspend fun getDictionariesOneShot(): List<DictionaryLogEntryData>
     suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData>
     suspend fun deleteDictionaryById(id: Int): OperationResult
 }

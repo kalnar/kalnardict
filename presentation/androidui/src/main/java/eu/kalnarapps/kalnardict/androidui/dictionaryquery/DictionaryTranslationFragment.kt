@@ -40,19 +40,18 @@ class DictionaryTranslationFragment : BaseFragment<DictionaryQueryState>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getTranslation().distinctUntilChanged().observe(viewLifecycleOwner, Observer {
-            when (it) {
+        viewModel.getUiState().distinctUntilChanged().observe(viewLifecycleOwner, Observer {
+            when (it.translationText) {
                 is LoadableContent.Failed,
                 LoadableContent.UnInitialized,
                 is LoadableContent.Loading -> {
                     // do nothing?
                 }
                 is LoadableContent.Completed -> {
-                    when (val result = it.content) {
+                    when (val result = it.translationText.content) {
                         is DataOperationResult.Success -> {
                             if (!result.data.hasBeenHandled()) {
-                                val currentDictionary = viewModel.getUiState().value
-                                    ?.currentDictionaryItemView
+                                val currentDictionary = it.currentDictionaryItemView
                                 if (currentDictionary is LoadableContent.Completed) {
                                     currentDictionary.content.renderingStrategy.let { strategy ->
                                         loadTranslationStub(

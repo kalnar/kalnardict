@@ -4,5 +4,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ConfigurationDataSource {
     fun getLastDictionaryId(): Flow<Int>
+    suspend fun getLastDictionaryIdOneShot(): Int
     suspend fun updateLastDictionary(dictionaryId: Int)
 }

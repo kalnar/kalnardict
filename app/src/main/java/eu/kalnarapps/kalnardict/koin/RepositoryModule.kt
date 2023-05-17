@@ -93,7 +93,8 @@ val repositoryModule: Module = module {
     }
     factory {
         DeleteDictionary(
-            dictionaryRepository = get()
+            dictionaryRepository = get(),
+            configurationRepository = get()
         ) as DeleteDictionaryUseCase
     }
 }

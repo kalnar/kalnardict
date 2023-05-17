@@ -34,6 +34,21 @@ class AppConfigRepository(
         }
     }
 
+    override suspend fun getCurrentDictionaryOneShot(): CurrentDictionary {
+        return configurationDataSource.getLastDictionaryIdOneShot().let {
+            dictionaryDataSource.getDictionaryById(it)
+        }.let {
+            when (val fetchDictionary = it) {
+                is DataOperationResult.Success -> {
+                    getCurrentDictionaryFromData(fetchDictionary.data)
+                }
+                is DataOperationResult.Failure -> {
+                    CurrentDictionary.DictionaryNotSet
+                }
+            }
+        }
+    }
+
     private suspend fun getCurrentDictionaryFromData(data: DictionaryLogEntryData): CurrentDictionary {
         return when (val dictionaryFetch = getDictionaryFromData(data)) {
             is DataOperationResult.Success -> CurrentDictionary.SetDictionary(
@@ -72,5 +87,13 @@ class AppConfigRepository(
 
     override suspend fun updateCurrentDictionary(dictionary: Dictionary) {
         configurationDataSource.updateLastDictionary(dictionaryId = dictionary.id)
+    }
+
+    override suspend fun updateCurrentDictionaryWithFirst() {
+        dictionaryDataSource.getDictionariesOneShot().firstOrNull()?.let {
+            configurationDataSource.updateLastDictionary(it.id)
+        } ?: run {
+            configurationDataSource.updateLastDictionary(-1)
+        }
     }
 }

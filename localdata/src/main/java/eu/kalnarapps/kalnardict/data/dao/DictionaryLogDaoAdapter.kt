@@ -35,6 +35,12 @@ class DictionaryLogDaoAdapter(
         }
     }
 
+    override suspend fun getDictionariesOneShot(): List<DictionaryLogEntryData> {
+        return dictionaryMetaDao.getDictionariesOneShot().map { dictLogEntry ->
+            dictLogEntry.toDictionaryLogEntryData()
+        }
+    }
+
     override suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData> {
         return dictionaryMetaDao.getDictionaryById(id).let {
             if (it != null) {
