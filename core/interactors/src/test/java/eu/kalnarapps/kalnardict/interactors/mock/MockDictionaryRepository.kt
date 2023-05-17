@@ -54,6 +54,10 @@ class MockDictionaryRepository : DictionaryRepository {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getDictionaries(): DataOperationResult<List<Dictionary>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getTranslationById(
         wordId: Int,
         dictionaryId: Int
