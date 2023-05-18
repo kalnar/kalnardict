@@ -43,6 +43,10 @@ class DictionaryLogDaoMock : DictionaryLogDao {
         }
     }
 
+    override suspend fun getDictionariesOneShot(): List<DictionaryLogEntry> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteDictionary(id: DictionaryLogId): Int {
         mockDictionaryInfoMap.remove(id.value)
         return 1

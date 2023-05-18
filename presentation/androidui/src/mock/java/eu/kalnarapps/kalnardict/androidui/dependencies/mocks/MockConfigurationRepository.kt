@@ -16,10 +16,18 @@ class MockConfigurationRepository(
     override fun getCurrentDictionary(): Flow<CurrentDictionary> =
         flowOf(currentDictionary)
 
+    override suspend fun getCurrentDictionaryOneShot(): CurrentDictionary {
+        return currentDictionary
+    }
+
     override suspend fun getCurrentAccentMode(): AccentMode =
         AccentMode.ACCENT_SENSITIVE
 
     override suspend fun updateCurrentDictionary(dictionary: Dictionary) {
         currentDictionary = CurrentDictionary.SetDictionary(dictionary)
+    }
+
+    override suspend fun updateCurrentDictionaryWithFirst() {
+        TODO("Not yet implemented")
     }
 }

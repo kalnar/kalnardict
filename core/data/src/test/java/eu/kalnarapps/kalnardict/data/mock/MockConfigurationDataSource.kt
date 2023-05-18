@@ -11,6 +11,10 @@ class MockConfigurationDataSource :
         return flowOf(lastDictId)
     }
 
+    override suspend fun getLastDictionaryIdOneShot(): Int {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateLastDictionary(dictionaryId: Int) {
         lastDictId = dictionaryId
     }

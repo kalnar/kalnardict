@@ -38,7 +38,7 @@ class DefaultTableRepository(
                         externalTranslationEntries = runningWindow.map { runningIndex ->
                             ExternalTranslationEntry(
                                 id = runningIndex,
-                                baseForm = "word #$runningIndex",
+                                baseForm = "${tableCreationJobInfo.table.name} word #$runningIndex",
                                 translation = randomWordRepository.getRandomWord(runningIndex)
                             )
                         }

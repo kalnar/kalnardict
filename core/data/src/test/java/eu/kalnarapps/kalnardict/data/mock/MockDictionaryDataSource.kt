@@ -49,6 +49,10 @@ open class MockDictionaryDataSource(
         }
     }
 
+    override suspend fun getDictionariesOneShot(): List<DictionaryLogEntryData> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getDictionaryById(id: Int): DataOperationResult<DictionaryLogEntryData> {
         return mockDictionaries.find { it.id == id }?.let {
             DataOperationResult.Success(
