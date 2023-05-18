@@ -188,7 +188,7 @@ class DefaultTableRepositoryTest {
                 tableName = "givenName",
                 externalTranslationEntries = (0 until 400).map {
                     ExternalTranslationEntry(
-                        it, "word #$it", "word #$it", "random"
+                        it, "givenName word #$it", "givenName word #$it", "random"
                     )
                 }
             )
