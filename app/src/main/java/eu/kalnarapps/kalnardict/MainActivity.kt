@@ -1,6 +1,11 @@
 package eu.kalnarapps.kalnardict
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
@@ -27,6 +32,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         loadKoinModules(platformNavigationModule)
+        requestManageExternalStoragePermission()
+    }
+
+    private fun requestManageExternalStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            startActivity(intent)
+        }
     }
 
     override fun onStop() {
@@ -62,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                 if (!it) {
                     if (lastNavigationItemId == R.id.dictionaryQueryScreen) {
                         this@MainActivity.finish()
+                        super.onBackPressed()
                     } else {
                         this.navigate(
                             R.id.dictionary_query_navigation,
