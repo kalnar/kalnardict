@@ -5,7 +5,7 @@ import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
-import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesFlowUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.displaytypes.GetDictionaryWithDisplayTypeInfoUseCase
 import eu.kalnarapps.kalnardict.presentation.interactors.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.presentation.interactors.test.test
@@ -25,7 +25,7 @@ import org.mockito.kotlin.whenever
 
 class ListManageableDictionariesForUiTest {
 
-    private val listRegisteredDictionaries: ListRegisteredDictionariesUseCase = mock()
+    private val listRegisteredDictionaries: ListRegisteredDictionariesFlowUseCase = mock()
     private val getDictionaryWithDisplayTypeInfoUseCase: GetDictionaryWithDisplayTypeInfoUseCase =
         mock()
     private val dictionaryMapper: DomainToUiMapper<DictionaryWithDisplayTypeInfo, ManageableDictionaryView> =

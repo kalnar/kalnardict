@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: "org.jetbrains.kotlin.plugin.compose"
+apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 
 android {
     compileSdkVersion 31
@@ -23,15 +24,6 @@ android {
     productFlavors {
         mock
         full
-    }
-    sourceSets {
-        main {
-            res.srcDirs = getLayoutDirectories()
-            res.srcDirs += [
-                    'src/main/res/layouts',
-                    'src/main/res'
-            ]
-        }
     }
 
     buildFeatures {
@@ -56,14 +48,6 @@ android {
     }
     namespace 'eu.kalnarapps.kalnardict.androidui'
 
-}
-
-def getLayoutDirectories() {
-    def layouts = []
-    new File("${project.projectDir}/src/main/res/layouts/").eachDir() { dir ->
-        layouts << "src/main/res/layouts/${dir.name}"
-    }
-    return layouts
 }
 
 dependencies {
@@ -94,10 +78,11 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
 
     // latest stable
-    def koin_version = '4.1.1'
+    def koin_version = '4.2.1'
     implementation "io.insert-koin:koin-core:$koin_version"
     // Koin extended & experimental features
     implementation "io.insert-koin:koin-core-ext:3.0.2"
+    implementation("io.insert-koin:koin-androidx-compose:4.2.1")
 
     // Koin for Unit tests
     testImplementation "io.insert-koin:koin-test:$koin_version"
@@ -130,6 +115,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation "com.afollestad.material-dialogs:core:3.1.0"
 
+
     // logging
     implementation 'com.orhanobut:logger:2.2.0'
 
@@ -138,13 +124,20 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
 
     // compose
+    def composeBom = platform('androidx.compose:compose-bom:2026.03.01')
+    implementation composeBom
+    androidTestImplementation composeBom
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.activity:activity-compose:1.13.0'
+    implementation 'androidx.navigation:navigation-compose:2.9.7'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+
     def composeVersion = "1.2.0-alpha08"
 
-    implementation "androidx.compose.ui:ui:$composeVersion"
-    // Tooling support (Previews, etc.)
-    debugImplementation "androidx.compose.ui:ui-tooling:$composeVersion"
-    implementation "androidx.compose.ui:ui-tooling-preview:$composeVersion"
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$composeVersion"
     // Material Design
     implementation "androidx.compose.material:material:$composeVersion"

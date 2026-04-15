@@ -24,6 +24,18 @@ interface WordDao {
 
     @Query(
         """SELECT 
+        id, base_form, base_form_alt, dictionary_id
+            FROM 
+        word 
+            WHERE 
+        base_form_alt LIKE :queryString ESCAPE '\'
+            AND
+        dictionary_id = :dictionaryId LIMIT 100"""
+    )
+    suspend fun getByQueryAlternative(queryString: String, dictionaryId: Int): List<Word.WordInfo>
+
+    @Query(
+        """SELECT 
         id, translation, dictionary_id 
             FROM 
         word 

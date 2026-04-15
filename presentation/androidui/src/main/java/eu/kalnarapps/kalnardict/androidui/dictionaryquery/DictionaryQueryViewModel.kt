@@ -1,5 +1,6 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
@@ -13,7 +14,7 @@ import eu.kalnarapps.kalnardict.common.extentions.exhaustive
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
-import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesFlowUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.presentation.interactors.query.GetQueryModesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.query.SearchQueryUseCaseFromUi
@@ -32,6 +33,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -43,14 +45,14 @@ import kotlinx.coroutines.withContext
 @OptIn(InternalCoroutinesApi::class)
 class DictionaryQueryViewModel(
     private val listQueryResultsUseCase: SearchQueryUseCaseFromUi,
-    private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi,
+    private val listRegisteredDictionariesUseCase: ListRegisteredDictionariesFlowUseCaseForUi,
     private val updateCurrentLanguageUseCase: ChangeDictionaryUseCaseFromUi,
     private val getCurrentDictionary: GetCurrentDictionaryUseCaseForUi,
     private val getTranslation: GetTranslationUseCaseForUi,
     private val getQueryModesForUi: GetQueryModesUseCaseForUi,
     private val updateQueryModeUseCase: UpdateQueryModeUseCaseFromUi,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    uiLogger: UiLogger
+    private val uiLogger: UiLogger
 ) : BaseViewModel<DictionaryQueryState>(
     dispatcherProvider = dispatcherProvider,
     logger = uiLogger
@@ -60,8 +62,8 @@ class DictionaryQueryViewModel(
     private val currentWord: MutableStateFlow<CurrentWord> =
         MutableStateFlow(CurrentWord.NotSelected)
 
-    private val typedQuery: MutableStateFlow<String> =
-        MutableStateFlow("")
+    private val _typedQuery: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
+    val typedQuery: StateFlow<TextFieldValue> = _typedQuery
 
     init {
         setUiState(DictionaryQueryState())
@@ -72,10 +74,11 @@ class DictionaryQueryViewModel(
                         postUiStateOnMainThread {
                             copy(
                                 currentDictionaryItemView =
-                                LoadableContent.Completed(dictionarySelection.uiModel)
+                                    LoadableContent.Completed(dictionarySelection.uiModel)
                             )
                         }
                     }
+
                     DictionarySelection.NotAvailable -> {
                         withContext(dispatcherProvider.main()) {
                             postNavigationCommand(
@@ -91,7 +94,7 @@ class DictionaryQueryViewModel(
                 getQueryModesForUi()
                     .filter { list -> list.any { it.isSelected } }
                     .map { it.first { queryMode -> queryMode.isSelected } },
-                typedQuery,
+                _typedQuery,
                 getCurrentDictionary()
                     .filter {
                         it is DictionarySelection.Current
@@ -99,7 +102,7 @@ class DictionaryQueryViewModel(
             ) { queryMode, newQuery, currentDictionary ->
                 QueryUiModel(
                     queryMode = queryMode,
-                    queryString = newQuery,
+                    queryString = newQuery.text,
                     dictionaryUiModel = currentDictionary.uiModel
                 )
             }
@@ -127,7 +130,7 @@ class DictionaryQueryViewModel(
             }.onStart {
                 emit(LoadableContent.Loading)
             }.collect {
-                postUiState {
+                postUiStateOnMainThread {
                     copy(dictionaryUiModels = it)
                 }
             }
@@ -136,7 +139,7 @@ class DictionaryQueryViewModel(
 
     private suspend fun updateQueryResults(params: QueryUiModel) {
         withContext(dispatcherProvider.io()) {
-            val updatedResult = listQueryResultsUseCase(
+            val updatedResult = listQueryResultsUseCase.invoke(
                 queryUiModel = params
             )
             withContext(dispatcherProvider.main()) {
@@ -151,15 +154,14 @@ class DictionaryQueryViewModel(
     }
 
     private suspend fun loadTranslation(word: WordView) {
-        state.value?.let {
-            postUiState(
-                it.copy(
-                    translationText = LoadableContent.Completed(
-                        getTranslation(word.id).map { translation ->
-                            UiEvent(translation)
-                        }
-                    )
-                )
+        val translationText = LoadableContent.Completed(
+            getTranslation(word.id).map { translation ->
+                UiEvent(translation)
+            }
+        )
+        postUiStateOnMainThread {
+            this.copy(
+                translationText = translationText
             )
         }
     }
@@ -198,14 +200,14 @@ class DictionaryQueryViewModel(
         }
     }
 
-    fun onQueryChanged(newQuery: String) {
-        viewModelScope.launch(dispatcherProvider.io()) {
-            typedQuery.value = newQuery
+    fun onQueryChanged(newQuery: TextFieldValue) {
+        viewModelScope.launch(dispatcherProvider.main()) {
+            _typedQuery.value = newQuery
         }
     }
 
     fun onWordSelected(wordView: WordView) {
-        viewModelScope.launch(dispatcherProvider.io()) {
+        viewModelScope.launch(dispatcherProvider.main()) {
             currentWord.value = CurrentWord.Selected(wordView)
         }
     }

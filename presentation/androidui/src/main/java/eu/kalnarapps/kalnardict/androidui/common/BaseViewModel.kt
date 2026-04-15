@@ -31,30 +31,6 @@ abstract class BaseViewModel<UiModel>(
     internal val feedback: LiveData<UiFeedback>
         get() = _feedback
 
-    protected suspend fun postUiState(state: UiModel?) {
-        withContext(dispatcherProvider.io()) {
-            if (state != null) {
-                val diff = StringUtils.difference(_state.value.toString(), state.toString())
-                logger.d("vm", "new state: $state")
-                logger.d("vm", "state diff: $diff")
-                _state.postValue(state!!)
-            }
-        }
-    }
-
-    protected suspend fun postUiState(stateMapper: (UiModel).() -> UiModel) {
-        withContext(dispatcherProvider.io()) {
-            val currentState = state.value
-            currentState?.let {
-                val newState = stateMapper(it)
-                val diff = StringUtils.difference(_state.value.toString(), newState.toString())
-                logger.d("vm", "new state: $newState")
-                logger.d("vm", "state diff: $diff")
-                _state.postValue(newState!!)
-            }
-        }
-    }
-
     protected suspend fun postUiStateOnMainThread(stateMapper: (UiModel).() -> UiModel) {
         withContext(dispatcherProvider.main()) {
             val currentState = state.value

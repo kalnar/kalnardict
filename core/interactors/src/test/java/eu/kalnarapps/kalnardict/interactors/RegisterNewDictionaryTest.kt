@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
 import eu.kalnarapps.kalnardict.data.LanguageRepository
@@ -24,6 +25,7 @@ class RegisterNewDictionaryTestNew {
     private val dictionaryRepository = mock(DictionaryRepository::class.java)
     private val displayTypeRepository = mock(DisplayTypeRepository::class.java)
     private val stubLanguageRepository = mock(LanguageRepository::class.java)
+    private val stubConfigurationRepository = mock(ConfigurationRepository::class.java)
 
     private suspend fun setUp() {
         doAnswer { invocationOnMock ->
@@ -47,7 +49,8 @@ class RegisterNewDictionaryTestNew {
             val registerNewDictionary = RegisterNewDictionary(
                 dictionaryRepository = dictionaryRepository,
                 displayTypeRepository = displayTypeRepository,
-                languageRepository = stubLanguageRepository
+                languageRepository = stubLanguageRepository,
+                configurationRepository = stubConfigurationRepository,
             )
 
             // when calling registerNewDictionary
@@ -75,7 +78,8 @@ class RegisterNewDictionaryTestNew {
             val registerNewDictionary = RegisterNewDictionary(
                 dictionaryRepository = dictionaryRepository,
                 displayTypeRepository = displayTypeRepository,
-                languageRepository = stubLanguageRepository
+                languageRepository = stubLanguageRepository,
+                configurationRepository = stubConfigurationRepository,
             )
 
             // when calling registerNewDictionary then emit failure

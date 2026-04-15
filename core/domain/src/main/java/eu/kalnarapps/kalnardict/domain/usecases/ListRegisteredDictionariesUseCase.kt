@@ -1,8 +1,8 @@
 package eu.kalnarapps.kalnardict.domain.usecases
 
+import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
-import kotlinx.coroutines.flow.Flow
 
 interface ListRegisteredDictionariesUseCase {
-    operator fun invoke(): Flow<List<Dictionary>>
+    suspend operator fun invoke(): DataOperationResult<List<Dictionary>>
 }

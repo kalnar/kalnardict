@@ -18,6 +18,13 @@ class RoomQueryExecutor(
             dictionaryId
         ).map {
             wordInfoMapper.toLocalData(it)
+        }.ifEmpty {
+            wordDao.getByQueryAlternative(
+                queryFormatter.format(queryString),
+                dictionaryId
+            ).map {
+                wordInfoMapper.toLocalData(it)
+            }
         }
     }
 }

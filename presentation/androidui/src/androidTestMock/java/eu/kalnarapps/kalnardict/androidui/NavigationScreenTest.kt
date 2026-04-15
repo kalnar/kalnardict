@@ -4,7 +4,6 @@ import androidx.navigation.findNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import eu.kalnarapps.kalnardict.androidui.navigationscreen.TestActivity
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After

@@ -42,7 +42,7 @@ class DictionaryRegistryViewModel(
     private val listAvailableLanguages: ListRegisteredLanguagesUseCaseForUi,
     private val addNewLanguage: RegisterLanguageUseCaseFromUi,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    uiLogger: UiLogger
+    private val uiLogger: UiLogger
 ) : BaseViewModel<DictionaryRegistryState>(
     dispatcherProvider = dispatcherProvider,
     logger = uiLogger
@@ -65,6 +65,7 @@ class DictionaryRegistryViewModel(
                                 RegisterDictionaryUi(it, availableLanguages)
                             }
                         )
+
                         is DataOperationResult.Failure -> {
                             postError(
                                 ErrorFromUi(
@@ -97,11 +98,10 @@ class DictionaryRegistryViewModel(
 
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {
         viewModelScope.launch {
-            val currentState = state.value
-            postUiState(
-                currentState?.copy(
+            postUiStateOnMainThread {
+                this.copy(
                     registerDictionaryUiModels = LoadableContent.Completed(
-                        currentState.registerDictionaryUiModels.contentOrNull().orEmpty().map {
+                        this.registerDictionaryUiModels.contentOrNull().orEmpty().map {
                             it.copy(
                                 tableUiInfo = if (
                                     it.tableUiInfo.originalTableName
@@ -115,28 +115,20 @@ class DictionaryRegistryViewModel(
                         }
                     )
                 )
-            )
+            }
         }
     }
 
     fun registerDictionaries() {
-        viewModelScope.launch {
-            withContext(dispatcherProvider.main()) {
-                postNavigationCommand(
-                    NavigationCommand.Common.NavigateToDictionaryRegistryDialog(
-                        uri = state.value?.dbPath.orEmpty()
-                    )
-                )
-            }
-            withContext(dispatcherProvider.io()) {
-                importTables()
-            }
+        viewModelScope.launch(dispatcherProvider.io()) {
+            importTables()
         }
     }
 
     private suspend fun importTables() {
         val tableInfoUiModels =
-            state.value?.registerDictionaryUiModels?.contentOrNull().orEmpty().map { it.tableUiInfo }
+            state.value?.registerDictionaryUiModels?.contentOrNull().orEmpty()
+                .map { it.tableUiInfo }
         tableInfoUiModels.filter { it.isSelected }.forEach {
             registerDictionary(it)
         }
@@ -153,11 +145,13 @@ class DictionaryRegistryViewModel(
                         postUiStateOnMainThread {
                             this.copy(
                                 importProgress = this.importProgress.toMutableMap().apply {
-                                    this[externalTableUiInfo] = DataOperationResult.Success(it.data)
+                                    this[externalTableUiInfo] =
+                                        DataOperationResult.Success(it.data)
                                 }
                             )
                         }
                     }
+
                     is DataOperationResult.Failure -> {
                         postError(ErrorFromUi(it.errorMessage()))
                         postUiStateOnMainThread {
@@ -260,6 +254,7 @@ class DictionaryRegistryViewModel(
                     OperationResult.Success -> {
                         updateAvailableLanguages()
                     }
+
                     is OperationResult.Failure -> {
                         postError(
                             ErrorFromUi(
@@ -276,18 +271,31 @@ class DictionaryRegistryViewModel(
     }
 
     private suspend fun updateAvailableLanguages() {
-        state.value?.let { state ->
-            val availableLanguages = listAvailableLanguages()
-            postUiState(
-                state = state.copy(
-                    availableLanguages = availableLanguages,
-                    registerDictionaryUiModels = LoadableContent.Completed(
-                        state.registerDictionaryUiModels.contentOrNull().orEmpty().map {
-                            it.copy(
-                                availableLanguages = availableLanguages
+        val availableLanguages = listAvailableLanguages.invoke()
+        postUiStateOnMainThread {
+            this.copy(
+                availableLanguages = availableLanguages,
+                registerDictionaryUiModels = LoadableContent.Completed(
+                    this.registerDictionaryUiModels.contentOrNull().orEmpty()
+                        .map { registerDictionaryUi ->
+                            uiLogger.log(registerDictionaryUi.toString())
+                            uiLogger.logObject(availableLanguages)
+                            registerDictionaryUi.copy(
+                                availableLanguages = availableLanguages,
+                                tableUiInfo = registerDictionaryUi.tableUiInfo.copy(
+                                    languageFromUi = if (registerDictionaryUi.tableUiInfo.languageFromUi == SelectableLanguage.NotSet) {
+                                        availableLanguages.first()
+                                    } else {
+                                        registerDictionaryUi.tableUiInfo.languageFromUi
+                                    },
+                                    languageToUi = if (registerDictionaryUi.tableUiInfo.languageToUi == SelectableLanguage.NotSet) {
+                                        availableLanguages.first()
+                                    } else {
+                                        registerDictionaryUi.tableUiInfo.languageToUi
+                                    }
+                                )
                             )
                         }
-                    )
                 )
             )
         }

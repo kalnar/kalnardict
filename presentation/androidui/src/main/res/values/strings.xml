@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="query_input_hint">search for word</string>
+    <string name="query_mode_match_beginning">match beginning</string>
+    <string name="query_mode_match_end">match ending</string>
+    <string name="query_mode_match_anywhere">match anywhere</string>
+    <string name="query_mode_match_fuzzy">fuzzy search</string>
+    <string name="query_mode_match_exact">exact match</string>
 
-    <!-- dialog string resources -->
-    <string name="table_registration_dialog_title">Table imports status</string>
-    <string name="table_registration_dialog_success_status_message">Table <i>%s</i> is imported successfully as <i>%s</i>.</string>
-    <string name="table_registration_dialog_processing_status_message">Table <i>%s</i> is being imported…</string>
-    <string name="table_registration_dialog_error_title">Table (%s) import failed!</string>
-    <string name="table_registration_dialog_error_description">Error log: %s</string>
-    <string name="table_registration_dialog_error_status_message">The import of table <i>%s</i> failed.</string>
+    <string name="dictionary_rendering_html">html with css</string>
+    <string name="dictionary_rendering_text">plain text</string>
 </resources>
