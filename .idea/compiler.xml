@@ -1,27 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.7">
-      <module name="kalnarDict.app" target="11" />
-      <module name="kalnarDict.core.common" target="1.8" />
-      <module name="kalnarDict.core.common.main" target="1.8" />
-      <module name="kalnarDict.core.common.test" target="1.8" />
-      <module name="kalnarDict.core.data" target="1.8" />
-      <module name="kalnarDict.core.data.main" target="1.8" />
-      <module name="kalnarDict.core.data.test" target="1.8" />
-      <module name="kalnarDict.core.domain" target="1.8" />
-      <module name="kalnarDict.core.domain.main" target="1.8" />
-      <module name="kalnarDict.core.domain.test" target="1.8" />
-      <module name="kalnarDict.core.interactors" target="1.8" />
-      <module name="kalnarDict.core.interactors.main" target="1.8" />
-      <module name="kalnarDict.core.interactors.test" target="1.8" />
-      <module name="kalnarDict.localdata" target="11" />
-      <module name="kalnarDict.platform.android.common" target="11" />
-      <module name="kalnarDict.platform.androidtest" target="11" />
-      <module name="kalnarDict.presentation" target="1.8" />
-      <module name="kalnarDict.presentation.androidui" target="11" />
-      <module name="kalnarDict.presentation.main" target="1.8" />
-      <module name="kalnarDict.presentation.test" target="1.8" />
+    <bytecodeTargetLevel target="21">
       <module name="My_Application.app" target="11" />
       <module name="My_Application.localdata" target="11" />
     </bytecodeTargetLevel>

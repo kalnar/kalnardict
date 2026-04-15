@@ -1,7 +1,6 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -175,7 +174,7 @@ class DictionaryQueryViewModel(
     }
 
     fun getTranslation(): LiveData<LoadableContent<DataOperationResult<UiEvent<String>>>> {
-        return Transformations.map(state) {
+        return state.map {
             it.translationText
         }
     }

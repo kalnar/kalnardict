@@ -1,13 +1,19 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdkVersion 31
+//    signingConfigs {
+//        debug {
+//            storeFile file('/Users/robertkalna/dev/android/kalnarapps/kalnardict_android/my-release-key.jks')
+//            keyAlias 'my-alias'
+//            storePassword '^3c#LPNz~2FbA22hi'
+//        }
+//    }
+    compileSdkVersion 36
     defaultConfig {
         applicationId "eu.kalnarapps.kalnardict"
-        minSdkVersion 21
-        targetSdkVersion 31
+        minSdkVersion 23
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -29,10 +35,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    packagingOptions {
+        resources {
+            excludes += 'META-INF/DEPENDENCIES'
+        }
     }
+
+    namespace 'eu.kalnarapps.kalnardict'
 }
 
 dependencies {
@@ -64,33 +73,29 @@ dependencies {
     }
 
     // latest stable
-    def koin_version = '2.0.1'
-    // Koin for Kotlin
-    implementation "org.koin:koin-core:$koin_version"
+    def koin_version = '4.1.1'
+    implementation "io.insert-koin:koin-core:$koin_version"
     // Koin extended & experimental features
-    implementation "org.koin:koin-core-ext:$koin_version"
+    implementation "io.insert-koin:koin-core-ext:3.0.2"
     // Koin for Unit tests
-    testImplementation "org.koin:koin-test:$koin_version"
-    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-android-ext:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android-ext:3.0.2"
 
 
     def room_version = "2.4.1"
 
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    kaptAndroidTest "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
+    kspAndroidTest "androidx.room:room-compiler:$room_version"
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
 
-    // optional - RxJava support for Room
-    implementation "androidx.room:room-rxjava2:$room_version"
-
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "androidx.room:room-guava:$room_version"
 
-    implementation 'org.koin:koin-androidx-viewmodel:2.0.0-beta-4'
+//    implementation 'io.insert-koin:koin-androidx-viewmodel:2.2.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha06"
     implementation "androidx.fragment:fragment:1.3.0-alpha04"
@@ -103,4 +108,24 @@ dependencies {
     // test
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
+    // Firebase
+    // Import the Firebase BoM
+//    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+
+    implementation 'com.google.firebase:firebase-appdistribution:16.0.0-beta08'
+//    implementation 'com.google.firebase:firebase-appdistribution-gradle'
+    implementation 'com.google.firebase:firebase-appdistribution-gradle:4.0.0'
+//    com.google.firebase:firebase-appdistribution-api-ktx	16.0.0-beta08
+    // Add the dependencies for any other desired Firebase products
+    // https://firebase.google.com/docs/android/setup#available-libraries
+
+
 }
+
+//android.applicationVariants.all { variant ->
+//    if (variant.flavorName != "mock") {
+//        // the Google services Gradle plugin
+//        apply plugin: 'com.google.gms.google-services'
+//        apply plugin: 'com.google.firebase.appdistribution'
+//    }
+//}

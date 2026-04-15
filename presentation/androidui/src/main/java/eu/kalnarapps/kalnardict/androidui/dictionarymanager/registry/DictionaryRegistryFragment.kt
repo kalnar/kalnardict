@@ -59,6 +59,10 @@ class DictionaryRegistryFragment : BaseFragment<DictionaryRegistryState>() {
                     binding.invalidDbGroup.isVisible = false
                     binding.validDbGroup.isVisible = true
                 }
+
+                else -> {
+                    // do nothing
+                }
             }
         }
 

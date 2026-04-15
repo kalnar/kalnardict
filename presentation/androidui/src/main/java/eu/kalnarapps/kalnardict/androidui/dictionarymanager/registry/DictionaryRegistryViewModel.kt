@@ -2,7 +2,7 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
@@ -90,7 +90,7 @@ class DictionaryRegistryViewModel(
     }
 
     fun getLiveIsTableListInitialized(): LiveData<Boolean> {
-        return Transformations.map(state) {
+        return state.map {
             it.registerDictionaryUiModels.contentOrNull()?.isNotEmpty() ?: false
         }
     }
@@ -215,7 +215,7 @@ class DictionaryRegistryViewModel(
     }
 
     fun getLiveRegistrationStatus(): LiveData<List<ImportTableStatus>> {
-        return Transformations.map(state) {
+        return state.map {
             it.importProgress.map { entry ->
                 ImportTableStatus(
                     table = entry.key,
@@ -294,7 +294,7 @@ class DictionaryRegistryViewModel(
     }
 
     fun getAvailableLanguages(): LiveData<List<SelectableLanguage.LanguageUi>> {
-        return Transformations.map(state) {
+        return state.map {
             it.availableLanguages
         }
     }

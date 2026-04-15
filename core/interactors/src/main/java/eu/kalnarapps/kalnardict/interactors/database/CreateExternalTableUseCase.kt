@@ -10,6 +10,7 @@ class CreateExternalTable(
     private val tableRepository: DatabaseRepository.TableRepository
 ) : CreateExternalTableUseCase {
     override suspend fun invoke(jobInfo: ExternalTableCreationJobInfo): OperationResult {
+        println("invoke db creation: filepath: ${jobInfo.dbPath.localPath}")
         return when (
             val createDatabase = databaseRepository.createDatabase(jobInfo.dbPath.localPath)
         ) {

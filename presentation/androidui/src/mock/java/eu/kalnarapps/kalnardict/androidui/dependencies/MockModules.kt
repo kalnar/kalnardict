@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.androidui.dependencies
 
 import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvider
 import eu.kalnarapps.kalnardict.androidui.importer.DbImporterViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import org.koin.android.viewmodel.dsl.viewModel
 
 val androidUiKoinMockModules = listOf(
     useCaseKoinMockModule,

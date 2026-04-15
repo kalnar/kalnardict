@@ -4,7 +4,7 @@ import eu.kalnarapps.kalnardict.data.datasources.query.QueryExecutor
 import eu.kalnarapps.kalnardict.data.datasources.query.QueryExecutorProvider
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.AccentMode
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
-import org.koin.core.KoinComponent
+import  org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.StringQualifier
 
 class SQLiteQueryExecutorProvider : QueryExecutorProvider, KoinComponent {

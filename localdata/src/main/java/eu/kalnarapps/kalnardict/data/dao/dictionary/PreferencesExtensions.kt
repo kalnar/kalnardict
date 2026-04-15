@@ -14,11 +14,11 @@ inline fun <reified T> SharedPreferences.observeKey(
     dispatcher: CoroutineContext = Dispatchers.Default
 ): Flow<T> {
     val flow: Flow<T> = channelFlow {
-        offer(getItem(key, default))
+        trySend(getItem(key, default))
 
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, k ->
             if (key == k) {
-                offer(getItem(key, default)!!)
+                trySend(getItem(key, default)!!)
             }
         }
 

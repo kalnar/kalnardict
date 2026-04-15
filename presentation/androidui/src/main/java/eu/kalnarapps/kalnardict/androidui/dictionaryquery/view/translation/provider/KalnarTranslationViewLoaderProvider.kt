@@ -8,7 +8,7 @@ import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.Trans
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.views.SimpleTextTranslationView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.views.WebViewHtmlTranslationView
 import eu.kalnarapps.kalnardict.presentation.models.translations.RenderingStrategy
-import org.koin.core.KoinComponent
+import  org.koin.core.component.KoinComponent
 
 class KalnarTranslationViewLoaderProvider : TranslationViewLoaderProvider, KoinComponent {
     override fun provide(renderingStrategy: RenderingStrategy): TranslationViewLoader {

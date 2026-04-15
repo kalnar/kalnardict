@@ -19,7 +19,7 @@ class DictionaryRegistryViewModelFactory(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val uiLogger: UiLogger
 ) : AbstractDictionaryRegistryViewModelFactory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DictionaryRegistryViewModel::class.java)) {
             return DictionaryRegistryViewModel(
                 dbPath = dbPath,

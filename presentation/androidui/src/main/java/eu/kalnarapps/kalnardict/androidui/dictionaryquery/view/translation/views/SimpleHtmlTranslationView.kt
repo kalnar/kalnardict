@@ -12,7 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ScrollView
 import androidx.appcompat.widget.AppCompatTextView
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.view.translation.TranslationView
-import org.koin.core.KoinComponent
+import  org.koin.core.component.KoinComponent
 
 class TextViewHtmlTranslationView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

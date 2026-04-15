@@ -21,9 +21,4 @@ dependencies {
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
-sourceCompatibility = "8"
-targetCompatibility = "8"

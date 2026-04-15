@@ -4,11 +4,9 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DefaultDispatcherProvi
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.AbstractDictionaryRegistryViewModelFactory
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.registry.DictionaryRegistryViewModelFactory
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-
 
 
 val viewModuleModule: Module = module {

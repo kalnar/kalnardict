@@ -2,8 +2,8 @@ package eu.kalnarapps.kalnardict.androidui.dependencies
 
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerViewModel
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesForUi
-import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 

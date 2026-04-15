@@ -11,7 +11,7 @@ import eu.kalnarapps.kalnardict.presentation.models.errors.UiFeedback
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
-import org.koin.core.KoinComponent
+import  org.koin.core.component.KoinComponent
 
 abstract class BaseViewModel<UiModel>(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
