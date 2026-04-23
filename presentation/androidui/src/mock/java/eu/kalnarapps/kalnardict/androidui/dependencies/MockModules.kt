@@ -8,7 +8,6 @@ import org.koin.dsl.module
 val androidUiKoinMockModules = listOf(
     useCaseKoinMockModule,
     dictionaryManagerKoinMockModule,
-    navigationScreenKoinMockModule
 )
 
 // for dictionaryQueryFactory, see DictionaryQueryViewModelFactory

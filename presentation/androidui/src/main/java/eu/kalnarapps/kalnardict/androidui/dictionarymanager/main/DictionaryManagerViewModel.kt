@@ -40,7 +40,7 @@ class DictionaryManagerViewModel(
                 registerClickListeners(it)
                 LoadableContent.Completed(it) as LoadableContent<List<ManageableDictionaryView>>
             }.collect {
-                postUiState {
+                postUiStateOnMainThread {
                     copy(dictionaries = it)
                 }
             }

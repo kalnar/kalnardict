@@ -13,6 +13,8 @@ import eu.kalnarapps.kalnardict.presentation.models.errors.ErrorUiFeedBack
 import eu.kalnarapps.kalnardict.presentation.models.mock.DbImporterUi
 import eu.kalnarapps.kalnardict.presentation.models.mock.ImporterFormData
 import eu.kalnarapps.kalnardict.presentation.models.navigation.NavigationCommand
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -26,6 +28,9 @@ class DbImporterViewModel(
     dispatcherProvider = dispatcherProvider,
     logger = logger
 ) {
+
+    private val _navigationEvent: MutableSharedFlow<String> = MutableSharedFlow()
+    val navigationEvent: SharedFlow<String> = _navigationEvent
 
     init {
         setUiState(DbImporterUi(showLoader = true))
@@ -67,9 +72,7 @@ class DbImporterViewModel(
                     )
                 )
                 is DataOperationResult.Success -> withContext(dispatcherProvider.main()) {
-                    postNavigationCommand(
-                        NavigationCommand.Common.NavigateToDictionaryRegistry(result.data)
-                    )
+                    _navigationEvent.emit(result.data)
                 }
             }
         }

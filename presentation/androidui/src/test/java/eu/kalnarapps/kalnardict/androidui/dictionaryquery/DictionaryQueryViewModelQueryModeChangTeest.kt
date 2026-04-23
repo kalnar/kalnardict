@@ -7,7 +7,7 @@ import eu.kalnarapps.kalnardict.androidui.stubs.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ChangeDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
-import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesFlowUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.query.GetQueryModesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.query.SearchQueryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.query.UpdateQueryModeUseCaseFromUi
@@ -49,7 +49,7 @@ class DictionaryQueryViewModelQueryModeChangTeest {
     val testCoroutineRule = TestCoroutineRule()
 
     @Mock
-    lateinit var listRegisteredDictionariesUseCase: ListRegisteredDictionariesUseCaseForUi
+    lateinit var listRegisteredDictionariesUseCase: ListRegisteredDictionariesFlowUseCaseForUi
 
     @Mock
     lateinit var searchQueryUseCase: SearchQueryUseCaseFromUi

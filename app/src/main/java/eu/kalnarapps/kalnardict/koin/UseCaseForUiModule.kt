@@ -8,6 +8,8 @@ import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.GetCurrentDictionaryUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesUseCaseForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesFlowForUi
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesFlowUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesForUi
@@ -16,7 +18,6 @@ import eu.kalnarapps.kalnardict.presentation.interactors.query.GetQueryModesForU
 import eu.kalnarapps.kalnardict.presentation.interactors.query.GetQueryModesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.words.GetTranslationForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.words.GetTranslationUseCaseForUi
-import kotlinx.coroutines.FlowPreview
 import org.koin.dsl.module
 
 
@@ -29,9 +30,16 @@ val useCaseForUiModule = module {
         ) as GetQueryModesUseCaseForUi
     }
     single {
-        ListRegisteredDictionariesForUi(
+        ListRegisteredDictionariesFlowForUi(
             listRegisteredDictionaries = get(),
             getDictionaryWithDisplayTypeInfoUseCase = get(),
+            getDictionaryWithDisplayType = get(),
+            dictionaryMapper = get(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper)
+        ) as ListRegisteredDictionariesFlowUseCaseForUi
+    }
+    single {
+        ListRegisteredDictionariesForUi(
+            listRegisteredDictionaries = get(),
             getDictionaryWithDisplayType = get(),
             dictionaryMapper = get(Qualifiers.dictionaryWithDisplayTypeInfoDomainUiMapper)
         ) as ListRegisteredDictionariesUseCaseForUi

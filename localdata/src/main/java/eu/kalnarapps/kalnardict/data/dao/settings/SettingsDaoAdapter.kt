@@ -10,7 +10,7 @@ class SettingsDaoAdapter(
 ) : SettingsDataSource {
     override suspend fun getSettingsItem(key: SettingsKey): String {
         return when (key) {
-            SettingsKey.MOCK_DB_PATH -> applicationContext.getStorageRootPath() + "/Download/.kalnardict/mock"
+            SettingsKey.MOCK_DB_PATH -> applicationContext.getStorageRootPath() + "/Download/"
         }
     }
 }

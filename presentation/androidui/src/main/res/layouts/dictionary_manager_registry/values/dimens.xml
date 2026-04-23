@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="message_big_title">30sp</dimen>
-    <dimen name="message_description_text_size">17sp</dimen>
-    <dimen name="title_description_spacing">20dp</dimen>
-    <dimen name="after_description_spacing">20dp</dimen>
-    <dimen name="message_description_horizontal_margin">30dp</dimen>
-</resources>

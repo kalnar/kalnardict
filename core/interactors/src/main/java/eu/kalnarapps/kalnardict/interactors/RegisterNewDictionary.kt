@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.data.ConfigurationRepository
 import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
 import eu.kalnarapps.kalnardict.data.LanguageRepository
@@ -17,7 +18,8 @@ import kotlinx.coroutines.flow.onEach
 class RegisterNewDictionary(
     private val dictionaryRepository: DictionaryRepository,
     private val displayTypeRepository: DisplayTypeRepository,
-    private val languageRepository: LanguageRepository
+    private val languageRepository: LanguageRepository,
+    private val configurationRepository: ConfigurationRepository,
 ) : RegisterNewDictionaryUseCase {
 
     override suspend fun invoke(
@@ -46,12 +48,13 @@ class RegisterNewDictionary(
                 importJob
             ).onEach {
                 if (it is DataOperationResult.Success &&
-                    it.data.totalRowCount == it.data.registeredCount
+                    it.data.totalRowCount <= it.data.registeredCount
                 ) {
                     populateDictionaryDisplayTypes(
                         dictionaryId = it.data.dictionaryId,
                         displayTypes = importJob.displayTypes
                     )
+                    updateCurrentDictionary(it.data.dictionaryId)
                 }
             }
         } else {
@@ -78,6 +81,23 @@ class RegisterNewDictionary(
             dictionaryId = dictionaryId,
             displayTypes = displayTypes
         )
+    }
+
+    private suspend fun updateCurrentDictionary(dictionaryId: Int) {
+        return when (
+            val dictionaryResult = dictionaryRepository.getDictionaryById(dictionaryId)
+        ) {
+            is DataOperationResult.Success -> {
+                configurationRepository.updateCurrentDictionary(
+                    dictionaryResult.data
+                )
+            }
+
+            is DataOperationResult.Failure -> {
+                // Do nothing
+                println("an error has occurred")
+            }
+        }
     }
 
     companion object {

@@ -15,6 +15,8 @@ data class DictionaryRegistryState(
 data class ExternalTableUiInfo(
     val originalTableName: String,
     val dictionaryName: String = originalTableName,
+    val dictionaryNameCursorIndexStart: Int = originalTableName.length,
+    val dictionaryNameCursorIndexEnd: Int = originalTableName.length,
     val originalLanguageFrom: String,
     val languageFromUi: SelectableLanguage = SelectableLanguage.NotSet,
     val originalLanguageTo: String,

@@ -6,6 +6,7 @@ import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModeUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetQueryModesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.GetTranslationUseCase
+import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesFlowUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredDictionariesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ListRegisteredLanguagesUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
@@ -25,6 +26,7 @@ import eu.kalnarapps.kalnardict.interactors.ListAvailableLanguages
 import eu.kalnarapps.kalnardict.interactors.ListDictionaryQueryResults
 import eu.kalnarapps.kalnardict.interactors.ListMetaInfoOnDb
 import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionaries
+import eu.kalnarapps.kalnardict.interactors.ListRegisteredDictionariesFlow
 import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary
 import eu.kalnarapps.kalnardict.interactors.RegisterNewLanguage
 import eu.kalnarapps.kalnardict.interactors.UpdateCurrentLanguage
@@ -76,13 +78,19 @@ val useCaseModule = module {
         RegisterNewDictionary(
             displayTypeRepository = get(),
             dictionaryRepository = get(),
-            languageRepository = get()
+            languageRepository = get(),
+            configurationRepository = get(),
         ) as RegisterNewDictionaryUseCase
     }
     single {
         ListMetaInfoOnDb(
             dictionaryRepository = get()
         ) as ReadExternalDbUseCase
+    }
+    single {
+        ListRegisteredDictionariesFlow(
+            dictionaryRepository = get()
+        ) as ListRegisteredDictionariesFlowUseCase
     }
     single {
         ListRegisteredDictionaries(
