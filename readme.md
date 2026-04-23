@@ -10,6 +10,7 @@ For now it supports only a custom SQLite scheme as external source. The goal is 
 
 Here is a small demo of the application for the mock flavor:
 
+https://github.com/user-attachments/assets/2474ae87-5e1e-4771-8f3a-9a31dbff5ccd
 
 
 # Custom Database Schema
