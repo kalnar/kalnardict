@@ -3,15 +3,13 @@ package eu.kalnarapps.kalnardict
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesFlowUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListRegisteredDictionariesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class MainActivityV2ViewModel(
+class MainActivityViewModel(
     private val listRegisteredDictionaries: ListRegisteredDictionariesUseCaseForUi
 ) : ViewModel() {
 
