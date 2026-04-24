@@ -1,38 +1,34 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.1.0'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
-        def nav_version = '2.4.1'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-
-        // dependency for the Google services Gradle plugin:
-        classpath 'com.google.gms:google-services:4.3.15'
-        // Add the dependency for the App Distribution Gradle plugin
-        classpath 'com.google.firebase:firebase-appdistribution-gradle:4.0.0'
+        classpath libs.android.gradle.plugin
+        classpath libs.kotlin.gradle.plugin
+        classpath libs.navigation.safe.args.gradle.plugin
+        classpath libs.google.services.plugin
+        classpath libs.firebase.appdistribution.gradle
     }
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '2.3.6' apply false
-    id "org.jetbrains.kotlin.plugin.compose" version '2.3.20' apply false
-    id "androidx.navigation.safeargs.kotlin" version "2.9.7" apply false
-    id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.20' apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.navigation.safeargs.kotlin) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
 }
 
 allprojects {
     repositories {
         google()
         maven { url "https://jitpack.io" }
-        mavenCentral()  // Maven Central repository
+        mavenCentral()
     }
 }
 
