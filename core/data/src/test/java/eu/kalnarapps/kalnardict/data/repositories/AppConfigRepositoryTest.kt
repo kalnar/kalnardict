@@ -6,48 +6,40 @@ import eu.kalnarapps.kalnardict.data.mock.MockConfigurationDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockDictionaryDataSource
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.data.repositories.configuration.AppConfigRepository
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.data.test.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.core.IsInstanceOf
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
 
 class AppConfigRepositoryTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
     fun initial_dictionary_is_not_set() {
-        testCoroutineRule.runBlockingTest {
-
+        runTest {
             val repository =
                 AppConfigRepository(
                     configurationDataSource = MockConfigurationDataSource(),
                     dictionaryDataSource = MockDictionaryDataSource(),
                     languageDataSource = MockLanguageDataSource()
                 )
-            val testCollector = repository.getCurrentDictionary().test(scope = this)
-            try {
-                testCollector.assertThatLastValue(
-                    equalTo(
-                        CurrentDictionary.DictionaryNotSet
-                    )
-                )
-            } finally {
-                testCollector.finish()
-            }
 
+            val currentDictionaryCollectedFlow = repository.getCurrentDictionary().toList()
+
+            assertThat(
+                currentDictionaryCollectedFlow.last(),
+                equalTo(
+                    CurrentDictionary.DictionaryNotSet
+                )
+            )
         }
     }
 
     @Test
     fun update_current_dictionary() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val repository =
                 AppConfigRepository(
                     configurationDataSource = MockConfigurationDataSource(),
@@ -59,19 +51,15 @@ class AppConfigRepositoryTest {
                 Stubs.Dictionaries.frenchEnglishDictionary
             )
 
-            val testCollector = repository.getCurrentDictionary().test(scope = this)
-            try {
-                testCollector.assertThatLastValue(
-                    equalTo(
-                        CurrentDictionary.SetDictionary(
-                            Stubs.Dictionaries.frenchEnglishDictionary
-                        )
+            val currentDictionary = repository.getCurrentDictionary().toList()
+            assertThat(
+                currentDictionary.last(),
+                equalTo(
+                    CurrentDictionary.SetDictionary(
+                        Stubs.Dictionaries.frenchEnglishDictionary
                     )
                 )
-            } finally {
-                testCollector.finish()
-            }
-
+            )
         }
     }
 }

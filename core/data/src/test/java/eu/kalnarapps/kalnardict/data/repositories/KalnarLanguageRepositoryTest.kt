@@ -6,17 +6,14 @@ import eu.kalnarapps.kalnardict.data.Stubs
 import eu.kalnarapps.kalnardict.data.mapper.LanguageDataMapper
 import eu.kalnarapps.kalnardict.data.mock.MockLanguageDataSource
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.collection.IsIterableWithSize
 import org.hamcrest.core.IsInstanceOf
-import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Test
 
 
@@ -29,16 +26,10 @@ class KalnarLanguageRepositoryTest {
             languageMapper,
             languageMapper
         )
-    private val testCoroutineScope = TestCoroutineScope()
-
-    @After
-    fun tearDown() {
-        testCoroutineScope.cleanupTestCoroutines()
-    }
 
     @Test
     fun find_language_by_id() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val languageFetch = repository.getLanguageById(Stubs.Languages.french.code)
             assertThat(
                 languageFetch,
@@ -54,7 +45,7 @@ class KalnarLanguageRepositoryTest {
 
     @Test
     fun fail_to_find_language_by_id() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val languageFetch = repository.getLanguageById(Stubs.Languages.nonExistingLanguageId)
             assertThat(
                 languageFetch,
@@ -65,7 +56,7 @@ class KalnarLanguageRepositoryTest {
 
     @Test
     fun get_available_languages_when_available() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val expectedLanguages = Stubs.Languages.frenchAndEnglish
             val repository = KalnarLanguageRepository(
                 MockLanguageDataSource(ArrayList(expectedLanguages)),
@@ -83,7 +74,7 @@ class KalnarLanguageRepositoryTest {
 
     @Test
     fun get_empty_list_of_language_when_there_are_none() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val expectedLanguages = emptyList<DictLanguage>()
             val repository = KalnarLanguageRepository(
                 MockLanguageDataSource(ArrayList(expectedLanguages)),
@@ -99,7 +90,7 @@ class KalnarLanguageRepositoryTest {
 
     @Test
     fun add_new_language_with_unique_id() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val expectedLanguages = Stubs.Languages.frenchAndEnglish.plus(Stubs.Languages.russian)
             val repository = KalnarLanguageRepository(
                 MockLanguageDataSource(ArrayList(Stubs.Languages.frenchAndEnglish)),
@@ -125,7 +116,7 @@ class KalnarLanguageRepositoryTest {
 
     @Test
     fun attempt_add_new_language_with_non_unique_id_and_fail() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val expectedLanguages = Stubs.Languages.frenchAndEnglish
             val repository = KalnarLanguageRepository(
                 MockLanguageDataSource(ArrayList(expectedLanguages)),

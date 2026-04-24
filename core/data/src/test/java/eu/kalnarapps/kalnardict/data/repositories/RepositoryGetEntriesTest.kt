@@ -10,13 +10,12 @@ import eu.kalnarapps.kalnardict.data.mock.MockQueryExecutorProvider
 import eu.kalnarapps.kalnardict.data.mock.MockWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.mock.model.MockTranslatedWordEntry
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictQuery
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.QueryMode
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
-import org.junit.Rule
 import org.junit.Test
 
 class RepositoryGetEntriesTest {
@@ -48,13 +47,10 @@ class RepositoryGetEntriesTest {
             )
         )
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
     fun when_using_match_exact_mode_return_only_if_match_is_exact() {
         // given a correct path of a valid external db
-        testCoroutineRule.runBlockingTest {
+        runTest {
             assertThat(
                 repository.getEntriesByQuery(
                     DictQuery(
@@ -81,7 +77,7 @@ class RepositoryGetEntriesTest {
     @Test
     fun when_using_match_beginning_mode_return_only_if_starting_with() {
         // given a correct path of a valid external db
-        testCoroutineRule.runBlockingTest {
+        runTest {
             assertThat(
                 repository.getEntriesByQuery(
                     DictQuery(
@@ -111,7 +107,7 @@ class RepositoryGetEntriesTest {
     @Test
     fun when_using_match_end_mode_return_only_if_ending_with() {
         // given a correct path of a valid external db
-        testCoroutineRule.runBlockingTest {
+        runTest {
             assertThat(
                 repository.getEntriesByQuery(
                     DictQuery(
@@ -144,7 +140,7 @@ class RepositoryGetEntriesTest {
     @Test
     fun when_using_match_anywhere_mode_return_only_if_contains_string() {
         // given a correct path of a valid external db
-        testCoroutineRule.runBlockingTest {
+        runTest {
             assertThat(
                 repository.getEntriesByQuery(
                     DictQuery(
@@ -177,7 +173,7 @@ class RepositoryGetEntriesTest {
     @Test
     fun when_using_match_fuzzy_mode_return_only_if_contains_characters_in_order() {
         // given a correct path of a valid external db
-        testCoroutineRule.runBlockingTest {
+        runTest {
             assertThat(
                 repository.getEntriesByQuery(
                     DictQuery(

@@ -5,10 +5,10 @@ import eu.kalnarapps.kalnardict.data.datasources.dictionary.DictionaryDisplayTyp
 import eu.kalnarapps.kalnardict.data.mapper.DataToDomainMapper
 import eu.kalnarapps.kalnardict.data.mapper.DomainToDataMapper
 import eu.kalnarapps.kalnardict.data.model.contracts.DictionaryDisplayTypeDataEntry
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.data.test.test
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryDisplayType
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
@@ -19,9 +19,6 @@ import org.mockito.Mockito.mock
 
 class DictionaryDisplayTypesTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     private val dictionaryDisplayTypeDataSource =
         mock(DictionaryDisplayTypeDataSource::class.java)
     private val displayTypeMapper =
@@ -31,8 +28,7 @@ class DictionaryDisplayTypesTest {
 
     @Test
     fun return_display_type_for_dictionary() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val dictionary = Stubs.Dictionaries.frenchToFrenchDictionary
             val expectedDisplayType = Stubs.Dictionaries.frenchToFrenchDictionaryDisplayType
@@ -60,14 +56,11 @@ class DictionaryDisplayTypesTest {
 
             assertThat(displayType, equalTo(expectedDisplayType))
         }
-
-
     }
 
     @Test
     fun return_supported_display_types_for_dictionary() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val dictionary = Stubs.Dictionaries.frenchToFrenchDictionary
             val expectedSupportedDisplayType =
@@ -98,20 +91,12 @@ class DictionaryDisplayTypesTest {
                 displayTypeDataMapper = displayTypeMapper,
                 displayTypeDomainMapper = displayTypeDomainMapper
             )
-            val displayType = repository.getSupportedDisplayTypesFor(dictionary)
+            val displayType = repository.getSupportedDisplayTypesFor(dictionary).toList()
 
-            val testCollector = displayType.test(scope = this)
-            try {
-                testCollector.assertThatLastValue(
-                    equalTo(expectedSupportedDisplayTypes)
-                )
-            } finally {
-                testCollector.finish()
-            }
+            assertThat(
+                displayType.last(),
+                equalTo(expectedSupportedDisplayTypes)
+            )
         }
-
-
     }
-
-
 }

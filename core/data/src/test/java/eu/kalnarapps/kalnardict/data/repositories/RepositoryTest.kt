@@ -15,13 +15,15 @@ import eu.kalnarapps.kalnardict.data.mock.MockWordDataSource
 import eu.kalnarapps.kalnardict.data.mock.TestExternalDatabaseHandler
 import eu.kalnarapps.kalnardict.data.sampleExternalDbTable
 import eu.kalnarapps.kalnardict.data.sampleQueryNewWord
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.data.test.test
 import eu.kalnarapps.kalnardict.data.validExternalResource
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.Dictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
@@ -31,9 +33,7 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsIterableContaining
 import org.hamcrest.text.IsEqualIgnoringCase
-import org.junit.Rule
 import org.junit.Test
-
 
 
 class RepositoryTest {
@@ -55,75 +55,34 @@ class RepositoryTest {
             )
         )
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
     fun import_one_table_from_valid_external_db() {
-        // given a correct path of a valid external db
-        testCoroutineRule.runBlockingTest {
+        runTest {
+            // given a correct path of a valid external db
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
             )
-            val testCollector = repository.readRegisteredDictionaries().test(scope = this)
-            try {
-                testCollector.assertThat(
-                    { it.last() },
-                    IsCollectionWithSize(
-                        equalTo(
-                            Stubs.Dictionaries.newDictionary.id - 1
-                        )
+            var dictionaries: List<Dictionary> = emptyList()
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                repository.readRegisteredDictionaries().collect {
+                    dictionaries = it
+                }
+            }
+
+            assertThat(
+                dictionaries,
+                IsCollectionWithSize(
+                    equalTo(
+                        Stubs.Dictionaries.newDictionary.id - 1
                     )
                 )
-                testCollector.assertThat(
-                    { it.last() },
-                    not(
-                        IsIterableContaining(
-                            HasPropertyWithValue<Int>(
-                                "id",
-                                equalTo(Stubs.Dictionaries.newDictionary.id)
-                            )
-                        )
-                    )
-                )
+            )
 
-                // when
-                val savingName = "sampleExternalDbTable"
-                val importResult = repository.importTableFromDb(
-                    ImportJob(
-                        sampleExternalDbTable,
-                        validExternalResource,
-                        savingName,
-                        1
-                    )
-                ).toList()
-
-                val firstResult = importResult.first()
-                assertThat(
-                    firstResult,
-                    instanceOf(DataOperationResult.Success::class.java)
-                )
-                check(firstResult is DataOperationResult.Success)
-                assertThat(
-                    firstResult.data,
-                    equalTo(Stubs.Db.progressOneItem)
-                )
-
-                val secondResult = importResult[1]
-                assertThat(
-                    secondResult,
-                    instanceOf(DataOperationResult.Success::class.java)
-                )
-                check(secondResult is DataOperationResult.Success)
-                assertThat(
-                    secondResult.data,
-                    equalTo(Stubs.Db.progressTwoItem)
-                )
-
-
-                testCollector.assertThat(
-                    { it.last() },
+            assertThat(
+                dictionaries,
+                not(
                     IsIterableContaining(
                         HasPropertyWithValue<Int>(
                             "id",
@@ -131,26 +90,70 @@ class RepositoryTest {
                         )
                     )
                 )
+            )
 
-                // then
-                testCollector.assertThat(
-                    { it.last() },
-                    IsIterableContaining(
-                        HasPropertyWithValue<String>(
-                            "description",
-                            equalTo(
-                                savingName
-                            )
+            // when
+            val savingName = "sampleExternalDbTable"
+            val importResult = repository.importTableFromDb(
+                ImportJob(
+                    sampleExternalDbTable,
+                    validExternalResource,
+                    savingName,
+                    1
+                )
+            ).toList()
+
+            val firstResult = importResult.first()
+            assertThat(
+                firstResult,
+                instanceOf(DataOperationResult.Success::class.java)
+            )
+            check(firstResult is DataOperationResult.Success)
+            assertThat(
+                firstResult.data,
+                equalTo(Stubs.Db.progressOneItem)
+            )
+
+            val secondResult = importResult[1]
+            assertThat(
+                secondResult,
+                instanceOf(DataOperationResult.Success::class.java)
+            )
+            check(secondResult is DataOperationResult.Success)
+            assertThat(
+                secondResult.data,
+                equalTo(Stubs.Db.progressTwoItem)
+            )
+
+
+            // then
+
+            assertThat(
+                dictionaries,
+                IsIterableContaining(
+                    HasPropertyWithValue<Int>(
+                        "id",
+                        equalTo(Stubs.Dictionaries.newDictionary.id)
+                    )
+                )
+            )
+
+            assertThat(
+                dictionaries,
+                IsIterableContaining(
+                    HasPropertyWithValue<String>(
+                        "description",
+                        equalTo(
+                            savingName
                         )
                     )
                 )
-                assertThat(
-                    repository.getEntriesByQuery(sampleQueryNewWord),
-                    not(IsEmptyCollection())
-                )
-            } finally {
-                testCollector.finish()
-            }
+            )
+
+            assertThat(
+                repository.getEntriesByQuery(sampleQueryNewWord),
+                not(IsEmptyCollection())
+            )
         }
     }
 
@@ -158,7 +161,7 @@ class RepositoryTest {
     fun fail_to_import_invalid_external_db() {
         // given a correct path of a valid external db
         val externalDbPath = "mockInvalidDbPath"
-        testCoroutineRule.runBlockingTest {
+        runTest {
             assertThat(
                 repository.getEntriesByQuery(sampleQueryNewWord),
                 IsEmptyCollection()
@@ -204,50 +207,42 @@ class RepositoryTest {
             MockDictionaryMapper()
         )
 
-        testCoroutineRule.runBlockingTest {
-            val testCollector = repository.readRegisteredDictionaries().test(scope = this)
-            try {
-                testCollector.assertThat(
-                    { it.last() },
-                    IsEmptyCollection()
-                )
-            } finally {
-                testCollector.finish()
-            }
+        runTest {
+            val dictionaries = repository.readRegisteredDictionaries().take(1).toList()
+            assertThat(
+                dictionaries.last(),
+                IsEmptyCollection()
+            )
         }
     }
 
     @Test
     fun read_registered_dictionaries_and_return_found_ones() {
 
-        testCoroutineRule.runBlockingTest {
-            val testCollector = repository.readRegisteredDictionaries().test(scope = this)
-            try {
-                testCollector.assertThat(
-                    { it.last() as Collection<Dictionary> },
-                    not(IsEmptyCollection())
-                )
-                testCollector.assertThat(
-                    { it.last()[0].id },
-                    equalTo(1)
-                )
-                testCollector.assertThat(
-                    { it.last()[0].languageFrom.code },
-                    equalTo("hu")
-                )
-                testCollector.assertThat(
-                    { it.last()[0].languageFrom.name },
-                    IsEqualIgnoringCase("magyar")
-                )
-            } finally {
-                testCollector.finish()
-            }
+        runTest {
+            val dictionaries = repository.readRegisteredDictionaries().take(1).toList()
+            assertThat(
+                dictionaries.last() as Collection<Dictionary>,
+                not(IsEmptyCollection())
+            )
+            assertThat(
+                dictionaries.last()[0].id,
+                equalTo(1)
+            )
+            assertThat(
+                dictionaries.last()[0].languageFrom.code,
+                equalTo("hu")
+            )
+            assertThat(
+                dictionaries.last()[0].languageFrom.name,
+                IsEqualIgnoringCase("magyar")
+            )
         }
     }
 
     @Test
     fun read_meta_info_of_external_db() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val metaInfoFetch = repository.readMetaInfoFromExternalDb(
                 Stubs.Db.validExternalDatabase
             )
@@ -271,7 +266,7 @@ class RepositoryTest {
 
     @Test
     fun attempt_read_meta_info_of_invalid_external_db() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val metaInfoFetch = repository.readMetaInfoFromExternalDb(
                 Stubs.Db.invalidExternalDatabase
             )
@@ -285,7 +280,7 @@ class RepositoryTest {
 
     @Test
     fun return_translation_when_called_with_available_word_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             test_translation_when_called_with_available_word_id(
                 givenWordList = listOf(
                     Stubs.Words.translatedWordPrendre,
@@ -313,7 +308,7 @@ class RepositoryTest {
 
     @Test
     fun return_operation_failure_when_getting_translation_with_wrong_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val repository = Repository(
                 MockWordDataSource(
                     ArrayList(
