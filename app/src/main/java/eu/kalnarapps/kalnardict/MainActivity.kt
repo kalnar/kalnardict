@@ -66,9 +66,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun hasManageExternalStoragePermission(): Boolean {
-        return (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()).also {
-            Log.d("MainActivityV2", "hasManageExternalStoragePermission: $it")
-        }
+        return (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager())
     }
 }
 

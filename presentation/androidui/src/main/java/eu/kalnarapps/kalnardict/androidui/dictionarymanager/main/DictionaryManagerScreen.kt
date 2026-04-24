@@ -1,5 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.dictionarymanager.main
 
+import android.os.Build
+import android.os.Environment
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -120,9 +122,13 @@ fun DictionaryManagerScreen(
                         item {
                             Button(
                                 onClick = {
-                                    dbBrowserLauncher.launch(
-                                        "*/*"
-                                    )
+                                    if (hasManageExternalStoragePermission()) {
+                                        dbBrowserLauncher.launch(
+                                            "*/*"
+                                        )
+                                    } else {
+                                        navController.navigate(Screen.PermissionError.route)
+                                    }
                               },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = ColorPrimary
@@ -140,4 +146,8 @@ fun DictionaryManagerScreen(
             }
         }
     }
+}
+
+private fun hasManageExternalStoragePermission(): Boolean {
+    return (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager())
 }
