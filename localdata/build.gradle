@@ -50,6 +50,10 @@ android {
             androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
     namespace 'eu.kalnarapps.kalnardict.localdata'
 
 }

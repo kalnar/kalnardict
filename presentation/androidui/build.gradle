@@ -30,14 +30,13 @@ android {
 
     buildFeatures {
         compose true
-        viewBinding true
     }
     composeOptions {
         kotlinCompilerExtensionVersion "1.5.8"
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     packagingOptions {
         resources {
@@ -74,8 +73,6 @@ dependencies {
     androidTestImplementation libs.androidx.test.rules
 
     implementation libs.androidx.lifecycle.viewmodel.ktx
-    implementation libs.androidx.constraintlayout
-    implementation libs.androidx.recyclerview
 
     implementation libs.koin.core
     implementation libs.koin.core.ext
@@ -122,12 +119,11 @@ dependencies {
 
     implementation libs.compose.foundation
     implementation libs.compose.material
-    implementation libs.compose.material.icons.core
-    implementation libs.compose.material.icons.extended
     implementation libs.androidx.lifecycle.viewmodel.compose
     implementation libs.compose.runtime.livedata
-    implementation libs.compose.runtime.rxjava2
     implementation libs.google.compose.theme.adapter
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.material.icons.extended) // optional
 
     androidTestImplementation libs.compose.ui.test.junit4
     androidTestImplementation libs.compose.ui.test.manifest

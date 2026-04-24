@@ -11,15 +11,15 @@ dependencies {
     testImplementation(libs.junit4) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
-    testImplementation(libs.androidx.test.ext.junit) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-    testImplementation(libs.androidx.espresso.core) {
-        exclude group: 'org.hamcrest'
-    }
 
     implementation libs.kotlinx.coroutines.core
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.jvmTarget = "21"
 }
