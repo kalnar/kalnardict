@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-class MainActivityV2ViewModelFactory : ViewModelProvider.Factory, KoinComponent {
+class MainActivityViewModelFactory : ViewModelProvider.Factory, KoinComponent {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainActivityV2ViewModel::class.java)) {
-            return MainActivityV2ViewModel(
+        if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
+            return MainActivityViewModel(
                 listRegisteredDictionaries = get()
             ) as T
         } else {
