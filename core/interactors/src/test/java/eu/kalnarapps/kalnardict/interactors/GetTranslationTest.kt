@@ -4,8 +4,8 @@ import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.interactors.mock.MockConfigurationRepository
 import eu.kalnarapps.kalnardict.interactors.mock.MockDictionaryRepository
-import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsInstanceOf
@@ -15,12 +15,9 @@ import org.junit.Test
 
 class GetTranslationTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
     fun return_translation_when_called_with_available_word_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             test_translation_when_called_with_available_word_id(
                 wordId = Stubs.Words.wordTakeId,
@@ -36,7 +33,7 @@ class GetTranslationTest {
 
     @Test
     fun return_translation_when_called_with_available_word_id_for_various_dictionaries() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             test_translation_when_called_with_available_word_id(
                 wordId = Stubs.Words.wordTakeId,
                 currentDictionary = CurrentDictionary.SetDictionary(
@@ -57,7 +54,7 @@ class GetTranslationTest {
 
     @Test
     fun return_operation_failure_when_getting_translation_with_wrong_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val getTranslation = GetTranslation(
                 configurationRepository = MockConfigurationRepository(
                     CurrentDictionary.SetDictionary(Stubs.Dictionaries.englishToFrenchDictionary)
@@ -86,7 +83,7 @@ class GetTranslationTest {
         currentDictionary: CurrentDictionary,
         expectedTranslation: String
     ) {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val getTranslation = GetTranslation(
                 configurationRepository = MockConfigurationRepository(currentDictionary),
                 repository = MockDictionaryRepository()
