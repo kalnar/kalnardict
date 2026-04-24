@@ -2,8 +2,9 @@ package eu.kalnarapps.kalnardict.data.database.dao
 
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDaoAdapter
 import eu.kalnarapps.kalnardict.data.model.toNewDictionaryEntry
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.data.test.test
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsCollectionWithSize
@@ -19,66 +20,53 @@ class DictionaryLogDaoAdapterTest {
         dictLogDaoMock
     )
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
-    fun list_registered_dictionaries() = testCoroutineRule.runBlockingTest {
+    fun list_registered_dictionaries() = runTest {
         // given there is one dictionary registered
         dictLogDaoMock.insertDictionary(sampleDictionaryLogEntry)
 
         // when listing the dictionaries
-        val testCollector = dataSource.getDictionaries().test(scope = this)
+        val dictionariesCollected = dataSource.getDictionaries().take(1).toList()
 
-        try {
-            // then we have the one sample dictionary log entry as result
-            testCollector.assertThat(
-                { it.last() },
-                IsCollectionWithSize(equalTo(1))
-            )
-            testCollector.assertThat(
-                { it.last()[0].name },
-                equalTo(sampleDictionaryLogEntry.dictionaryName)
-            )
-            testCollector.assertThat(
-                { it.last()[0].languageFrom },
-                equalTo("hu")
-            )
-            testCollector.assertThat(
-                { it.last()[0].languageTo },
-                equalTo("en")
-            )
-            testCollector.assertThat(
-                { it.last()[0].id },
-                equalTo(1)
-            )
-        } finally {
-            testCollector.finish()
-        }
-
+        assertThat(
+            dictionariesCollected.last(),
+            IsCollectionWithSize(equalTo(1))
+        )
+        assertThat(
+            dictionariesCollected.last()[0].name,
+            equalTo(sampleDictionaryLogEntry.dictionaryName)
+        )
+        assertThat(
+            dictionariesCollected.last()[0].languageFrom,
+            equalTo("hu")
+        )
+        assertThat(
+            dictionariesCollected.last()[0].languageTo,
+            equalTo("en")
+        )
+        assertThat(
+            dictionariesCollected.last()[0].id,
+            equalTo(1)
+        )
     }
 
     @Test
-    fun find_no_dictionary_if_there_are_none_registered() = testCoroutineRule.runBlockingTest {
-            // given there is no dictionary registered
+    fun find_no_dictionary_if_there_are_none_registered() = runTest {
+        // given there is no dictionary registered
 
-            // when listing the dictionaries
-            val testCollector = dataSource.getDictionaries().test(scope = this)
+        // when listing the dictionaries
+        val dictionariesCollected = dataSource.getDictionaries().take(1).toList()
 
-            // then we have an empty list of sample dictionary log entries as result
-            try {
-                testCollector.assertThat(
-                    { it.last() },
-                    IsEmptyCollection()
-                )
-            } finally {
-                testCollector.finish()
-            }
-        }
+        // then we have an empty list of sample dictionary log entries as result
+        assertThat(
+            dictionariesCollected.last(),
+            IsEmptyCollection()
+        )
+    }
 
     @Test
     fun when_inserting_new_dictionary_return_new_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val result =
                 dataSource.insertDictionary(sampleDictionaryLogEntry.toNewDictionaryEntry())

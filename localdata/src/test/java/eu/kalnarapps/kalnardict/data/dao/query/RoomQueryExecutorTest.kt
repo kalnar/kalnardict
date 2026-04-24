@@ -8,26 +8,22 @@ import eu.kalnarapps.kalnardict.data.dao.query.formatter.MatchStartQueryFormatte
 import eu.kalnarapps.kalnardict.data.database.dao.WordDaoMock
 import eu.kalnarapps.kalnardict.data.database.dao.sampleTableInHungarian
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
-import org.junit.Rule
 import org.junit.Test
 
 
 class RoomQueryExecutorTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
     private val wordDaoMock = WordDaoMock()
     private val mapper = WordInfoMapper()
 
     @Test
     fun get_dict_entry_for_asztal_by_exact_query() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val roomQueryExecutor = RoomQueryExecutor(
                 wordDaoMock,
                 queryFormatter = ExactMatchQueryFormatter(),
@@ -55,12 +51,11 @@ class RoomQueryExecutorTest {
                 ),
                 IsEmptyCollection()
             )
-
         }
 
     @Test
     fun get_dict_entry_for_asztal_by_query_with_match_anywhere() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val roomQueryExecutor = RoomQueryExecutor(
                 wordDaoMock,
                 queryFormatter = MatchAnyWhereFormatter(),
@@ -90,12 +85,11 @@ class RoomQueryExecutorTest {
                 ),
                 IsEmptyCollection()
             )
-
         }
 
     @Test
     fun get_dict_entry_for_asztal_by_query_with_match_ending() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val roomQueryExecutor = RoomQueryExecutor(
                 wordDaoMock,
                 queryFormatter = MatchEndQueryFormatter(),
@@ -127,12 +121,11 @@ class RoomQueryExecutorTest {
                 ),
                 IsEmptyCollection()
             )
-
         }
 
     @Test
     fun get_dict_entry_for_asztal_by_query_with_match_beginning() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val roomQueryExecutor = RoomQueryExecutor(
                 wordDaoMock,
                 queryFormatter = MatchStartQueryFormatter(),
@@ -164,12 +157,11 @@ class RoomQueryExecutorTest {
                 ),
                 IsEmptyCollection()
             )
-
         }
 
     @Test
     fun get_dict_entry_for_asztal_by_query_with_match_fuzzy() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val roomQueryExecutor = RoomQueryExecutor(
                 wordDaoMock,
                 queryFormatter = FuzzyQueryFormatter(),
@@ -201,6 +193,5 @@ class RoomQueryExecutorTest {
                 ),
                 IsEmptyCollection()
             )
-
         }
 }

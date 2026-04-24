@@ -2,22 +2,18 @@ package eu.kalnarapps.kalnardict.data.dao.dictionary
 
 import eu.kalnarapps.kalnardict.data.dao.DaoStubs
 import eu.kalnarapps.kalnardict.data.entities.DictionaryDisplayTypeData
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.data.test.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsIterableContaining
-import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 
 class DisplayTypeDaoAdapterTest {
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     private val displayTypePreferencesDao =
         mock(DisplayTypePreferencesDao::class.java)
@@ -26,7 +22,7 @@ class DisplayTypeDaoAdapterTest {
 
     @Test
     fun return_display_type_data_when_getting_with_correct_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val dictionaryId = DaoStubs.Dictionaries.frenchToFrenchDicitonaryId
             val expectedDisplayTypeString = DaoStubs.DisplayTypes.HTML_DISPLAY_TYPE
@@ -38,24 +34,18 @@ class DisplayTypeDaoAdapterTest {
                 displayTypePreferencesDao = displayTypePreferencesDao,
                 supportedTypesDao = supportedTypesDao
             )
-            val displayTypeData = dao.displayTypeForDictionaryByIdFlow(dictionaryId)
+            val displayTypeData = dao.displayTypeForDictionaryByIdFlow(dictionaryId).toList()
 
-            val testCollector = displayTypeData.test(scope = this)
-            try {
-                testCollector.assertThatLastValue(
-                    equalTo(DaoStubs.DisplayTypes.frenchToFrenchDictionaryDisplayType)
-                )
-
-            } finally {
-                testCollector.finish()
-            }
-
+            assertThat(
+                displayTypeData.last(),
+                equalTo(DaoStubs.DisplayTypes.frenchToFrenchDictionaryDisplayType)
+            )
         }
     }
 
     @Test
     fun return_supported_display_types_when_getting_with_correct_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val dictionaryId = DaoStubs.Dictionaries.frenchToFrenchDicitonaryId
             val supportedDisplayTypeString = DaoStubs.DisplayTypes.HTML_DISPLAY_TYPE
@@ -72,25 +62,18 @@ class DisplayTypeDaoAdapterTest {
                 displayTypePreferencesDao = displayTypePreferencesDao,
                 supportedTypesDao = supportedTypesDao
             )
-            val displayTypesData = dao.supportedDisplayTypesForDictionaryById(dictionaryId)
+            val displayTypesData = dao.supportedDisplayTypesForDictionaryById(dictionaryId).toList()
 
-            val testCollector = displayTypesData.test(scope = this)
-            try {
-                testCollector.assertThat(
-                    { it.last() },
-                    IsIterableContaining(
-                        equalTo(
-                            DictionaryDisplayTypeData(
-                                supportedDisplayTypeString
-                            )
+            assertThat(
+                displayTypesData.last(),
+                IsIterableContaining(
+                    equalTo(
+                        DictionaryDisplayTypeData(
+                            supportedDisplayTypeString
                         )
                     )
                 )
-
-            } finally {
-                testCollector.finish()
-            }
-
+            )
         }
     }
 }

@@ -6,19 +6,12 @@ import eu.kalnarapps.kalnardict.data.dao.query.RoomQueryExecutor
 import eu.kalnarapps.kalnardict.data.dao.query.formatter.ExactMatchQueryFormatter
 import eu.kalnarapps.kalnardict.data.mapper.todata.WordInfoMapper
 import eu.kalnarapps.kalnardict.data.mapper.toroom.TranslatedWordMapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.core.IsInstanceOf
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 
 
@@ -34,22 +27,8 @@ class WordDaoAdapterTest {
         queryFormatter = ExactMatchQueryFormatter(),
         wordInfoMapper = WordInfoMapper()
     )
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testCoroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testCoroutineDispatcher.cleanupTestCoroutines()
-    }
-
-
     @Test
-    fun insert_new_word_in_data_source() = testCoroutineDispatcher.runBlockingTest {
+    fun insert_new_word_in_data_source() = runTest {
         assertThat(
             roomQueryExecutor.query(
                 "szem",
@@ -74,11 +53,10 @@ class WordDaoAdapterTest {
             ).firstOrNull()?.baseForm,
             equalTo(SampleEyeWordDataEntry.baseForm)
         )
-
     }
 
     @Test
-    fun insert_multiple_entries_in_data_source() = testCoroutineDispatcher.runBlockingTest {
+    fun insert_multiple_entries_in_data_source() = runTest {
         assertThat(
             roomQueryExecutor.query(
                 "szem",
@@ -128,8 +106,7 @@ class WordDaoAdapterTest {
 
     @Test
     fun when_getting_translation_with_valid_ids_return_translation() {
-        testCoroutineDispatcher.runBlockingTest {
-
+        runTest {
             val translationInfo = dataSource.getTranslationByWordAndDictionaryId(
                 sampleTableInHungarian.id,
                 sampleTableInHungarian.dictionaryId
@@ -149,8 +126,7 @@ class WordDaoAdapterTest {
 
     @Test
     fun when_getting_translation_with_invalid_ids_return_failure() {
-        testCoroutineDispatcher.runBlockingTest {
-
+        runTest {
             val translationInfo = dataSource.getTranslationByWordAndDictionaryId(
                 sampleTableInHungarian.id,
                 DICTIONARY_ID_SECOND
@@ -162,5 +138,4 @@ class WordDaoAdapterTest {
             )
         }
     }
-
 }

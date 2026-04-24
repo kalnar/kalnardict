@@ -25,6 +25,20 @@ class WordDaoMock : WordDao {
         }
     }
 
+    override suspend fun getByQueryAlternative(
+        queryString: String,
+        dictionaryId: Int
+    ): List<Word.WordInfo> {
+        return words.filter {
+            it.dictionaryId == dictionaryId &&
+                    it.alternativeBaseForm.matches(
+                        queryString.replace("%", ".*").toRegex()
+                    )
+        }.map {
+            Word.WordInfo(it.id, it.baseForm, it.alternativeBaseForm, it.dictionaryId)
+        }
+    }
+
     override suspend fun getTranslationByIds(
         wordId: Int,
         dictionaryId: Int
