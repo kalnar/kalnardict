@@ -91,6 +91,12 @@ private fun MockHomeScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(16.dp)
         ) {
+
+            item {
+                MockNavButton("PermissionScreen") {
+                    navController.navigate(Screen.PermissionError.route)
+                }
+            }
             item {
                 MockNavButton("DictionaryQuery") {
                     navController.navigate(Screen.DictionaryQuery.route)
