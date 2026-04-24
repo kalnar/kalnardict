@@ -35,8 +35,8 @@ android {
         full
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     buildFeatures {
         compose true
@@ -44,6 +44,9 @@ android {
     packagingOptions {
         resources {
             excludes += 'META-INF/DEPENDENCIES'
+            excludes += 'META-INF/DEPENDENCIES'
+            excludes += 'META-INF/INDEX.LIST'
+            excludes += 'META-INF/io.netty.versions.properties'
         }
     }
 
@@ -75,7 +78,6 @@ dependencies {
     implementation libs.kotlin.stdlib
     implementation libs.androidx.appcompat
     implementation libs.androidx.core.ktx
-    implementation libs.androidx.constraintlayout
 
     androidTestImplementation libs.hamcrest
     testImplementation(libs.junit4) {
