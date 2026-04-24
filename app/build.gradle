@@ -1,6 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.devtools.ksp'
-apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.compose)
+}
 
 android {
 //    signingConfigs {
@@ -58,83 +60,57 @@ dependencies {
     implementation project(":core:domain")
     implementation project(":core:data")
     implementation project(":localdata")
-    implementation 'androidx.compose.runtime:runtime-livedata:1.10.6'
+    implementation libs.compose.runtime.livedata
 
-    def composeBom = platform('androidx.compose:compose-bom:2026.03.01')
+    def composeBom = platform(libs.compose.bom)
     implementation composeBom
     androidTestImplementation composeBom
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.activity:activity-compose:1.13.0'
-    implementation 'androidx.navigation:navigation-compose:2.9.7'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
+    implementation libs.compose.ui
+    implementation libs.compose.ui.tooling.preview
+    implementation libs.compose.material3
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.navigation.compose
+    debugImplementation libs.compose.ui.tooling
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation libs.kotlin.stdlib
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.constraintlayout
 
-    // https://mvnrepository.com/artifact/org.hamcrest/hamcrest
-    androidTestImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-    testImplementation('junit:junit:4.12') {
+    androidTestImplementation libs.hamcrest
+    testImplementation(libs.junit4) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
-    androidTestImplementation('androidx.test.ext:junit:1.1.3') {
+    androidTestImplementation(libs.androidx.test.ext.junit) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.4.0') {
+    androidTestImplementation(libs.androidx.espresso.core) {
         exclude group: 'org.hamcrest'
     }
 
-    // latest stable
-    def koin_version = '4.1.1'
-    implementation "io.insert-koin:koin-core:$koin_version"
-    // Koin extended & experimental features
-    implementation "io.insert-koin:koin-core-ext:3.0.2"
-    // Koin for Unit tests
-    testImplementation "io.insert-koin:koin-test:$koin_version"
-    implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-android-ext:3.0.2"
+    implementation libs.koin.core
+    implementation libs.koin.core.ext
+    testImplementation libs.koin.test
+    implementation libs.koin.android
+    implementation libs.koin.android.ext
 
+    implementation libs.androidx.room.runtime
+    ksp libs.androidx.room.compiler
+    kspAndroidTest libs.androidx.room.compiler
+    implementation libs.androidx.room.ktx
+    implementation libs.androidx.room.guava
 
-    def room_version = "2.4.1"
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.fragment
 
-    implementation "androidx.room:room-runtime:$room_version"
-    ksp "androidx.room:room-compiler:$room_version"
-    kspAndroidTest "androidx.room:room-compiler:$room_version"
+    debugImplementation libs.stetho
 
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:$room_version"
-
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation "androidx.room:room-guava:$room_version"
-
-//    implementation 'io.insert-koin:koin-androidx-viewmodel:2.2.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha06"
-    implementation "androidx.fragment:fragment:1.3.0-alpha04"
-
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta6"
-
-    // stetho
-    debugImplementation 'com.facebook.stetho:stetho:1.5.1'
-
-    // test
-    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation libs.hamcrest
 
     // Firebase
-    // Import the Firebase BoM
-//    implementation platform('com.google.firebase:firebase-bom:32.0.0')
-
-    implementation 'com.google.firebase:firebase-appdistribution:16.0.0-beta08'
-//    implementation 'com.google.firebase:firebase-appdistribution-gradle'
-    implementation 'com.google.firebase:firebase-appdistribution-gradle:4.0.0'
-//    com.google.firebase:firebase-appdistribution-api-ktx	16.0.0-beta08
-    // Add the dependencies for any other desired Firebase products
-    // https://firebase.google.com/docs/android/setup#available-libraries
-
-
+    implementation libs.firebase.appdistribution
+    implementation libs.firebase.appdistribution.gradle
 }
 
 //android.applicationVariants.all { variant ->

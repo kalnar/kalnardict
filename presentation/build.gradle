@@ -1,21 +1,19 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+plugins {
+    id 'java-library'
+    alias(libs.plugins.kotlin.jvm)
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libs.kotlin.stdlib
     implementation project(":core:common")
     implementation project(":core:domain")
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6'
-    // for test matching
-    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-    // for unit tests
-    testImplementation 'junit:junit:4.13'
-    // coroutine support for tests
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.6'
-    // mock libraries
-    testImplementation 'org.mockito:mockito-core:3.9.0'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    implementation libs.kotlinx.coroutines.core
+    testImplementation libs.hamcrest
+    testImplementation libs.junit4
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.mockito.core
+    testImplementation libs.mockito.kotlin
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
