@@ -2,24 +2,25 @@ package eu.kalnarapps.kalnardict.data.database.dao.dictionary
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.TestFixtures
-import eu.kalnarapps.kalnardict.data.android.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.data.android.test.test
 import eu.kalnarapps.kalnardict.data.dao.DictionaryLogDao
 import eu.kalnarapps.kalnardict.data.dao.dictionary.SupportedDisplayTypesDao
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.entities.DictionaryDisplayTypeData
 import eu.kalnarapps.kalnardict.data.entities.SupportedDictionaryDisplayType
 import eu.kalnarapps.kalnardict.data.model.DisplayType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
@@ -28,17 +29,17 @@ class SupportedDisplayTypesDaoTest {
     private lateinit var dictionaryLogDao: DictionaryLogDao
     private var db: AppDatabase
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
+    private val unconfinedDispatcher = UnconfinedTestDispatcher()
+    private val testCoroutineScope = TestScope(unconfinedDispatcher)
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
         AppDatabase.switchToTest(
             context,
-            testCoroutineRule.testCoroutineDispatcher,
-            testCoroutineRule.testCoroutineScope
+            unconfinedDispatcher,
+            testCoroutineScope
         )
-        db = AppDatabase.getInstance(context, testCoroutineRule.testCoroutineScope)
+        db = AppDatabase.getInstance(context, testCoroutineScope)
     }
 
     @Before
@@ -56,33 +57,29 @@ class SupportedDisplayTypesDaoTest {
 
     @Test
     fun read_uninitialized_display_types() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             // given last_dictionary_id is uninitialized
 
             val givenDictionary = TestFixtures.sampleDictionaryLogEntry
 
-            val displayTypeCollector =
+            val displayTypeCollected =
                 supportedDisplayTypesDao
                     .getSupportedDisplayTypesForDictionaryWithId(
                         givenDictionary.id
                     )
-                    .test(scope = this)
+                    .take(1)
+                    .toList()
 
-            try {
-                displayTypeCollector.assertThat(
-                    { it.last() },
-                    IsEmptyCollection()
-                )
-            } finally {
-                displayTypeCollector.finish()
-            }
-
+            assertThat(
+                displayTypeCollected.last(),
+                IsEmptyCollection()
+            )
         }
     }
 
     @Test
     fun return_supported_display_types_when_already_inserted() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             // given last_dictionary_id is uninitialized
 
             val givenDictionary = TestFixtures.sampleDictionaryLogEntry
@@ -100,32 +97,26 @@ class SupportedDisplayTypesDaoTest {
                 }
             }
 
-            val displayTypeCollector =
+            val displayTypeCollected =
                 supportedDisplayTypesDao
                     .getSupportedDisplayTypesForDictionaryWithId(
                         givenDictionary.id
-                    )
-                    .test(scope = this)
+                    ).take(1).toList()
 
-            try {
-                displayTypeCollector.assertThat(
-                    { it.last() as Collection<DictionaryDisplayTypeData> },
-                    not(IsEmptyCollection())
+            assertThat(
+                displayTypeCollected.last() as Collection<DictionaryDisplayTypeData>,
+                not(IsEmptyCollection())
+            )
+            assertThat(
+                displayTypeCollected.last(),
+                IsIterableContainingInAnyOrder(
+                    expectedDisplayTypes.map {
+                        equalTo(
+                            DictionaryDisplayTypeData(it.id)
+                        )
+                    }
                 )
-                displayTypeCollector.assertThat(
-                    { it.last() },
-                    IsIterableContainingInAnyOrder(
-                        expectedDisplayTypes.map {
-                            equalTo(
-                                DictionaryDisplayTypeData(it.id)
-                            )
-                        }
-                    )
-                )
-            } finally {
-                displayTypeCollector.finish()
-            }
+            )
         }
-
     }
 }

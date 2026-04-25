@@ -2,10 +2,12 @@ package eu.kalnarapps.kalnardict.androidui.dictionarymanager
 
 import eu.kalnarapps.kalnardict.androidui.UiUnitTestStubs
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.CurrentDictionary
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
 import eu.kalnarapps.kalnardict.domain.usecases.GetLanguageUseCase
 import eu.kalnarapps.kalnardict.domain.usecases.RegisterNewDictionaryUseCase
+import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.DeleteDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.ListManageableDictionariesUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.dictionary.RegisterNewDictionaryUseCaseFromUi
 import eu.kalnarapps.kalnardict.presentation.models.dictionarymanager.ManageableDictionaryView
@@ -52,6 +54,15 @@ class ListDictionariesMock(
 ) : ListManageableDictionariesUseCaseForUi {
     override fun invoke(): Flow<List<ManageableDictionaryView>> {
         return flowOf(dictionaryListMock)
+    }
+}
+
+class DeleteDictionaryMock(
+    private val dictionaryListMock: DictionaryListMock
+) : DeleteDictionaryUseCaseFromUi {
+    override suspend fun invoke(dictionaryId: Int): OperationResult {
+        dictionaryListMock.removeIf { it.dictionaryId == dictionaryId }
+        return OperationResult.Success
     }
 }
 

@@ -2,7 +2,10 @@ package eu.kalnarapps.kalnardict.data.dao
 
 import android.Manifest
 import android.content.Context
+import android.os.Build
+import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.data.DatabaseValidity
@@ -21,12 +24,12 @@ import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.model.TestImportEntry
 import eu.kalnarapps.kalnardict.data.model.TestImportEntryBatch
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,7 +41,7 @@ class ExternalDbImporterTest {
     val mRuntimePermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
         )
 
     private val externalResourceImporter =
@@ -46,8 +49,38 @@ class ExternalDbImporterTest {
             ApplicationProvider.getApplicationContext<Context>()
         )
 
+
+    private fun grantViaShell() {
+        val packageName = InstrumentationRegistry.getInstrumentation()
+            .targetContext.packageName
+
+        InstrumentationRegistry.getInstrumentation().uiAutomation
+            .executeShellCommand("appops set $packageName MANAGE_EXTERNAL_STORAGE allow")
+
+        // Wait and verify
+        val granted = waitForCondition(timeoutMs = 3000) {
+            Environment.isExternalStorageManager()
+        }
+
+        check(granted) { "Failed to grant MANAGE_EXTERNAL_STORAGE permission" }
+    }
+
+    private fun waitForCondition(timeoutMs: Long, condition: () -> Boolean): Boolean {
+        val deadline = System.currentTimeMillis() + timeoutMs
+        while (System.currentTimeMillis() < deadline) {
+            if (condition()) return true
+            Thread.sleep(100)
+        }
+        return false
+    }
+
     @Before
     fun setUp() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                grantViaShell()
+            }
+        }
         // copy valid and invalid db to temp dir
         val context = ApplicationProvider.getApplicationContext<Context>()
         context.copyTestDbFromAssetsToTempTestDir()

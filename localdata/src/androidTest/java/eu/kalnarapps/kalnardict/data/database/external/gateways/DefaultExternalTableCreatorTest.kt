@@ -8,12 +8,12 @@ import androidx.test.rule.GrantPermissionRule
 import eu.kalnarapps.kalnardict.androidtest.getStorageRootPath
 import eu.kalnarapps.kalnardict.common.operations.OperationException
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.android.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.database.TEST_TEMP_DIR_LOCAL_PATH
 import eu.kalnarapps.kalnardict.data.database.external.ColumnName
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.MISSING_COLUMN_FLAG
 import eu.kalnarapps.kalnardict.data.database.external.SQLiteDbReaderHelper
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.startsWith
@@ -26,10 +26,6 @@ import org.junit.Test
 import java.io.File
 
 class DefaultExternalTableCreatorTest {
-
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     @get:Rule
     val mRuntimePermissionRule: GrantPermissionRule =
@@ -57,8 +53,7 @@ class DefaultExternalTableCreatorTest {
 
     @Test
     fun given_valid_database_path_when_creating_empty_table_then_create_meta_info_entry() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val context = ApplicationProvider.getApplicationContext<Context>()
 
             val gateway = DefaultExternalTableCreator(context)
@@ -134,8 +129,7 @@ class DefaultExternalTableCreatorTest {
 
     @Test
     fun given_invalid_table_name_when_creating_table_then_return_failure() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val context = ApplicationProvider.getApplicationContext<Context>()
 

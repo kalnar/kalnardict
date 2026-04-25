@@ -3,17 +3,15 @@ package eu.kalnarapps.kalnardict.data.database.dao
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import eu.kalnarapps.kalnardict.data.TestFixtures
 import eu.kalnarapps.kalnardict.data.dao.DaoConstants
 import eu.kalnarapps.kalnardict.data.dao.LanguageDao
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
@@ -30,8 +28,8 @@ import java.io.IOException
 class LanguageDaoTest {
     private lateinit var languageDao: LanguageDao
     private var db: AppDatabase
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
-    private val testCoroutineScope = TestCoroutineScope()
+    private val testCoroutineDispatcher = UnconfinedTestDispatcher()
+    private val testCoroutineScope = TestScope(testCoroutineDispatcher)
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -57,7 +55,7 @@ class LanguageDaoTest {
 
     @Test
     fun read_empty_language_table() {
-        testCoroutineDispatcher.runBlockingTest {
+        runTest(testCoroutineDispatcher) {
 
             assertThat(
                 languageDao.getLanguages(),
@@ -69,7 +67,7 @@ class LanguageDaoTest {
 
     @Test
     fun add_language_with_unique_id() {
-        testCoroutineDispatcher.runBlockingTest {
+        runTest(testCoroutineDispatcher) {
             val languageToAdd = TestFixtures.Languages.frenchLanguage
             assertThat(
                 languageDao.getLanguages(), not(
@@ -97,7 +95,7 @@ class LanguageDaoTest {
 
     @Test
     fun adding_language_with_already_used_id_returns_conflict_constant() {
-        testCoroutineDispatcher.runBlockingTest {
+        runTest(testCoroutineDispatcher) {
             val languageToAdd = TestFixtures.Languages.frenchLanguage
             assertThat(
                 languageDao.getLanguages(),
@@ -138,7 +136,7 @@ class LanguageDaoTest {
 
     @Test
     fun return_null_when_get_language_by_wrong_id() {
-        testCoroutineDispatcher.runBlockingTest {
+        runTest(testCoroutineDispatcher) {
             assertThat(
                 languageDao.getLanguageById(TestFixtures.Languages.nonAvailableLanguageId),
                 IsNull()
@@ -148,7 +146,7 @@ class LanguageDaoTest {
 
     @Test
     fun get_language_by_id() {
-        testCoroutineDispatcher.runBlockingTest {
+        runTest(testCoroutineDispatcher) {
             val languageToAdd = TestFixtures.Languages.frenchLanguage
             assertThat(
                 languageDao.getLanguageById(languageToAdd.id),
@@ -167,6 +165,5 @@ class LanguageDaoTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        testCoroutineDispatcher.cleanupTestCoroutines()
     }
 }

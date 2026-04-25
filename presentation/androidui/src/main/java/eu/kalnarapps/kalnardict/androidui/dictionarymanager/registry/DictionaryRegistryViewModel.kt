@@ -53,7 +53,7 @@ class DictionaryRegistryViewModel(
         get() = _registryError
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io()) {
             val metaInfoFetch = loadDbMetaInfoOnDb.invoke(dbPath)
             val availableLanguages = listAvailableLanguages()
             setUiState(
@@ -97,7 +97,7 @@ class DictionaryRegistryViewModel(
     }
 
     fun onTableRegisteringUpdate(newTableInfoUiModel: ExternalTableUiInfo) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.main()) {
             postUiStateOnMainThread {
                 this.copy(
                     registerDictionaryUiModels = LoadableContent.Completed(

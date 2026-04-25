@@ -4,13 +4,13 @@ import eu.kalnarapps.kalnardict.android.utils.dispatchers.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 
 
-class TestCoroutineDispatcherProvider(private val coroutineRule: TestCoroutineRule): DispatcherProvider {
+class TestCoroutineDispatcherProvider(private val dispatcher: CoroutineDispatcher): DispatcherProvider {
     override fun io(): CoroutineDispatcher {
-        return coroutineRule.testCoroutineDispatcher
+        return dispatcher
     }
 
     override fun main(): CoroutineDispatcher {
-        return coroutineRule.testCoroutineDispatcher
+        return dispatcher
     }
 }
 

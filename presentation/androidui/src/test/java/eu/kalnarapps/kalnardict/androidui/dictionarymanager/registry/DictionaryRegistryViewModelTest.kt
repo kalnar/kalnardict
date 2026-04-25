@@ -14,14 +14,14 @@ import eu.kalnarapps.kalnardict.domain.usecases.ReadExternalDbUseCase
 import eu.kalnarapps.kalnardict.presentation.interactors.database.GetExternalDbInfoUseCaseForUi
 import eu.kalnarapps.kalnardict.presentation.interactors.languages.ListRegisteredLanguagesUseCaseForUi
 import eu.kalnarapps.kalnardict.test.TestCoroutineDispatcherProvider
-import eu.kalnarapps.kalnardict.test.TestCoroutineRule
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsNull
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,13 +40,13 @@ class DictionaryRegistryViewModelTest : KoinComponent {
     @get:Rule
     val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
     private val logger = TestLogger()
 
     private lateinit var getExternalDbInfoMock: GetExternalDbInfoUseCaseForUi
     private lateinit var listAvailableLanguagesMock: ListRegisteredLanguagesUseCaseForUi
     private lateinit var viewModel: DictionaryRegistryViewModel
+
+    private val unconfinedDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
@@ -77,7 +77,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
     @Test
     fun list_found_tables_in_ui() {
         getExternalDbInfoMock.stub {
-            onBlocking {
+            on {
                 invoke(UiStubs.Uris.validUri)
             }.doReturn(
                 DataOperationResult.Success(
@@ -86,7 +86,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             )
         }
         listAvailableLanguagesMock.stub {
-            onBlocking {
+            on {
                 invoke()
             }.doReturn(
                 listOf(UiStubs.TableUiInfo.langUiEn)
@@ -97,7 +97,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
+            dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -115,7 +115,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
     fun load_view_model_with_erroneous_uri() {
 
         getExternalDbInfoMock.stub {
-            onBlocking {
+            on {
                 invoke(UiStubs.Uris.invalidUri)
             }.doReturn(
                 DataOperationResult.Failure(
@@ -124,7 +124,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             )
         }
         listAvailableLanguagesMock.stub {
-            onBlocking {
+            on {
                 invoke()
             }.doReturn(
                 listOf(UiStubs.TableUiInfo.langUiEn)
@@ -135,7 +135,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.invalidUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
+            dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -160,7 +160,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
     fun update_registering_table_information() {
 
         getExternalDbInfoMock.stub {
-            onBlocking {
+            on {
                 invoke(UiStubs.Uris.validUri)
             }.doReturn(
                 DataOperationResult.Success(
@@ -169,7 +169,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             )
         }
         listAvailableLanguagesMock.stub {
-            onBlocking {
+            on {
                 invoke()
             }.doReturn(
                 listOf(UiStubs.TableUiInfo.langUiEn)
@@ -180,7 +180,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
+            dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -213,14 +213,13 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             firstTableFromNewFetch.dictionaryName,
             equalTo(firstTableNewDictionaryName)
         )
-
     }
 
     @Test
     fun register_all_dictionaries_with_success() {
 
         getExternalDbInfoMock.stub {
-            onBlocking {
+            on {
                 invoke(UiStubs.Uris.validUri)
             }.doReturn(
                 DataOperationResult.Success(
@@ -229,7 +228,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             )
         }
         listAvailableLanguagesMock.stub {
-            onBlocking {
+            on {
                 invoke()
             }.doReturn(
                 listOf(UiStubs.TableUiInfo.langUiEn)
@@ -240,7 +239,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionarySuccessfullyMock(),
-            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
+            dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -269,7 +268,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
     fun register_all_dictionaries_with_success_but_last() {
 
         getExternalDbInfoMock.stub {
-            onBlocking {
+            on {
                 invoke(UiStubs.Uris.validUri)
             }.doReturn(
                 DataOperationResult.Success(
@@ -281,7 +280,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             )
         }
         listAvailableLanguagesMock.stub {
-            onBlocking {
+            on {
                 invoke()
             }.doReturn(
                 listOf(UiStubs.TableUiInfo.langUiEn)
@@ -292,7 +291,7 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             dbPath = UiStubs.Uris.validUri,
             loadDbMetaInfoOnDb = getExternalDbInfoMock,
             registerNewDictionary = RegisterNewDictionaryMockWithFailures(listOf(2)),
-            dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
+            dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
             listAvailableLanguages = listAvailableLanguagesMock,
             addNewLanguage = MockRegisterLanguageUseCase(),
             uiLogger = logger
@@ -335,5 +334,4 @@ class DictionaryRegistryViewModelTest : KoinComponent {
             containsString(UiUnitTestStubs.NEW_DICT_USE_CASE_ERROR_MSG)
         )
     }
-
 }

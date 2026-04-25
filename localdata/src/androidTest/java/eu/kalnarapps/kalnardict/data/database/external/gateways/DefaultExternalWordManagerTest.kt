@@ -8,12 +8,12 @@ import androidx.test.rule.GrantPermissionRule
 import eu.kalnarapps.kalnardict.androidtest.getStorageRootPath
 import eu.kalnarapps.kalnardict.common.operations.OperationException
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.android.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.database.TEST_TEMP_DIR_LOCAL_PATH
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.SQLiteDbReaderHelper
 import eu.kalnarapps.kalnardict.data.model.external.database.ExternalTranslationCreation
 import eu.kalnarapps.kalnardict.data.model.external.database.ExternalTranslationEntry
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.startsWith
@@ -27,10 +27,6 @@ import java.io.File
 
 
 class DefaultExternalWordManagerTest {
-
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     @get:Rule
     val mRuntimePermissionRule: GrantPermissionRule =
@@ -58,8 +54,7 @@ class DefaultExternalWordManagerTest {
 
     @Test
     fun given_valid_path_name_and_words_when_adding_words_then_insert_into_table() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val context = ApplicationProvider.getApplicationContext<Context>()
 
             val givenDbPath = context.testDbPath()
@@ -130,8 +125,7 @@ class DefaultExternalWordManagerTest {
 
     @Test
     fun given_invalid_words_when_creating_table_then_return_failure() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val context = ApplicationProvider.getApplicationContext<Context>()
 
             val givenDbPath = context.testDbPath()
