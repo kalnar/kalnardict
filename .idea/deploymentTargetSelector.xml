@@ -10,10 +10,6 @@
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'eu.kalnarapps.kalnardict'">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DialogSelection />
-      </SelectionState>
       <SelectionState runConfigName="ExternalDbImporterTest">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
