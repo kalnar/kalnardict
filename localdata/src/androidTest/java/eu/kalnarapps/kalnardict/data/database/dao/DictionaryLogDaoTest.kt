@@ -10,17 +10,20 @@ import eu.kalnarapps.kalnardict.data.dao.WordDao
 import eu.kalnarapps.kalnardict.data.database.inapp.AppDatabase
 import eu.kalnarapps.kalnardict.data.entities.DictionaryLogId
 import eu.kalnarapps.kalnardict.data.entities.Word
-import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.test.test
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
@@ -31,14 +34,14 @@ class DictionaryLogDaoTest {
     private lateinit var dictionaryWordsDao: WordDao
     private var db: AppDatabase
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
+    private val unconfinedDispatcher = UnconfinedTestDispatcher()
+    private val testCoroutineScope = TestScope(unconfinedDispatcher)
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setTransactionExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
-            .setQueryExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
+            .setTransactionExecutor(unconfinedDispatcher.asExecutor())
+            .setQueryExecutor(unconfinedDispatcher.asExecutor())
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -59,7 +62,7 @@ class DictionaryLogDaoTest {
     @Test
     @Throws(Exception::class)
     fun readEntryFromDatabase() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             // given there is an entry of a dictionary in dictionary_log
             insertDictionaryLogEntry()
 
@@ -78,7 +81,7 @@ class DictionaryLogDaoTest {
     }
 
     private fun insertDictionaryLogEntry() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             dictionaryLogDao.insertDictionary(
                 TestFixtures.sampleDictionaryLogEntry
             )
@@ -87,7 +90,7 @@ class DictionaryLogDaoTest {
 
     @Test
     fun insert_entry_into_table() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
 
             val dictionaries = dictionaryLogDao.getDictionaries().first()
             assertThat(
@@ -121,7 +124,7 @@ class DictionaryLogDaoTest {
 
     @Test
     fun when_calling_delete_dictionary_with_valid_id_then_delete_log_table_and_words_in_db() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
 
             val givenId = 1
             val words = dictionaryWordsDao.getByQuery("%", givenId)
@@ -172,7 +175,7 @@ class DictionaryLogDaoTest {
 
     @Test
     fun when_calling_delete_dictionary_with_invalid_id_then_dao_returns_flag() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
 
             val givenInvalidId = 4
             val givenValidId = 1
@@ -180,14 +183,15 @@ class DictionaryLogDaoTest {
             assertThat(
                 words, IsEmptyCollection()
             )
-            val dictionaryObserver = dictionaryLogDao.getDictionaries().test(this)
-            dictionaryObserver.assertThat(
-                { it.last() },
+            val dictionariesCollected = dictionaryLogDao.getDictionaries().take(1).toList()
+            assertThat(
+                dictionariesCollected.last(),
                 IsEmptyCollection()
             )
             insertDictionaryLogEntry()
-            dictionaryObserver.assertThat(
-                { it.last() },
+            val newDictionariesCollected = dictionaryLogDao.getDictionaries().take(1).toList()
+            assertThat(
+                newDictionariesCollected.last(),
                 IsCollectionWithSize(equalTo(1))
             )
             dictionaryWordsDao.insertWords(
@@ -208,15 +212,13 @@ class DictionaryLogDaoTest {
 
             val numberOfDictionariesDeleted = dictionaryLogDao.deleteDictionary(DictionaryLogId(givenInvalidId))
 
-            dictionaryObserver.assertThat(
-                { it.last() },
+            val dictionariesAfterDeleteCollected = dictionaryLogDao.getDictionaries().take(1).toList()
+
+            assertThat(
+                dictionariesAfterDeleteCollected.last(),
                 IsCollectionWithSize(equalTo(1))
             )
             assertThat(numberOfDictionariesDeleted, equalTo(0))
-
-            dictionaryObserver.finish()
-
         }
     }
-
 }

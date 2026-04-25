@@ -6,35 +6,26 @@ import eu.kalnarapps.kalnardict.data.dao.LanguageDaoAdapter
 import eu.kalnarapps.kalnardict.data.mapper.LanguageLogEntryData
 import eu.kalnarapps.kalnardict.data.mapper.LanguageRoomMapper
 import eu.kalnarapps.kalnardict.data.mapper.toLanguageToData
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.collection.IsIterableWithSize
 import org.hamcrest.core.IsInstanceOf
 import org.hamcrest.core.IsIterableContaining
-import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Test
 
 
 class LanguageDaoAdapterTest {
 
-    private val testCoroutineScope = TestCoroutineScope()
     private val auxiliaryDataSourceTest =
         LanguageDaoAdapter(LanguageDaoMock(), LanguageRoomMapper())
 
-    @After
-    fun tearDown() {
-        testCoroutineScope.cleanupTestCoroutines()
-    }
-
     @Test
     fun get_language_by_id() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val frenchFetch = auxiliaryDataSourceTest.getLanguageById(Languages.french.id)
             assertThat(
                 frenchFetch,
@@ -50,18 +41,17 @@ class LanguageDaoAdapterTest {
 
     @Test
     fun get_null_language_by_wrong_id() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             assertThat(
                 auxiliaryDataSourceTest.getLanguageById("N/A"),
                 IsInstanceOf(DataOperationResult.Failure::class.java)
             )
         }
-
     }
 
     @Test
     fun get_languages_when_available() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(Languages.frenchAndEnglish)),
                 LanguageRoomMapper()
@@ -75,12 +65,11 @@ class LanguageDaoAdapterTest {
                 )
             )
         }
-
     }
 
     @Test
     fun get_empty_list_of_languages_when_none_available() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(emptyList())),
                 LanguageRoomMapper()
@@ -90,13 +79,12 @@ class LanguageDaoAdapterTest {
                 IsEmptyCollection()
             )
         }
-
     }
 
 
     @Test
     fun add_new_language_with_unique_id() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(Languages.frenchAndEnglish)),
                 LanguageRoomMapper()
@@ -122,7 +110,7 @@ class LanguageDaoAdapterTest {
 
     @Test
     fun attempt_add_new_language_with_non_unique_id_and_return_fail() {
-        testCoroutineScope.runBlockingTest {
+        runTest {
             val languages = Languages.frenchAndEnglish
             val auxiliaryDataSourceTest = LanguageDaoAdapter(
                 LanguageDaoMock(ArrayList(languages)),

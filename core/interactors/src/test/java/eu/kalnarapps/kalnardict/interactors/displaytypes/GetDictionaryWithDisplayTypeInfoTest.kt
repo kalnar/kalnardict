@@ -4,26 +4,23 @@ import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictionaryWithDisplayTypeInfo
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DisplayTypeInfo
 import eu.kalnarapps.kalnardict.interactors.Stubs
-import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
-import eu.kalnarapps.kalnardict.interactors.test.test
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Rule
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 
 class GetDictionaryWithDisplayTypeInfoTest {
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     private val displayTypeRepository = mock(DisplayTypeRepository::class.java)
 
     @Test
     fun return_dictionary_with_display_info_as_expected() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val dictionary = Stubs.Dictionaries.frenchToFrenchDictionary
             val currentDisplayType = Stubs.Dictionaries.frenchToFrenchDictionaryDisplayType
@@ -42,28 +39,20 @@ class GetDictionaryWithDisplayTypeInfoTest {
 
             // when calling use case
             val frenchToFrenchDictionaryWithDisplayTypeInfo =
-                useCase(dictionary)
+                useCase(dictionary).single()
 
-            // then result contains display type info
-            val testCollector = frenchToFrenchDictionaryWithDisplayTypeInfo.test(scope = this)
-            try {
-                testCollector.assertThatLastValue(
-                    equalTo(
-                        DictionaryWithDisplayTypeInfo(
-                            dictionary = dictionary,
-                            displayTypeInfo = DisplayTypeInfo(
-                                displayType = currentDisplayType,
-                                supportedDisplayTypes = supportedDisplayTypes
-                            )
+            assertThat(
+                frenchToFrenchDictionaryWithDisplayTypeInfo,
+                equalTo(
+                    DictionaryWithDisplayTypeInfo(
+                        dictionary = dictionary,
+                        displayTypeInfo = DisplayTypeInfo(
+                            displayType = currentDisplayType,
+                            supportedDisplayTypes = supportedDisplayTypes
                         )
                     )
                 )
-            } finally {
-                testCollector.finish()
-            }
-
+            )
         }
     }
-
-
 }

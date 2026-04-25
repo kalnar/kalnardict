@@ -1,24 +1,19 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.interactors.mock.MockLanguageRepository
-import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
-import org.junit.Assert.assertThat
-import org.junit.Rule
 import org.junit.Test
 
 
 class ListAvailableLanguagesTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
     fun return_empty_list_if_no_language_has_been_added_yet() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given there are no languages
 
@@ -35,7 +30,7 @@ class ListAvailableLanguagesTest {
 
     @Test
     fun return_dictionaries_when_available() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given there are 2 languages registered: en,fr
             val languages = listOf(

@@ -6,21 +6,25 @@ import eu.kalnarapps.kalnardict.data.DictionaryRepository
 import eu.kalnarapps.kalnardict.data.DisplayTypeRepository
 import eu.kalnarapps.kalnardict.data.LanguageRepository
 import eu.kalnarapps.kalnardict.domain.entities.dictionary.DictLanguage
-import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportJob
+import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ImportProgress
+import eu.kalnarapps.kalnardict.interactors.RegisterNewDictionary.Companion.DB_BATCH_SIZE
 import eu.kalnarapps.kalnardict.interactors.test.anyNonNull
-import eu.kalnarapps.kalnardict.interactors.test.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsInstanceOf
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
+import org.mockito.kotlin.whenever
 
 
 class RegisterNewDictionaryTestNew {
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     private val dictionaryRepository = mock(DictionaryRepository::class.java)
     private val displayTypeRepository = mock(DisplayTypeRepository::class.java)
@@ -41,10 +45,45 @@ class RegisterNewDictionaryTestNew {
 
     @Test
     fun when_register_new_dictionary_with_valid_table_call_import_table() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // given 3 languages and db table is valid
 
             setUp()
+
+            val importJob = ImportJob(
+                    table = ExternalDatabaseTable(
+                        name = Stubs.RegisteringDictionary.originalTableName,
+                        languageFrom = Stubs.RegisteringDictionary.sourceLangCode,
+                        languageTo = Stubs.RegisteringDictionary.destinationLangCode
+                    ),
+                    resource = ExternalDatabase.LocalFile(Stubs.RegisteringDictionary.dbUriStub),
+                    displayName = Stubs.RegisteringDictionary.dictionaryName,
+                    batchSize = DB_BATCH_SIZE
+                )
+
+            whenever(
+                dictionaryRepository.importTableFromDb(importJob)
+            ).thenReturn(
+                flowOf(
+                    DataOperationResult.Success(
+                        ImportProgress(
+                            Stubs.Dictionaries.englishToFrenchDictionaryId,
+                            10,
+                            10
+                        )
+                    )
+                )
+            )
+
+            whenever(
+                dictionaryRepository.getDictionaryById(
+                    Stubs.Dictionaries.englishToFrenchDictionaryId
+                )
+            ).thenReturn(
+                DataOperationResult.Success(
+                    Stubs.Dictionaries.englishToFrenchDictionary
+                )
+            )
 
             val registerNewDictionary = RegisterNewDictionary(
                 dictionaryRepository = dictionaryRepository,
@@ -54,23 +93,32 @@ class RegisterNewDictionaryTestNew {
             )
 
             // when calling registerNewDictionary
-            registerNewDictionary(
+            val flow = registerNewDictionary(
                 dbUri = Stubs.RegisteringDictionary.dbUriStub,
                 originalName = Stubs.RegisteringDictionary.originalTableName,
                 languageFrom = Stubs.RegisteringDictionary.sourceLangCode,
                 languageTo = Stubs.RegisteringDictionary.destinationLangCode,
                 savingName = Stubs.RegisteringDictionary.dictionaryName
-            )
+            ).toList().first()
 
             // then we start importing
-            verify(dictionaryRepository).importTableFromDb(anyNonNull())
+            verify(dictionaryRepository)
+                .importTableFromDb(anyNonNull())
 
+            verify(stubConfigurationRepository)
+                .updateCurrentDictionary(Stubs.Dictionaries.englishToFrenchDictionary)
+
+            verify(displayTypeRepository)
+                .addDisplayTypesFor(
+                    Stubs.Dictionaries.englishToFrenchDictionaryId,
+                    importJob.displayTypes
+                )
         }
     }
 
     @Test
     fun when_register_new_dictionary_with_invalid_language_emit_failure() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // given 3 languages and db table is valid
 
             setUp()
@@ -83,21 +131,16 @@ class RegisterNewDictionaryTestNew {
             )
 
             // when calling registerNewDictionary then emit failure
-            registerNewDictionary(
+            val result = registerNewDictionary(
                 dbUri = Stubs.RegisteringDictionary.dbUriStub,
                 originalName = Stubs.RegisteringDictionary.originalTableName,
                 languageFrom = Stubs.Languages.russian.code,
                 languageTo = Stubs.RegisteringDictionary.destinationLangCode,
                 savingName = Stubs.RegisteringDictionary.dictionaryName
-            ).test(scope = this@runBlockingTest)
-                .assertThat(
-                    { it.last() },
-                    IsInstanceOf(DataOperationResult.Failure::class.java)
-                )
-                .finish()
+            ).toList().first()
 
+            assertThat(result, IsInstanceOf(DataOperationResult.Failure::class.java))
         }
     }
-
 }
 

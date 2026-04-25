@@ -12,8 +12,9 @@ import eu.kalnarapps.kalnardict.data.database.newWordToInsert
 import eu.kalnarapps.kalnardict.data.database.sampleDictionaryLogEntry
 import eu.kalnarapps.kalnardict.data.database.sampleTableInHungarian
 import eu.kalnarapps.kalnardict.data.entities.Word
-import eu.kalnarapps.kalnardict.test.TestCoroutineRule
 import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.collection.IsEmptyCollection
 import org.hamcrest.core.IsNull
@@ -28,14 +29,13 @@ class WordDaoTest {
     private lateinit var dictionaryLogDao: DictionaryLogDao
     private var db: AppDatabase
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
+    private val unconfinedDispatcher = UnconfinedTestDispatcher()
 
     init {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setTransactionExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
-            .setQueryExecutor(testCoroutineRule.testCoroutineDispatcher.asExecutor())
+            .setTransactionExecutor(unconfinedDispatcher.asExecutor())
+            .setQueryExecutor(unconfinedDispatcher.asExecutor())
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -55,7 +55,7 @@ class WordDaoTest {
 
     @Test
     fun readEntryFromDatabase() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
@@ -87,7 +87,7 @@ class WordDaoTest {
     }
 
     private fun insertTableInHungarian() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
             wordDao.insertWord(sampleTableInHungarian)
         }
@@ -95,7 +95,7 @@ class WordDaoTest {
 
     @Test
     fun insert_entry_into_table() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
 
             dictionaryLogDao.insertDictionary(sampleDictionaryLogEntry)
             val searchResultForEye = wordDao.getByQuery(
@@ -117,7 +117,7 @@ class WordDaoTest {
 
     @Test
     fun read_a_word_with_its_dictionary_joint() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             insertTableInHungarian()
 
             val dictionaryLogWithWords =
@@ -131,13 +131,12 @@ class WordDaoTest {
                 dictionaryLogWithWords?.dictionaryLogEntry?.languageFrom,
                 equalTo("hu")
             )
-
         }
     }
 
     @Test
     fun get_translation_from_word_that_is_in_the_table() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
@@ -158,13 +157,12 @@ class WordDaoTest {
                 translationInfo?.translation,
                 equalTo(sampleTableInHungarian.translation)
             )
-
         }
     }
 
     @Test
     fun get_null_translation_from_invalid_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
             // given there is an entry of table from hungarian to english
             insertTableInHungarian()
 
@@ -185,11 +183,8 @@ class WordDaoTest {
                 ),
                 IsNull()
             )
-
-
         }
     }
-
 }
 
 private fun Word.toWordInfo(): Word.WordInfo {

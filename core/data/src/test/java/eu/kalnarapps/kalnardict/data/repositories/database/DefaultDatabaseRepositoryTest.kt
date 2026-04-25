@@ -3,9 +3,9 @@ package eu.kalnarapps.kalnardict.data.repositories.database
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.datasources.database.DatabaseMetaDataSource
 import eu.kalnarapps.kalnardict.data.gateways.ExternalDatabaseGateway
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -18,14 +18,9 @@ class DefaultDatabaseRepositoryTest {
     private val databaseMetaDataSource: DatabaseMetaDataSource = mock()
     private val externalDatabaseGateway: ExternalDatabaseGateway = mock()
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
-
     @Test
     fun `Given a valid database path, when creating external db, then succeed`() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given we have a valid database path
             val givenDbPath = "mock://path/dir/db.sql"
@@ -46,15 +41,12 @@ class DefaultDatabaseRepositoryTest {
                 equalTo(OperationResult.Success)
             )
             verify(databaseMetaDataSource).addDatabase(givenDbPath)
-
         }
-
     }
 
     @Test
     fun `Given an invalid database path, when creating external db, then fail`() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given we have a valid database path
             val givenDbPath = "mock://path/to/an/already/created/db.sql"
@@ -83,9 +75,6 @@ class DefaultDatabaseRepositoryTest {
                 )
             )
             verify(databaseMetaDataSource, never()).addDatabase(givenDbPath)
-
         }
-
     }
-
 }

@@ -8,7 +8,8 @@ import eu.kalnarapps.kalnardict.androidui.stub.UiStubs
 import eu.kalnarapps.kalnardict.androidui.test.TestLogger
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.test.TestCoroutineDispatcherProvider
-import eu.kalnarapps.kalnardict.test.TestCoroutineRule
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.beans.HasPropertyWithValue
@@ -19,10 +20,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.koin.android.viewmodel.dsl.viewModel
-import  org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 
@@ -31,9 +32,9 @@ class DictionaryManagerViewModelTest : KoinComponent {
     @get:Rule
     val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-    private val logger = TestLogger()
+    private val uiLogger = TestLogger()
+
+    private val unconfinedDispatcher = UnconfinedTestDispatcher()
 
 
     @Before
@@ -53,9 +54,13 @@ class DictionaryManagerViewModelTest : KoinComponent {
                                 listRegisteredDictionariesUseCase = ListDictionariesMock(
                                     get()
                                 ),
-                                uiLogger = logger,
+                                uiLogger = uiLogger,
                                 updateRenderingStrategy = MockUpdateDictionaryUseCaseFromUi(),
-                                dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule)
+                                deleteDictionary = DeleteDictionaryMock(
+                                    get()
+                                ),
+                                dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
+
                             )
                         }
                     }
@@ -71,7 +76,7 @@ class DictionaryManagerViewModelTest : KoinComponent {
 
     @Test
     fun list_dictionaries() {
-        testCoroutineRule.runBlockingTest {
+        runTest(unconfinedDispatcher) {
 
             val viewModel: DictionaryManagerViewModel = getKoin().get()
             val dictsLiveData = viewModel.getRegisteredDictionaries()
@@ -94,5 +99,4 @@ class DictionaryManagerViewModelTest : KoinComponent {
 
         }
     }
-
 }

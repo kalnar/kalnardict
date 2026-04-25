@@ -5,10 +5,10 @@ import eu.kalnarapps.kalnardict.data.datasources.words.RandomWordRepository
 import eu.kalnarapps.kalnardict.data.gateways.ExternalDatabaseGateway
 import eu.kalnarapps.kalnardict.data.model.external.database.ExternalTranslationCreation
 import eu.kalnarapps.kalnardict.data.model.external.database.ExternalTranslationEntry
-import eu.kalnarapps.kalnardict.data.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabase
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalDatabaseTable
 import eu.kalnarapps.kalnardict.domain.entities.externaldatabase.ExternalTableCreationJobInfo
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
@@ -27,14 +27,9 @@ class DefaultTableRepositoryTest {
     private val tableManager: ExternalDatabaseGateway.TableManager = mock()
     private val wordManager: ExternalDatabaseGateway.WordManager = mock()
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
-
     @Test
     fun `Given that table doesn't exist, when creating external db, then succeed`() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given we have a valid database path
             val givenDbPath = "mock://path/dir/db.sql"
@@ -50,7 +45,7 @@ class DefaultTableRepositoryTest {
 
             // given that table doesn't exist, creating empty table succeeds
             tableManager.stub {
-                onBlocking {
+                on {
                     createEmptyTable(givenDbPath, "givenName", "givenLanguageFrom", "givenLanguageTo")
                 }.thenReturn(OperationResult.Success)
             }
@@ -87,16 +82,13 @@ class DefaultTableRepositoryTest {
                 "givenLanguageFrom",
                 "givenLanguageTo"
             )
-
         }
-
     }
 
 
     @Test
     fun `Given that table does exist, when creating external db, then fail`() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given we have a valid database path
             val givenDbPath = "mock://path/dir/db.sql"
@@ -113,7 +105,7 @@ class DefaultTableRepositoryTest {
             // given that table does exist, creating empty table fails
             val tableAlreadyExistsError = OperationResult.Failure("table already exists")
             tableManager.stub {
-                onBlocking {
+                on {
                     createEmptyTable(givenDbPath, "givenName", "givenLanguageFrom", "givenLanguageTo")
                 }.thenReturn(tableAlreadyExistsError)
             }
@@ -153,14 +145,12 @@ class DefaultTableRepositoryTest {
                 "givenLanguageFrom",
                 "givenLanguageTo"
             )
-
         }
     }
 
     @Test
     fun `Given that table doesn't exist but word manager can't add words, when creating external db, then fail`() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             // given we have a valid database path
             val givenDbPath = "mock://path/dir/db.sql"
@@ -176,7 +166,7 @@ class DefaultTableRepositoryTest {
 
             // given that table doesn't exist, creating empty table succeeds
             tableManager.stub {
-                onBlocking {
+                on {
                     createEmptyTable(givenDbPath, "givenName", "givenLanguageFrom", "givenLanguageTo")
                 }.thenReturn(OperationResult.Success)
             }
@@ -223,9 +213,6 @@ class DefaultTableRepositoryTest {
                 "givenLanguageFrom",
                 "givenLanguageTo"
             )
-
         }
     }
-
-
 }

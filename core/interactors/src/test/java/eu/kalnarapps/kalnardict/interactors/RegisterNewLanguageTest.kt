@@ -2,29 +2,24 @@ package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.interactors.mock.MockLanguageRepository
-import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsInstanceOf
-import org.junit.Rule
 import org.junit.Test
 
 
 class RegisterNewLanguageTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
-
     @Test
     fun register_new_dictionary_with_unique_id() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val mockRepository = MockLanguageRepository(ArrayList(Stubs.Languages.frenchAndEnglish))
-            // given that registered languages are english and french
+            // given that registered languages are English and French
             val registerLanguageUseCase = RegisterNewLanguage(mockRepository)
             val listRegisteredLanguagesUseCase = ListAvailableLanguages(mockRepository)
             assertThat(
@@ -67,7 +62,7 @@ class RegisterNewLanguageTest {
 
     @Test
     fun attempt_to_register_new_dictionary_with_used_id_and_fail() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
 
             val mockRepository = MockLanguageRepository(ArrayList(Stubs.Languages.frenchAndEnglish))
             // given that registered languages are english and french

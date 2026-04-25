@@ -8,10 +8,10 @@ import androidx.test.rule.GrantPermissionRule
 import eu.kalnarapps.kalnardict.androidtest.getStorageRootPath
 import eu.kalnarapps.kalnardict.common.operations.OperationException
 import eu.kalnarapps.kalnardict.common.operations.OperationResult
-import eu.kalnarapps.kalnardict.data.android.test.TestCoroutineRule
 import eu.kalnarapps.kalnardict.data.database.TEST_TEMP_DIR_LOCAL_PATH
 import eu.kalnarapps.kalnardict.data.database.external.SQLiteDbReaderHelper
 import eu.kalnarapps.kalnardict.data.database.external.getMissingColumnsInMetaInfo
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -23,9 +23,6 @@ import org.junit.Test
 import java.io.File
 
 class DefaultExternalDatabaseGatewayTest {
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     @get:Rule
     val mRuntimePermissionRule: GrantPermissionRule =
@@ -53,8 +50,7 @@ class DefaultExternalDatabaseGatewayTest {
 
     @Test
     fun given_valid_database_path_when_creating_database_then_create_meta_info_table() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val context = ApplicationProvider.getApplicationContext<Context>()
 
             val gateway = DefaultExternalDatabaseGateway(context)
@@ -75,8 +71,7 @@ class DefaultExternalDatabaseGatewayTest {
 
     @Test
     fun given_invalid_database_path_when_creating_database_then_return_failure() {
-
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val context = ApplicationProvider.getApplicationContext<Context>()
 
             val gateway = DefaultExternalDatabaseGateway(context)

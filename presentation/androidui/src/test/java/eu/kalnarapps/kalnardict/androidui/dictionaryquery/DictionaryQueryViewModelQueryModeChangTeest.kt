@@ -1,6 +1,7 @@
 package eu.kalnarapps.kalnardict.androidui.dictionaryquery
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import eu.kalnarapps.kalnardict.androidui.stubs.UiStubs
@@ -19,10 +20,12 @@ import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.QueryUiModel
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.WordView
 import eu.kalnarapps.kalnardict.test.TestCoroutineDispatcherProvider
-import eu.kalnarapps.kalnardict.test.TestCoroutineRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIterableWithSize
@@ -40,13 +43,11 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.stub
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DictionaryQueryViewModelQueryModeChangTeest {
 
     @get:Rule
     val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     @Mock
     lateinit var listRegisteredDictionariesUseCase: ListRegisteredDictionariesFlowUseCaseForUi
@@ -85,7 +86,8 @@ class DictionaryQueryViewModelQueryModeChangTeest {
 
     @Test
     fun when_query_mode_changed_refresh_word_list() {
-        testCoroutineRule.runBlockingTest {
+        val unconfinedDispatcher = UnconfinedTestDispatcher()
+        runTest(unconfinedDispatcher) {
 
             val languageFlow = MutableStateFlow<DictionarySelection>(
                 DictionarySelection.Current(UiStubs.Ui.Dictionaries.englishToEnglish)
@@ -96,7 +98,7 @@ class DictionaryQueryViewModelQueryModeChangTeest {
                 UiStubs.Ui.Words.words
             )
             searchQueryUseCase.stub {
-                onBlocking {
+                on {
                     invoke(
                         QueryUiModel(
                             "2",
@@ -126,7 +128,7 @@ class DictionaryQueryViewModelQueryModeChangTeest {
                 listQueryResultsUseCase = searchQueryUseCase,
                 updateCurrentLanguageUseCase = changeDictLanguageUseCase,
                 getCurrentDictionary = getLanguageUseCase,
-                dispatcherProvider = TestCoroutineDispatcherProvider(testCoroutineRule),
+                dispatcherProvider = TestCoroutineDispatcherProvider(unconfinedDispatcher),
                 getTranslation = getTranslationUseCase,
                 updateQueryModeUseCase = updateQueryModeUseCase,
                 getQueryModesForUi = getQueryModesForUi,
@@ -145,8 +147,8 @@ class DictionaryQueryViewModelQueryModeChangTeest {
                 }
             }
             queryResult.observeForever(testObserver)
-            viewModel.onQueryChanged("2")
-            testCoroutineRule.testCoroutineDispatcher.advanceUntilIdle()
+            viewModel.onQueryChanged(TextFieldValue("2"))
+            unconfinedDispatcher.scheduler.advanceUntilIdle()
             try {
                 assertThat(
                     words,

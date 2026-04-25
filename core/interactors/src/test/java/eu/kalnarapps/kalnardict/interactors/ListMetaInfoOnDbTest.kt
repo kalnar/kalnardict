@@ -1,25 +1,21 @@
 package eu.kalnarapps.kalnardict.interactors
 
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.interactors.test.TestCoroutineRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsInstanceOf
-import org.junit.Assert.assertThat
-import org.junit.Rule
 import org.junit.Test
 
 
 class ListMetaInfoOnDbTest {
 
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
     private val listMetaInfoOnDb = ListMetaInfoOnDb(StubDictionaryRepository())
 
     @Test
     fun attempt_to_read_invalid_file() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val metaInfoFetch = listMetaInfoOnDb(Stubs.Uris.invalidUri)
 
             assertThat(
@@ -31,7 +27,7 @@ class ListMetaInfoOnDbTest {
 
     @Test
     fun read_meta_table_info() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val metaInfoFetch = listMetaInfoOnDb(Stubs.Uris.valid)
 
             assertThat(
