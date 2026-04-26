@@ -31,59 +31,26 @@ jobs:
       - name: Build app
         run: ./gradlew assembleDebug --stacktrace
 
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Run tests
         run: ./gradlew -Pci --console=plain :app:testFullDebugUnitTest
-
-## Make Project
-#assembleDebug:
-#  interruptible: true
-#  stage: build
-#  script:
-#    - ./gradlew assembleDebug --stacktrace
-#  when: manual
-#  artifacts:
-#    paths:
-#      - app/build/outputs/
-#
-## Run all tests, if any fails, interrupt the pipeline(fail it)
-#debugTestsApp:
-#  interruptible: false
-#  stage: test
-#  when: manual
-#  script:
-#    - ./gradlew -Pci --console=plain :app:testFullDebugUnitTest
-#
-#debugTestsCoreData:
-#  interruptible: false
-#  stage: test
-#  when: manual
-#  script:
-#    - ./gradlew -Pci --console=plain :core:data:test
-#
-#debugTestsCoreInteractors:
-#  interruptible: false
-#  stage: test
-#  when: manual
-#  script:
-#    - ./gradlew -Pci --console=plain :core:interactors:test
-#
-#debugTestsLocalData:
-#  interruptible: false
-#  stage: test
-#  when: manual
-#  script:
-#    - ./gradlew -Pci --console=plain :localdata:testFullDebugUnitTest
-#
-#debugUnitTestAndroidui:
-#  interruptible: false
-#  stage: test
-#  when: manual
-#  script:
-#    - ./gradlew -Pci --console=plain :presentation:androidui:testFullDebugUnitTest
-#
-#debugUnitTestPresentation:
-#  interruptible: false
-#  stage: test
-#  when: manual
-#  script:
-#    - ./gradlew -Pci --console=plain :presentation:test
