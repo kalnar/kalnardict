@@ -28,10 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.compose.ManageableDictionaryItem
-import eu.kalnarapps.kalnardict.androidui.navigation.Screen
 import eu.kalnarapps.kalnardict.androidui.theme.ColorPrimary
 import eu.kalnarapps.kalnardict.androidui.theme.ColorWhite
 import eu.kalnarapps.kalnardict.androidui.theme.GradientBackground
@@ -42,7 +40,8 @@ import org.koin.compose.koinInject
 @Composable
 fun DictionaryManagerScreen(
     viewModel: DictionaryManagerViewModel = viewModel(factory = DictionaryManagerViewModelFactory()),
-    navController: NavController,
+    navigateToDictionaryRegistry: (String) -> Unit,
+    navigateToPermissionError: () -> Unit,
 ) {
     val dictionaries by viewModel.getRegisteredDictionaries().observeAsState()
 
@@ -51,9 +50,7 @@ fun DictionaryManagerScreen(
     val dbBrowserLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
-        navController.navigate(
-            Screen.DictionaryRegistry(uriAdapter.convertUriToSdcardPath(uri))
-        )
+        navigateToDictionaryRegistry.invoke(uriAdapter.convertUriToSdcardPath(uri))
     }
 
     Box(
@@ -127,7 +124,7 @@ fun DictionaryManagerScreen(
                                             "*/*"
                                         )
                                     } else {
-                                        navController.navigate(Screen.PermissionError.route)
+                                        navigateToPermissionError.invoke()
                                     }
                               },
                                 colors = ButtonDefaults.buttonColors(

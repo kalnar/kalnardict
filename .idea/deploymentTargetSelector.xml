@@ -6,19 +6,23 @@
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'eu.kalnarapps.kalnardict.data'">
+      <SelectionState runConfigName="when_clicked_on_a_dictionary_delete_that_view_model_deletes()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="ExternalDbImporterTest">
+      <SelectionState runConfigName="when_clicked_on_text_rendering_strategy_and_update_then_update_via_view_model()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="checkValidDatabaseStructure()">
+      <SelectionState runConfigName="DictionaryManagerScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="check_validity_of_invalid_meta_table_with_missing_column()">
+      <SelectionState runConfigName="when_import_dictionary_display_then_navigate_to_registry()">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="when_import_dictionary_display_then_navigate_to_permission_error()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>

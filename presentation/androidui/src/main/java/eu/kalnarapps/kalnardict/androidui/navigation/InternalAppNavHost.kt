@@ -32,7 +32,16 @@ fun NavGraphBuilder.internalAppNavHost(navController: NavHostController) {
         PermissionErrorScreen(navController = navController)
     }
     composable(Screen.DictionaryManager.route) {
-        DictionaryManagerScreen(navController = navController)
+        DictionaryManagerScreen(
+            navigateToDictionaryRegistry = { dbPath ->
+                navController.navigate(
+                    Screen.DictionaryRegistry(dbPath)
+                )
+            },
+            navigateToPermissionError = {
+                navController.navigate(Screen.PermissionError.route)
+            }
+        )
     }
     composable<Screen.DictionaryRegistry> { backStackEntry ->
         val route: Screen.DictionaryRegistry = backStackEntry.toRoute()

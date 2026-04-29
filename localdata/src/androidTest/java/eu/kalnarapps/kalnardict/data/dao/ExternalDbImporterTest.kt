@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Environment
+import android.os.ParcelFileDescriptor
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
@@ -56,6 +57,9 @@ class ExternalDbImporterTest {
 
         InstrumentationRegistry.getInstrumentation().uiAutomation
             .executeShellCommand("appops set $packageName MANAGE_EXTERNAL_STORAGE allow")
+            .also { pfd ->
+                ParcelFileDescriptor.AutoCloseInputStream(pfd).use { it.readBytes() }
+            }
 
         // Wait and verify
         val granted = waitForCondition(timeoutMs = 3000) {

@@ -64,6 +64,7 @@ dependencies {
     implementation project(":core:data")
     implementation project(":core:common")
     implementation project(":platform:android:common")
+    implementation libs.core.ktx
     androidTestImplementation project(":platform:androidtest")
     androidTestImplementation project(":core:test")
 
@@ -74,12 +75,6 @@ dependencies {
     testImplementation libs.hamcrest
     testImplementation(libs.junit4) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-    androidTestImplementation(libs.androidx.test.ext.junit) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-    androidTestImplementation(libs.androidx.espresso.core) {
-        exclude group: 'org.hamcrest'
     }
 
     implementation libs.androidx.room.runtime
