@@ -4,6 +4,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.DictionaryManagerScreen
@@ -45,6 +46,19 @@ fun NavGraphBuilder.internalAppNavHost(navController: NavHostController) {
     }
     composable<Screen.DictionaryRegistry> { backStackEntry ->
         val route: Screen.DictionaryRegistry = backStackEntry.toRoute()
-        DictionaryRegistryScreen(dbPath = route.dbPath, navController = navController)
+        DictionaryRegistryScreen(
+            dbPath = route.dbPath,
+            navigateBack = {
+                navController.popBackStack()
+            },
+            navigateToDictionaryQuery = {
+                navController.navigate(
+                    Screen.DictionaryQuery.route,
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(0, true)
+                        .build()
+                )
+            },
+        )
     }
 }

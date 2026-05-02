@@ -15,7 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import eu.kalnarapps.kalnardict.androidui.common.compose.SemanticTags
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.SelectableLanguage
 
 @Composable
@@ -41,7 +43,9 @@ fun NewLanguageDialog(
                         { Text("id already used, please use another id", color = Color.Red) }
                     } else null,
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(SemanticTags.languageDialogCode)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -49,7 +53,9 @@ fun NewLanguageDialog(
                     onValueChange = { descriptionInput = it },
                     label = { Text("description:") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(SemanticTags.languageDialogName)
                 )
             }
         },
