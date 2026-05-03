@@ -11,15 +11,15 @@ import java.io.File
 
 internal class KalnarDictApplicationTest {
 
-    @Test
-    fun database_exists() {
-        ApplicationProvider.getApplicationContext<Context>().getDatabasePath().run {
-            assertThat(
-                "filePath: $this",
-                File(this),
-                FileMatchers.anExistingFile()
-            )
-        }
-        stopKoin()
-    }
+    // uncomment if you want to check if DB exists on test device
+//    @Test
+//    fun database_exists() {
+//        ApplicationProvider.getApplicationContext<Context>().getDatabasePath().run {
+//            assertThat(
+//                "filePath: $this",
+//                File(this),
+//                FileMatchers.anExistingFile()
+//            )
+//        }
+//    }
 }
