@@ -40,11 +40,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import eu.kalnarapps.kalnardict.androidui.common.compose.SemanticTags
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.compose.DictionaryDropdown
 import eu.kalnarapps.kalnardict.androidui.dictionaryquery.compose.WordItem
 import eu.kalnarapps.kalnardict.androidui.navigation.Screen
@@ -57,7 +59,8 @@ import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 @Composable
 fun DictionaryQueryScreen(
     viewModel: DictionaryQueryViewModel = viewModel(factory = DictionaryQueryViewModelFactory()),
-    navController: NavController,
+    navigateToDictionaryManager: () -> Unit,
+    navigateToTranslation: () -> Unit
 ) {
     val queryResult by viewModel.getQueryResult().observeAsState()
     val dictionaries by viewModel.getRegisteredDictionaries().observeAsState()
@@ -80,7 +83,10 @@ fun DictionaryQueryScreen(
                 },
                 actions = {
                     Box {
-                        IconButton(onClick = { menuExpanded = true }) {
+                        IconButton(
+                            onClick = { menuExpanded = true },
+                            modifier = Modifier.testTag(SemanticTags.queryMoreOptions)
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
                                 contentDescription = "More options",
@@ -96,7 +102,7 @@ fun DictionaryQueryScreen(
                                 text = { Text("Dictionary Manager") },
                                 onClick = {
                                     menuExpanded = false
-                                    navController.navigate(Screen.DictionaryManager.route)
+                                    navigateToDictionaryManager.invoke()
                                 }
                             )
                         }
@@ -152,7 +158,8 @@ fun DictionaryQueryScreen(
                         onClick = { queryModesExpanded = true },
                         modifier = Modifier
                             .width(48.dp)
-                            .fillMaxHeight(),
+                            .fillMaxHeight()
+                            .testTag(SemanticTags.queryModeButton),
                         contentPadding = PaddingValues(0.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = ColorPrimaryDarkButton
@@ -161,7 +168,7 @@ fun DictionaryQueryScreen(
                         Icon(
                             imageVector = Icons.Default.Build,
                             contentDescription = null,
-                            tint = ColorWhite
+                            tint = ColorWhite,
                         )
                     }
 
@@ -221,7 +228,7 @@ fun DictionaryQueryScreen(
                             WordItem(
                                 wordView = word,
                                 onClick = {
-                                    navController.navigate(Screen.DictionaryTranslation.route)
+                                    navigateToTranslation.invoke()
                                     viewModel.onWordSelected(word)
                                 }
                             )

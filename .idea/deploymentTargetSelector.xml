@@ -6,23 +6,23 @@
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="when_click_on_add_new_language_then_show_dialog_and_register_when_validated()">
+      <SelectionState runConfigName="when_clicking_on_dictionary_then_list_dictionaries()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="when_duplicate_id_error_then_show_error_message()">
+      <SelectionState runConfigName="when_clicking_on_query_modes_then_list_query_modes()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="when_click_on_register_then_call_register_on_view_model()">
+      <SelectionState runConfigName="when_clicking_on_options_then_show_dictionary_manager_and_navigate()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="when_import_in_progress_show_progress_import_dialog()">
+      <SelectionState runConfigName="when_clicking_on_result_item_navigate_to_translation_view()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="when_import_is_done_then_show_import_success_dialog()">
+      <SelectionState runConfigName="when_typing_query_then_view_model_on_query_changed_called()">
         <option name="selectionMode" value="DROPDOWN" />
         <DialogSelection />
       </SelectionState>

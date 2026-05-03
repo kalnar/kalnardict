@@ -17,7 +17,14 @@ import eu.kalnarapps.kalnardict.androidui.permission.PermissionErrorScreen
 
 fun NavGraphBuilder.internalAppNavHost(navController: NavHostController) {
     composable(Screen.DictionaryQuery.route) {
-        DictionaryQueryScreen(navController = navController)
+        DictionaryQueryScreen(
+            navigateToDictionaryManager = {
+                navController.navigate(Screen.DictionaryManager.route)
+            },
+            navigateToTranslation = {
+                navController.navigate(Screen.DictionaryTranslation.route)
+            }
+        )
     }
     composable(Screen.DictionaryTranslation.route) { backStackEntry ->
         val queryEntry = remember(backStackEntry) {
