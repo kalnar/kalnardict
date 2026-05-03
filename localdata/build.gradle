@@ -95,7 +95,7 @@ dependencies {
     testImplementation libs.kotlinx.coroutines.test
     testImplementation libs.junit.jupiter.api
 
-    androidTestImplementation(libs.support.test.rules) {
+    androidTestImplementation(libs.androidx.test.rules) {
         exclude group: 'org.hamcrest'
     }
 

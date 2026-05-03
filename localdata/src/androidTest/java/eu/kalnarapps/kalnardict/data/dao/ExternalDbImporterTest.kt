@@ -8,8 +8,9 @@ import android.os.ParcelFileDescriptor
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import eu.kalnarapps.kalnardict.androidtest.getStorageRootPath
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
-import eu.kalnarapps.kalnardict.data.DatabaseValidity
+import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.ExternalDictionaryResource
 import eu.kalnarapps.kalnardict.data.ImportEntry
 import eu.kalnarapps.kalnardict.data.TestFixtures
@@ -20,11 +21,12 @@ import eu.kalnarapps.kalnardict.data.database.TEST_TEMP_DIR_LOCAL_PATH
 import eu.kalnarapps.kalnardict.data.database.copyTestDbFromAssetsToTempTestDir
 import eu.kalnarapps.kalnardict.data.database.external.DatabaseReaderContract
 import eu.kalnarapps.kalnardict.data.database.external.ExternalDbImporter
-import eu.kalnarapps.kalnardict.androidtest.getStorageRootPath
-import eu.kalnarapps.kalnardict.common.operations.OperationResult
 import eu.kalnarapps.kalnardict.data.model.TestImportEntry
 import eu.kalnarapps.kalnardict.data.model.TestImportEntryBatch
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsCollectionWithSize
 import org.hamcrest.collection.IsEmptyCollection
