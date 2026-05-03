@@ -92,6 +92,7 @@ jobs:
         with:
           api-level: 34
           arch: x86_64
+          profile: pixel_3
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
@@ -102,6 +103,7 @@ jobs:
         with:
           api-level: 34
           arch: x86_64
+          profile: pixel_3
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
@@ -111,7 +113,7 @@ jobs:
         if: always()   # upload even on failure
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-api-${{ matrix.api-level }}
+          name: test-results-api-34
           path: |
             **/build/reports/androidTests/
             **/build/outputs/androidTest-results/
