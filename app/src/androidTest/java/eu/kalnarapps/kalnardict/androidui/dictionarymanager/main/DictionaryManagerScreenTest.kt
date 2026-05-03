@@ -17,6 +17,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.platform.app.InstrumentationRegistry
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionCheckerContract
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.test.KoinTest
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
@@ -47,6 +48,13 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
 
         composeTestRule.setContent {
@@ -84,6 +92,13 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
 
         composeTestRule.setContent {
@@ -127,6 +142,13 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
 
         composeTestRule.setContent {
@@ -179,6 +201,13 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
 
         composeTestRule.setContent {
@@ -233,6 +262,13 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
 
         composeTestRule.setContent {
@@ -282,6 +318,13 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
 
         composeTestRule.setContent {
@@ -327,8 +370,14 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return true
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
-        grantViaShell()
 
         Intents.init()
 
@@ -373,8 +422,14 @@ class DictionaryManagerScreenTest : KoinTest() {
 
         loadKoinModules(module {
             single { UriAdapter(androidApplication()) }
+            single {
+                object : StoragePermissionCheckerContract {
+                    override fun hasManageExternalStoragePermission(): Boolean {
+                        return false
+                    }
+                } as StoragePermissionCheckerContract
+            }
         })
-        revokeViaShell()
 
         var navigatedToPermissionError = false
         composeTestRule.setContent {
@@ -394,50 +449,4 @@ class DictionaryManagerScreenTest : KoinTest() {
         assertEquals(true, navigatedToPermissionError)
 
     }
-
-    private fun grantViaShell() {
-        val packageName = InstrumentationRegistry.getInstrumentation()
-            .targetContext.packageName
-
-        InstrumentationRegistry.getInstrumentation().uiAutomation
-            .executeShellCommand("appops set $packageName MANAGE_EXTERNAL_STORAGE allow")
-            .also { pfd ->
-                ParcelFileDescriptor.AutoCloseInputStream(pfd).use { it.readBytes() }
-            }
-
-        // Wait and verify
-        val granted = waitForCondition(timeOutMs = 3000) {
-            Environment.isExternalStorageManager()
-        }
-
-        check(granted) { "Failed to grant MANAGE_EXTERNAL_STORAGE permission" }
-    }
-
-    private fun revokeViaShell() {
-        val packageName = InstrumentationRegistry.getInstrumentation()
-            .context.packageName
-
-        InstrumentationRegistry.getInstrumentation().uiAutomation
-            .executeShellCommand("appops set $packageName MANAGE_EXTERNAL_STORAGE deny")
-            .also { pfd ->
-                ParcelFileDescriptor.AutoCloseInputStream(pfd).use { it.readBytes() }
-            }
-
-        // Wait and verify
-        val revoked = waitForCondition(timeOutMs = 3000) {
-            !Environment.isExternalStorageManager()
-        }
-
-        check(revoked) { "Failed to revoke MANAGE_EXTERNAL_STORAGE permission" }
-    }
-
-    private fun waitForCondition(timeOutMs: Long, condition: () -> Boolean): Boolean {
-        val deadline = System.currentTimeMillis() + timeOutMs
-        while (System.currentTimeMillis() < deadline) {
-            if (condition()) return true
-            Thread.sleep(100)
-        }
-        return false
-    }
-
 }

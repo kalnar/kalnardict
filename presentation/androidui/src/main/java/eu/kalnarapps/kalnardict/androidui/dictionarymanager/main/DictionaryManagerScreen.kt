@@ -27,7 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.PermissionChecker
 import androidx.lifecycle.viewmodel.compose.viewModel
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionChecker
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionCheckerContract
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.compose.ManageableDictionaryItem
 import eu.kalnarapps.kalnardict.androidui.theme.ColorPrimary
@@ -46,6 +49,7 @@ fun DictionaryManagerScreen(
     val dictionaries by viewModel.getRegisteredDictionaries().observeAsState()
 
     val uriAdapter: UriAdapter = koinInject()
+    val permissionChecker: StoragePermissionCheckerContract = koinInject()
 
     val dbBrowserLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -119,7 +123,7 @@ fun DictionaryManagerScreen(
                         item {
                             Button(
                                 onClick = {
-                                    if (hasManageExternalStoragePermission()) {
+                                    if (permissionChecker.hasManageExternalStoragePermission()) {
                                         dbBrowserLauncher.launch(
                                             "*/*"
                                         )
@@ -145,6 +149,3 @@ fun DictionaryManagerScreen(
     }
 }
 
-private fun hasManageExternalStoragePermission(): Boolean {
-    return (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager())
-}

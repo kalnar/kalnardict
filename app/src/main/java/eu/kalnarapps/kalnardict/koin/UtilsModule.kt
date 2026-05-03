@@ -1,6 +1,9 @@
 package eu.kalnarapps.kalnardict.koin
 
+import androidx.core.content.PermissionChecker
 import eu.kalnarapps.kalnardict.android.utils.KalnarUiLogger
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionChecker
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionCheckerContract
 import eu.kalnarapps.kalnardict.presentation.interactors.errorhandlers.UiLogger
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import org.koin.android.ext.koin.androidApplication
@@ -11,4 +14,5 @@ import org.koin.dsl.module
 val utilsModule: Module = module {
     single { KalnarUiLogger() as UiLogger }
     single { UriAdapter(androidApplication()) }
+    single { StoragePermissionChecker() as StoragePermissionCheckerContract }
 }
