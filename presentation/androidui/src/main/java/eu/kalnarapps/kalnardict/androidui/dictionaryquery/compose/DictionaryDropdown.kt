@@ -15,7 +15,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import eu.kalnarapps.kalnardict.androidui.common.compose.SemanticTags
 import eu.kalnarapps.kalnardict.presentation.models.common.LoadableContent
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryquery.DictionaryUiModel
 
@@ -54,7 +56,8 @@ fun DictionaryDropdown(
                     onClick = {
                         onDictionarySelected(dictionary)
                         expanded = false
-                    }
+                    },
+                    modifier = Modifier.testTag(SemanticTags.dictionarySelectorDropDown)
                 )
             }
         }

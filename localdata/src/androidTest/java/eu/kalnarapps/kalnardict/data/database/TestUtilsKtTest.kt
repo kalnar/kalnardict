@@ -3,8 +3,8 @@ package eu.kalnarapps.kalnardict.data.database
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.io.FileMatchers
 import org.junit.Test
 import java.io.File

@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import eu.kalnarapps.kalnardict.androidui.common.compose.SemanticTags
 import eu.kalnarapps.kalnardict.common.operations.DataOperationResult
 import eu.kalnarapps.kalnardict.presentation.models.dictionaryregistry.ImportTableStatus
 
@@ -92,6 +94,7 @@ private fun SuccessItem(status: ImportTableStatus) {
             modifier = Modifier
                 .size(24.dp)
                 .padding(end = 4.dp)
+                .testTag(SemanticTags.importTableSuccessIcon)
         )
         Text(
             text = "Table ${status.table.originalTableName} is imported successfully as ${status.table.dictionaryName}.",
@@ -115,6 +118,7 @@ private fun ProcessingItem(
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp)
+                    .testTag(SemanticTags.importTableProgress)
             )
             Text(text = "$registeredRows/$totalRows")
         }

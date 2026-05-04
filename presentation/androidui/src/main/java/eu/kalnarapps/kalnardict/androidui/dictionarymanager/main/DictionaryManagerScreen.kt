@@ -27,11 +27,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.PermissionChecker
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionChecker
+import eu.kalnarapps.kalnardict.android.utils.permission.StoragePermissionCheckerContract
 import eu.kalnarapps.kalnardict.android.utils.uri.UriAdapter
 import eu.kalnarapps.kalnardict.androidui.dictionarymanager.main.compose.ManageableDictionaryItem
-import eu.kalnarapps.kalnardict.androidui.navigation.Screen
 import eu.kalnarapps.kalnardict.androidui.theme.ColorPrimary
 import eu.kalnarapps.kalnardict.androidui.theme.ColorWhite
 import eu.kalnarapps.kalnardict.androidui.theme.GradientBackground
@@ -42,18 +43,18 @@ import org.koin.compose.koinInject
 @Composable
 fun DictionaryManagerScreen(
     viewModel: DictionaryManagerViewModel = viewModel(factory = DictionaryManagerViewModelFactory()),
-    navController: NavController,
+    navigateToDictionaryRegistry: (String) -> Unit,
+    navigateToPermissionError: () -> Unit,
 ) {
     val dictionaries by viewModel.getRegisteredDictionaries().observeAsState()
 
     val uriAdapter: UriAdapter = koinInject()
+    val permissionChecker: StoragePermissionCheckerContract = koinInject()
 
     val dbBrowserLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
-        navController.navigate(
-            Screen.DictionaryRegistry(uriAdapter.convertUriToSdcardPath(uri))
-        )
+        navigateToDictionaryRegistry.invoke(uriAdapter.convertUriToSdcardPath(uri))
     }
 
     Box(
@@ -122,12 +123,12 @@ fun DictionaryManagerScreen(
                         item {
                             Button(
                                 onClick = {
-                                    if (hasManageExternalStoragePermission()) {
+                                    if (permissionChecker.hasManageExternalStoragePermission()) {
                                         dbBrowserLauncher.launch(
                                             "*/*"
                                         )
                                     } else {
-                                        navController.navigate(Screen.PermissionError.route)
+                                        navigateToPermissionError.invoke()
                                     }
                               },
                                 colors = ButtonDefaults.buttonColors(
@@ -148,6 +149,3 @@ fun DictionaryManagerScreen(
     }
 }
 
-private fun hasManageExternalStoragePermission(): Boolean {
-    return (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager())
-}

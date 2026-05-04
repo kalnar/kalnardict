@@ -19,7 +19,7 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "eu.kalnarapps.kalnardict.androidui.test.TestRunner"
     }
     flavorDimensions "version"
     buildTypes {
@@ -64,6 +64,8 @@ dependencies {
     implementation project(":core:data")
     implementation project(":localdata")
     implementation libs.compose.runtime.livedata
+    implementation libs.compose.ui.test.junit4
+    implementation libs.androidx.test.runner
 
     def composeBom = platform(libs.compose.bom)
     implementation composeBom
@@ -82,12 +84,6 @@ dependencies {
     androidTestImplementation libs.hamcrest
     testImplementation(libs.junit4) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-    androidTestImplementation(libs.androidx.test.ext.junit) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-    androidTestImplementation(libs.androidx.espresso.core) {
-        exclude group: 'org.hamcrest'
     }
 
     implementation libs.koin.core
@@ -113,6 +109,10 @@ dependencies {
     // Firebase
     implementation libs.firebase.appdistribution
     implementation libs.firebase.appdistribution.gradle
+
+    androidTestImplementation(libs.mockk.android)
+    debugImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation(libs.androidx.espresso.intents)
 }
 
 //android.applicationVariants.all { variant ->

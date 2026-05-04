@@ -48,30 +48,19 @@ fun DictionaryRegistryScreen(
     viewModel: DictionaryRegistryViewModel = viewModel(
         factory = DictionaryRegistryViewModelComposeFactory(dbPath)
     ),
-    navController: NavController,
+    navigateBack: () -> Unit,
+    navigateToDictionaryQuery: () -> Unit,
 ) {
     val uiState by viewModel.getUiState().observeAsState()
     val importStatus by viewModel.getLiveRegistrationStatus().observeAsState(emptyList())
-    val availableLanguages by viewModel.getAvailableLanguages().observeAsState(emptyList())
     val registryErrorEvent by viewModel.registryError.observeAsState()
 
     var showImportDialog by remember { mutableStateOf(false) }
     var showNewLanguageDialog by remember { mutableStateOf(false) }
     var duplicateIdError by remember { mutableStateOf(false) }
 
-    // Mirror NewChangeObserver: skip the first emission, dismiss dialog on subsequent ones
-    var seenInitialLanguages by remember { mutableStateOf(false) }
-
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(availableLanguages) {
-        if (!seenInitialLanguages) {
-            seenInitialLanguages = true
-        } else {
-            showNewLanguageDialog = false
-        }
-    }
 
     // Consume registry error events (one-shot, like UiEventObserver)
     LaunchedEffect(registryErrorEvent) {
@@ -126,7 +115,7 @@ fun DictionaryRegistryScreen(
 
                             when (result) {
                                 SnackbarResult.ActionPerformed -> {
-                                    navController.popBackStack()
+                                    navigateBack.invoke()
                                 }
 
                                 SnackbarResult.Dismissed -> {
@@ -183,12 +172,7 @@ fun DictionaryRegistryScreen(
             importStatus = importStatus,
             onGoToQueryScreen = {
                 showImportDialog = false
-                navController.navigate(
-                    Screen.DictionaryQuery.route,
-                    navOptions = NavOptions.Builder()
-                        .setPopUpTo(0, true)
-                        .build()
-                )
+                navigateToDictionaryQuery.invoke()
             }
         )
     }
